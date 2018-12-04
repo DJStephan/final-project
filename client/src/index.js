@@ -1,13 +1,17 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { render } from 'react-dom'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import { devToolsEnhancer } from 'redux-devtools-extension'
 
+import { filetreeReducer } from './ducks/filetree.duck'
+import { Page } from './containers'
 
-ReactDOM.render(
-  <Router>
-    <Switch>
-      <Route path='/' exact render={() => <div>Test</div>} />
-    </Switch>
-  </Router>,
+const store = createStore(filetreeReducer, devToolsEnhancer())
+
+render(
+  <Provider store={store}>
+    <Page />
+  </Provider>,
   document.getElementById('root')
 )
