@@ -5,26 +5,29 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import driverstorage.server.dto.ResultDto;
 import driverstorage.server.dto.UploadDto;
 import driverstorage.server.dto.UploadResultDto;
 import driverstorage.server.entity.File;
 import driverstorage.server.entity.Folder;
 import driverstorage.server.mapper.FileMapper;
 import driverstorage.server.mapper.FolderMapper;
+import driverstorage.server.repository.FileRepository;
+import driverstorage.server.repository.FolderRepository;
 import driverstorage.server.repository.UploadRepository;
 
 @RestController
 public class UploadService {
-	private UploadRepository uploadRepository;
 	private FileMapper fileMapper;
 	private FolderMapper folderMapper;
+	private FileRepository fileRepository;
+	private FolderRepository folderRepository;
 
 	@Autowired
-	public UploadService(UploadRepository uploadRepository, FileMapper fileMapper, FolderMapper folderMapper) {
-		this.uploadRepository = uploadRepository;
+	public UploadService(FileMapper fileMapper, FolderMapper folderMapper, FileRepository fileRepository, FolderRepository folderRepository) {
 		this.fileMapper = fileMapper;
 		this.folderMapper = folderMapper;
+		this.fileRepository = fileRepository;
+		this.folderRepository = folderRepository;
 	}
 	
 	public UploadResultDto upload(UploadDto uploadDto) {
@@ -36,11 +39,12 @@ public class UploadService {
 		System.out.println(folders);
 		System.out.println(files);
 		
-		Folder saveLocation = uploadRepository.getFolderById(locationId);
+		Folder saveLocation = folderRepository.getFolderById(locationId);
 		saveLocation.getFolders().addAll(folders);
 		saveLocation.getFiles().addAll(files);
-		this.uploadRepository.save(saveLocation);
-		this.uploadRepository.saveAll(folders);
+		this.folderRepository.save(saveLocation);
+		this.folderRepository.saveAll(folders);
+		this.fileRepository.saveAll(files);
 		
 		UploadResultDto result = new UploadResultDto();
 		//ResultDto resultdt = new ResultDto();
