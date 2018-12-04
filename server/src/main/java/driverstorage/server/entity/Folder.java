@@ -1,11 +1,16 @@
 package driverstorage.server.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import driverstorage.server.entity.File;
 
 @Embeddable
 public class Folder {
@@ -18,6 +23,12 @@ public class Folder {
 	
 	@ManyToOne
 	private Folder parentFolder;
+	
+	@OneToMany
+	private List<File> files;
+	
+	@OneToMany
+	private List<Folder> folders;
 
 	public Long getId() {
 		return id;
@@ -41,5 +52,21 @@ public class Folder {
 
 	public void setParentFolder(Folder parentFolder) {
 		this.parentFolder = parentFolder;
+	}
+
+	public List<File> getFiles() {
+		return files;
+	}
+
+	public void setFiles(List<File> files) {
+		this.files = files;
+	}
+
+	public List<Folder> getFolders() {
+		return folders;
+	}
+
+	public void setFolders(List<Folder> folders) {
+		this.folders = folders;
 	}
 }
