@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import driverstorage.server.dto.DownloadDto;
+import driverstorage.server.dto.DownloadResultDto;
 import driverstorage.server.service.DownloadService;
 
 @RestController
@@ -18,7 +19,7 @@ public class DownloadController {
 	}
 
 	@GetMapping("download")
-	public DownloadDto download(@RequestBody DownloadDto downloadDto) {
+	public DownloadResultDto download(@RequestBody DownloadDto downloadDto) {
 		return this.downloadService.download(downloadDto);
 	}
 

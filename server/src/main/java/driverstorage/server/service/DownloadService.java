@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import driverstorage.server.dto.DownloadDto;
+import driverstorage.server.dto.DownloadResultDto;
 import driverstorage.server.dto.FileDto;
 import driverstorage.server.dto.FolderDto;
 import driverstorage.server.mapper.FileMapper;
@@ -34,5 +36,14 @@ public class DownloadService {
 
 	public List<FolderDto> getFolder() {
 		return this.folderMapper.entitysToDtos(this.folderRepository.findAll());
+	}
+
+	public DownloadResultDto download(DownloadDto downloadDto) {
+		List<Long> folders = (downloadDto.getFolderIds());
+		List<Long> files = (downloadDto.getFileIds());
+
+		DownloadResultDto result = new DownloadResultDto();
+
+		return result;
 	}
 }
