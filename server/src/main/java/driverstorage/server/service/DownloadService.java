@@ -1,18 +1,24 @@
 package driverstorage.server.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+
+import driverstorage.server.dto.FileDto;
+import driverstorage.server.dto.FolderDto;
 import driverstorage.server.mapper.FileMapper;
 import driverstorage.server.mapper.FolderMapper;
+import driverstorage.server.repository.FileRepository;
+import driverstorage.server.repository.FolderRepository;
 
-@Service
+@RestController
 public class DownloadService {
 	private FileRepository fileRepository;
 	private FolderRepository folderRepository;
 	private FileMapper fileMapper;
 	private FolderMapper folderMapper;
-	
+
 	@Autowired
 	public DownloadService(FileRepository fileRepository, FolderRepository folderRepository, FileMapper fileMapper,
 			FolderMapper folderMapper) {
@@ -21,16 +27,12 @@ public class DownloadService {
 		this.fileMapper = fileMapper;
 		this.folderMapper = folderMapper;
 	}
-public Boolean fileExists(String fileName) {
-	return placeholder.fileExists(fileName, this.fileRepository);
-}
-public Boolean folderExists(String foldername) {
-	return placeholder.folderExists(folderName, this.folderRepository);
-}
-public List<FileDto> getFile() {
-	return this.fileMapper.entitysToDtos(this.fileRepository.findAll());
-}
-public List<FolderDto> getFolder() {
-	return this.folderMapper.entitysToDtos(this.folderRepoitory.findAll());
-}
+
+	public List<FileDto> getFile() {
+		return this.fileMapper.entitysToDtos(this.fileRepository.findAll());
+	}
+
+	public List<FolderDto> getFolder() {
+		return this.folderMapper.entitysToDtos(this.folderRepository.findAll());
+	}
 }
