@@ -1,6 +1,6 @@
 package driverstorage.server.exception;
 
-public class InvalidInput {
+public class InvalidInput extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	private String message;
@@ -9,6 +9,7 @@ public class InvalidInput {
 		this.message = "Invalid input";
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}
