@@ -11,15 +11,13 @@ import driverstorage.server.dto.FileDto;
 
 @Mapper(componentModel = "spring")
 public interface FileMapper {
-	@Mappings({ @Mapping(target = "id", source = "entity.id"),
-			@Mapping(target = "fileName", source = "entity.fileName"),
+	@Mappings({ @Mapping(target = "fileName", source = "entity.fileName"),
 			@Mapping(target = "data", source = "entity.data") })
 	FileDto entityToDto(File entity);
 
 	List<FileDto> entitysToDtos(List<File> entity);
 	
-	@Mappings({ @Mapping(target = "id", source = "dto.id"),
-		@Mapping(target = "fileName", source = "dto.fileName"),
+	@Mappings({ @Mapping(target = "fileName", source = "dto.fileName"),
 		@Mapping(target = "data", source = "dto.data") })
 	File dtoToEntity(FileDto dto);
 	

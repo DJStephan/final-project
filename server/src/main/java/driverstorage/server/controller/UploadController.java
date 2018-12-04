@@ -27,7 +27,9 @@ public class UploadController {
 	 * @throws LocationNotFound if location does not exist or is deleted
 	 */
 	@PostMapping("upload")
-	public UploadResultDto upload(@RequestBody UploadDto uploadDTO) {
-		return this.uploadService.upload(uploadDTO);
+	public UploadResultDto upload(@RequestBody UploadDto uploadDto) {
+		System.out.println("uploading");
+		System.out.println(uploadDto);
+		return this.uploadService.upload(uploadDto);
 	}
 }

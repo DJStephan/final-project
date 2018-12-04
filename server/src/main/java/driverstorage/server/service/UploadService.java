@@ -32,17 +32,21 @@ public class UploadService {
 		List<Folder> folders = folderMapper.dtosToEntitys(uploadDto.getFolders());
 		List<File> files = fileMapper.dtosToEntitys(uploadDto.getFiles());
 		
+		System.out.println(uploadDto);
+		System.out.println(folders);
+		System.out.println(files);
+		
 		Folder saveLocation = uploadRepository.getFolderById(locationId);
 		saveLocation.getFolders().addAll(folders);
 		saveLocation.getFiles().addAll(files);
 		this.uploadRepository.save(saveLocation);
+		this.uploadRepository.saveAll(folders);
 		
 		UploadResultDto result = new UploadResultDto();
-		ResultDto resultdt = new ResultDto();
-		resultdt.setStatusCode((long) 500);
-		resultdt.setMessage("all good");
-		result.setResult(resultdt);
-		result.setRoot(null);
+		//ResultDto resultdt = new ResultDto();
+		//resultdt.setStatusCode((long) 500);
+		//result.setResult(resultdt);
+		
 		return result;
 	}
 }

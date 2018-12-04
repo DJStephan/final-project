@@ -11,16 +11,14 @@ import driverstorage.server.dto.FolderDto;
 
 @Mapper(componentModel = "spring")
 public interface FolderMapper {
-	@Mappings({ @Mapping(target = "id", source = "entity.id"),
-			@Mapping(target = "folderName", source = "entity.folderName"),
+	@Mappings({ @Mapping(target = "folderName", source = "entity.folderName"),
 			@Mapping(target = "files", source = "entity.files"),
 			@Mapping(target = "folders", source = "entity.folders") })
 	FolderDto entityToDto(Folder entity);
 
 	List<FolderDto> entitysToDtos(List<Folder> entity);
 
-	@Mappings({ @Mapping(target = "id", source = "dto.id"),
-			@Mapping(target = "folderName", source = "dto.folderName"),
+	@Mappings({ @Mapping(target = "folderName", source = "dto.folderName"),
 			@Mapping(target = "files", source = "dto.files"),
 			@Mapping(target = "folders", source = "dto.folders") })
 	Folder dtoToEntity(FolderDto dto);
