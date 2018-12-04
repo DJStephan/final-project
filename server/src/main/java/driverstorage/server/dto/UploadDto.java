@@ -1,29 +1,29 @@
 package driverstorage.server.dto;
 
+import java.util.List;
+
 public class UploadDto {
-	private Number folderId;
-	private FolderDto folders;
-	private FileDto files;
+	private Long folderId;
+	private List<FolderDto> folders;
+	private List<FileDto> files;
 	
-	public Number getFolderId() {
+	public Long getFolderId() {
 		return folderId;
 	}
-	public void setFolderId(Number folderId) {
+	public void setFolderId(Long folderId) {
 		this.folderId = folderId;
 	}
-	public FolderDto getFolders() {
+	public List<FolderDto> getFolders() {
 		return folders;
 	}
-	public void setFolders(FolderDto folders) {
+	public void setFolders(List<FolderDto> folders) {
 		this.folders = folders;
 	}
-	public FileDto getFiles() {
+	public List<FileDto> getFiles() {
 		return files;
 	}
-	public void setFiles(FileDto files) {
+	public void setFiles(List<FileDto> files) {
 		this.files = files;
 	}
-	
-	
 
 }

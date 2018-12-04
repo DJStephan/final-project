@@ -1,22 +1,21 @@
 package driverstorage.server.dto;
 
+import java.util.List;
+
 public class DownloadDto {
-	private Number folderIds;
-	private Number fields;
+	private List<Long> folderIds;
+	private List<Long> fields;
 	
-	public Number getFolderIds() {
+	public List<Long> getFolderIds() {
 		return folderIds;
 	}
-	public void setFolderIds(Number folderIds) {
+	public void setFolderIds(List<Long> folderIds) {
 		this.folderIds = folderIds;
 	}
-	public Number getFields() {
+	public List<Long> getFields() {
 		return fields;
 	}
-	public void setFields(Number fields) {
+	public void setFields(List<Long> fields) {
 		this.fields = fields;
 	}
-	
-	
-
 }

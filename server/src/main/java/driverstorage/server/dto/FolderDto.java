@@ -4,7 +4,7 @@ public class FolderDto {
 private Long id; 
 private String folderName;
 private FileDto files;
-private FolderDto folder;
+private FolderDto folders;
 
 public Long getId() {
 	return id;
@@ -24,11 +24,11 @@ public FileDto getFiles() {
 public void setFiles(FileDto files) {
 	this.files = files;
 }
-public FolderDto getFolder() {
-	return folder;
+public FolderDto getFolders() {
+	return folders;
 }
-public void setFolder(FolderDto folder) {
-	this.folder = folder;
+public void setFolders(FolderDto folders) {
+	this.folders = folders;
 }
 
 

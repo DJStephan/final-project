@@ -16,7 +16,4 @@ public class StructureFileDto {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
-	
-
 }

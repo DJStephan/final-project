@@ -1,11 +1,13 @@
 package driverstorage.server.dto;
 
+import java.util.List;
+
 public class StructureFolderDto {
 
 	private Long id;
 	private String folderName;
-	private StructureFileDto files;
-	private StructureFolderDto folders;
+	private List<StructureFileDto> files;
+	private List<StructureFolderDto> folders;
 	
 	public Long getId() {
 		return id;
@@ -19,18 +21,16 @@ public class StructureFolderDto {
 	public void setFolderName(String folderName) {
 		this.folderName = folderName;
 	}
-	public StructureFileDto getFiles() {
+	public List<StructureFileDto> getFiles() {
 		return files;
 	}
-	public void setFiles(StructureFileDto files) {
+	public void setFiles(List<StructureFileDto> files) {
 		this.files = files;
 	}
-	public StructureFolderDto getFolders() {
+	public List<StructureFolderDto> getFolders() {
 		return folders;
 	}
-	public void setFolders(StructureFolderDto folders) {
+	public void setFolders(List<StructureFolderDto> folders) {
 		this.folders = folders;
 	}
-	
-	
 }

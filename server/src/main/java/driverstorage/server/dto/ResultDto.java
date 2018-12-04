@@ -2,13 +2,13 @@ package driverstorage.server.dto;
 
 public class ResultDto {
 
-	private Number statusCode;
+	private Long statusCode;
 	private String message;
 	
-	public Number getStatusCode() {
+	public Long getStatusCode() {
 		return statusCode;
 	}
-	public void setStatusCode(Number statusCode) {
+	public void setStatusCode(Long statusCode) {
 		this.statusCode = statusCode;
 	}
 	public String getMessgae() {

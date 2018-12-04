@@ -16,7 +16,4 @@ public class FileStructureDto {
 	public void setRoot(StructureFolderDto root) {
 		this.root = root;
 	}
-	
-	
-
 }
