@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import driverstorage.server.dto.ResultDto;
 import driverstorage.server.dto.UploadDto;
 import driverstorage.server.dto.UploadResultDto;
 import driverstorage.server.entity.File;
@@ -41,6 +40,7 @@ public class UploadService {
 		saveLocation.getFiles().addAll(files);
 		this.uploadRepository.save(saveLocation);
 		this.uploadRepository.saveAll(folders);
+		//this.fileRepository.saveAll(files);
 		
 		UploadResultDto result = new UploadResultDto();
 		//ResultDto resultdt = new ResultDto();
