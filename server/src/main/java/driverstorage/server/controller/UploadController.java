@@ -28,8 +28,6 @@ public class UploadController {
 	 */
 	@PostMapping("upload")
 	public UploadResultDto upload(@RequestBody UploadDto uploadDto) {
-		System.out.println("uploading");
-		System.out.println(uploadDto);
 		return this.uploadService.upload(uploadDto);
 	}
 }

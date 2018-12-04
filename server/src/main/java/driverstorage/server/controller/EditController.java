@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import driverstorage.server.dto.FileStructureDto;
 import driverstorage.server.service.EditService;
 
 @RestController
@@ -19,14 +20,14 @@ public class EditController {
 	}
 	
 	/**
-	 * Create a new file in given location
+	 * Create a new folder in given location
 	 * 
 	 * @param folderId, folderName
 	 * @return FileStructureDto
 	 */
 	@PostMapping("edit/create/{folderId}/{folderName}")
-	public void createFolder(@PathVariable("folderIdd") Long folderId, @PathVariable("folderName") String folderName) {
-		editService.createFolder(folderId);
+	public FileStructureDto createFolder(@PathVariable("folderIdd") Long folderId, @PathVariable("folderName") String folderName) {
+		return editService.createFolder(folderId, folderName);
 	}
 	/**
 	 * delete a file in given location
@@ -35,8 +36,8 @@ public class EditController {
 	 * @return FileStructureDto
 	 */
 	@DeleteMapping("edit/delete/file/{fileId}")
-	public void deleteFile(@PathVariable("fileId") Long fileId) {
-		editService.deleteFile(fileId);
+	public FileStructureDto deleteFile(@PathVariable("fileId") Long fileId) {
+		return editService.deleteFile(fileId);
 	}
 
 	/**
@@ -46,8 +47,8 @@ public class EditController {
 	 * @return FileStructureDto
 	 */
 	@DeleteMapping("edit/delete/folder/{folderId}")
-	public void deleteFolder(@PathVariable("folderId") Long folderId) {
-		editService.deleteFolder(folderId);
+	public FileStructureDto deleteFolder(@PathVariable("folderId") Long folderId) {
+		return editService.deleteFolder(folderId);
 	}
 
 	/**
@@ -57,8 +58,8 @@ public class EditController {
 	 * @return FileStructureDto
 	 */
 	@PatchMapping("edit/move/file/{fileId}/{locationFolderId}")
-	public void moveFile(@PathVariable("fileId") Long fileId, @PathVariable("locationFolderId") Long locationFolderId) {
-		editService.moveFile(fileId, locationFolderId);
+	public FileStructureDto moveFile(@PathVariable("fileId") Long fileId, @PathVariable("locationFolderId") Long locationFolderId) {
+		return editService.moveFile(fileId, locationFolderId);
 	}
 	
 	/**
@@ -68,8 +69,8 @@ public class EditController {
 	 * @return FileStructureDto
 	 */
 	@PatchMapping("edit/move/folder/{folderId}/{locationFolderId}")
-	public void moveFolder(@PathVariable("folderId") Long folderId, @PathVariable("locationFolderId") Long locationFolderId) {
-		editService.moveFolder(folderId, locationFolderId);
+	public FileStructureDto moveFolder(@PathVariable("folderId") Long folderId, @PathVariable("locationFolderId") Long locationFolderId) {
+		return editService.moveFolder(folderId, locationFolderId);
 	}
 	/**
 	 * Rename a file
@@ -78,8 +79,8 @@ public class EditController {
 	 * @return FileStructureDto
 	 */
 	@PatchMapping("edit/rename/file/{fileId}/{newName}")
-	public void renameFile(@PathVariable("fileId") Long fileId, @PathVariable("newName") String newName) {
-		editService.renameFile(fileId, newName);
+	public FileStructureDto renameFile(@PathVariable("fileId") Long fileId, @PathVariable("newName") String newName) {
+		return editService.renameFile(fileId, newName);
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class EditController {
 	 * @return FileStructureDto
 	 */
 	@PatchMapping("edit/rename/folder/{folderId}/{newName}")
-	public void renameFolder(@PathVariable("folderId") Long folderId, @PathVariable("newName") String newName) {
-		editService.renameFolder(folderId, newName);
+	public FileStructureDto renameFolder(@PathVariable("folderId") Long folderId, @PathVariable("newName") String newName) {
+		return editService.renameFolder(folderId, newName);
 	}
 }

@@ -28,10 +28,7 @@ public class Folder {
 	@OneToMany
 	private List<File> files;
 	
-	@OneToMany(
-	        cascade = CascadeType.ALL,
-	        orphanRemoval = false
-	    )
+	@OneToMany
 	private List<Folder> folders;
 
 	public Long getId() {
