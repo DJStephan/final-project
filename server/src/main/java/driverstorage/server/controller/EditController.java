@@ -34,7 +34,7 @@ public class EditController {
 	 * @param fileId
 	 * @return FileStructureDto
 	 */
-	@DeleteMapping("edit/delete/file/{fileId")
+	@DeleteMapping("edit/delete/file/{fileId}")
 	public void deleteFile(@PathVariable("fileId") Long fileId) {
 		editService.deleteFile(fileId);
 	}
@@ -45,8 +45,8 @@ public class EditController {
 	 * @param folderId
 	 * @return FileStructureDto
 	 */
-	@DeleteMapping("edit/delete/folder/{folderId")
-	public void deleteFolder(@PathVariable("folderIdd") Long folderId) {
+	@DeleteMapping("edit/delete/folder/{folderId}")
+	public void deleteFolder(@PathVariable("folderId") Long folderId) {
 		editService.deleteFolder(folderId);
 	}
 
