@@ -8,14 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import driverstorage.server.service.UploadService;
 import driverstorage.server.dto.UploadDto;
 import driverstorage.server.dto.UploadResultDto;
-import driverstorage.server.mapper.FileMapper;
-import driverstorage.server.mapper.FolderMapper;
 
 @RestController
 public class UploadController {
 	private UploadService uploadService;
-	private FolderMapper folderMapper;
-	private FileMapper fileMapper;
 
 	@Autowired
 	public UploadController(UploadService uploadService) {
