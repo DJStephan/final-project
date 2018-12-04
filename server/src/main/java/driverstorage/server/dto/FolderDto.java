@@ -3,17 +3,10 @@ package driverstorage.server.dto;
 import java.util.List;
 
 public class FolderDto {
-	private Long id; 
 	private String folderName;
 	private List<FileDto> files;
 	private List<FolderDto> folders;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public String getFolderName() {
 		return folderName;
 	}

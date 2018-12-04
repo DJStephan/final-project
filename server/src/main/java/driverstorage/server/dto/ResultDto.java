@@ -11,10 +11,10 @@ public class ResultDto {
 	public void setStatusCode(Long statusCode) {
 		this.statusCode = statusCode;
 	}
-	public String getMessgae() {
+	public String getMessage() {
 		return message;
 	}
-	public void setMessgae(String messgae) {
+	public void setMessage(String messgae) {
 		this.message = messgae;
 	}
 	

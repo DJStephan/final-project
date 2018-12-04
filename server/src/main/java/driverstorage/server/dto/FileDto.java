@@ -1,17 +1,14 @@
 package driverstorage.server.dto;
 
 public class FileDto {
+<<<<<<< HEAD
 
 	private Long id;
+=======
+>>>>>>> d3c1215697800f1970c4f737e0fb3eec9bd5917f
 	private String fileName;
 	private byte[] data;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public String getFileName() {
 		return fileName;
 	}
