@@ -1,5 +1,9 @@
 import Browser from './Browser'
+import Folder from './Folder'
+import Page from './Page'
 
 export {
-  Browser
+  Browser,
+  Folder,
+  Page
 }
