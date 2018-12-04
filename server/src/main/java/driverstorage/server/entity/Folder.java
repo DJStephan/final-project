@@ -2,6 +2,7 @@ package driverstorage.server.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,10 @@ public class Folder {
 	@OneToMany
 	private List<File> files;
 	
-	@OneToMany
+	@OneToMany(
+	        cascade = CascadeType.ALL,
+	        orphanRemoval = false
+	    )
 	private List<Folder> folders;
 
 	public Long getId() {

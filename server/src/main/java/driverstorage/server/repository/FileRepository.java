@@ -14,6 +14,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
 	File getFileById(Long id);
 
-	File DeleteFileById(Long id);
+	File deleteFileById(Long id);
 
 }

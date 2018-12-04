@@ -20,7 +20,7 @@ public class File {
 	private byte[] data;
 	
 	@ManyToOne
-	private Folder parentFolder;
+	private Folder parent;
 	
 	public Long getId() {
 		return id;
@@ -46,11 +46,11 @@ public class File {
 		this.data = data;
 	}
 
-	public Folder getParentFolder() {
-		return parentFolder;
+	public Folder getParent() {
+		return parent;
 	}
 
-	public void setParentFolder(Folder parentFolder) {
-		this.parentFolder = parentFolder;
+	public void setParent(Folder parent) {
+		this.parent = parent;
 	}
 }

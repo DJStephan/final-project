@@ -12,5 +12,5 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
 
 	Folder getFolderById(Long id);
 
-	Folder DeleteFolderById(Long id);
+	Folder deleteFolderById(Long id);
 }

@@ -1,5 +1,6 @@
 package driverstorage.server.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import driverstorage.server.mapper.FileMapper;
 import driverstorage.server.mapper.FolderMapper;
 import driverstorage.server.repository.FileRepository;
 import driverstorage.server.repository.FolderRepository;
-import driverstorage.server.repository.UploadRepository;
 
 @RestController
 public class UploadService {
@@ -35,16 +35,19 @@ public class UploadService {
 		List<Folder> folders = folderMapper.dtosToEntitys(uploadDto.getFolders());
 		List<File> files = fileMapper.dtosToEntitys(uploadDto.getFiles());
 		
-		System.out.println(uploadDto);
-		System.out.println(folders);
-		System.out.println(files);
-		
 		Folder saveLocation = folderRepository.getFolderById(locationId);
-		saveLocation.getFolders().addAll(folders);
-		saveLocation.getFiles().addAll(files);
+		
+		System.out.println("Uploading");
+		System.out.println(locationId);
+		System.out.println(folders.get(0).getFolderName());
+		
+		if(folders != null) {
+			saveLocation.getFolders().addAll(saveFolders(folders));
+		}
+		if(files != null) {
+			saveLocation.getFiles().addAll(this.fileRepository.saveAll(files));
+		}
 		this.folderRepository.save(saveLocation);
-		this.folderRepository.saveAll(folders);
-		this.fileRepository.saveAll(files);
 		
 		UploadResultDto result = new UploadResultDto();
 		//ResultDto resultdt = new ResultDto();
@@ -53,4 +56,33 @@ public class UploadService {
 		
 		return result;
 	}
+	
+	private List<Folder> saveFolders(List<Folder> folders) {
+		List<Folder> saves = new ArrayList<Folder>();
+		System.out.println("--loop--");
+		for(Folder f : folders) {
+			Folder save = new Folder();
+			save.setFolders(new ArrayList<Folder>());
+			save.setFiles(new ArrayList<File>());
+			System.out.println("FolderName: " + f.getFolderName());
+			save.setFolderName(f.getFolderName());
+			if(!f.getFolders().isEmpty()) {
+				System.out.println("-folder-");
+				save.getFolders().addAll(saveFolders(f.getFolders()));
+			}
+			if(!f.getFiles().isEmpty()) {
+				System.out.println("-file-");
+				for(File i : f.getFiles()) {
+					System.out.println("FilesName: " + i.getFileName());
+				}
+				this.fileRepository.saveAll(f.getFiles());
+				save.getFiles().addAll(f.getFiles());
+			}
+			saves.add(this.folderRepository.save(save));
+		}
+		return saves;
+	}
 }
+
+
+
