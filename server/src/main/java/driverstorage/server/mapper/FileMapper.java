@@ -17,4 +17,11 @@ public interface FileMapper {
 	FileDto entityToDto(File entity);
 
 	List<FileDto> entitysToDtos(List<File> entity);
+	
+	@Mappings({ @Mapping(target = "id", source = "dto.id"),
+		@Mapping(target = "fileName", source = "dto.fileName"),
+		@Mapping(target = "data", source = "dto.data") })
+	File dtoToEntity(FileDto dto);
+	
+	List<File> dtosToEntitys(List<FileDto> dto);
 }

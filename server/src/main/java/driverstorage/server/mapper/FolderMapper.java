@@ -18,4 +18,12 @@ public interface FolderMapper {
 	FolderDto entityToDto(Folder entity);
 
 	List<FolderDto> entitysToDtos(List<Folder> entity);
+
+	@Mappings({ @Mapping(target = "id", source = "dto.id"),
+			@Mapping(target = "folderName", source = "dto.folderName"),
+			@Mapping(target = "files", source = "dto.files"),
+			@Mapping(target = "folders", source = "dto.folders") })
+	Folder dtoToEntity(FolderDto dto);
+	
+	List<Folder> dtosToEntitys(List<FolderDto> dto);
 }
