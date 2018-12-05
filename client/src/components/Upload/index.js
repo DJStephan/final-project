@@ -11,6 +11,8 @@ import Icon from '@material-ui/core/Icon'
 import {fromEvent} from 'file-selector'
 import Typography from '@material-ui/core/Typography';
 
+import { uploadFile, uploadFolder, createFolder } from '../../services/api'
+
 class Upload extends Component {
   constructor() {
     super()
@@ -24,6 +26,7 @@ class Upload extends Component {
     let split = accepted[0].path.split('/')
     let folderName
     let data = new FormData();
+    console.log(accepted[0].path);
     if(split.length > 2){
       folderName = split[1]
       //create folder in DB get back folder ID
@@ -45,8 +48,11 @@ class Upload extends Component {
       }
       //send file(s) to DB
       for(let key of data.keys()){
-        console.log(key)
       }
+      console.log('folderId: ' + data.get('folderId'))
+      console.log('file0: ' + data.get('file0').name )
+
+      uploadFile(data.get('file0'));
     }
   }
   state = {
@@ -77,6 +83,12 @@ class Upload extends Component {
           onClose={this.handleClose}
         >
           <DialogTitle>Upload File</DialogTitle>
+          {/*<form method="POST" encType="multipart/form-data" action="http://localhost:8080/upload/file">
+            <table>
+              <tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
+              <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
+            </table>
+    </form>*/}
           <DialogContent>
             <DialogContentText>
               Drag files here of click to browse

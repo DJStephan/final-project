@@ -2,9 +2,12 @@ import React from 'react'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react-icons/md'
 import { createFolder } from '../../services/api'
+import { view } from '../../services/api'
+import Upload from '../Upload'
 
 function creatNewFolder() {
-  createFolder(1, 'newFolder')
+  view(1)
+  //createFolder(1, 'newFolder')
 }
 
 const Sidebar = () =>
@@ -21,6 +24,7 @@ const Sidebar = () =>
           <MdFileUpload />
         </ListItemIcon>
         <ListItemText primary="Upload" />
+        <Upload />
       </ListItem>
       <ListItem button>
         <ListItemIcon>
