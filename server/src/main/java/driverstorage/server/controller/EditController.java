@@ -27,8 +27,9 @@ public class EditController {
 	 * @return ViewDto
 	 */
 	@PostMapping("edit/create/{folderName}")
-	public ViewDto createFolder(@PathVariable("folderName") String folderName, @RequestParam Long folderId) {
-		return editService.createFolder(folderId, folderName);
+	public ViewDto createFolder(@PathVariable("folderName") String folderName, @RequestParam Long parentFolderId) {
+		System.out.println(String.format("parentFolderId: %d", parentFolderId));
+		return editService.createFolder(parentFolderId, folderName);
 	}
 	/**
 	 * delete a file in given location
