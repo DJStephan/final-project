@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import driverstorage.server.dto.ViewDto;
 import driverstorage.server.service.ViewService;
 
 @RestController
@@ -16,8 +17,8 @@ public class ViewController {
 	}
 
 	@GetMapping("view")
-	public void viewFile() {
-		viewService.viewFile();
+	public ViewDto viewFile() {
+		return viewService.viewFile();
 	}
 
 }
