@@ -18,9 +18,9 @@ public interface ViewMapper {
 			@Mapping(target = "files", source = "entity.files"),
 			@Mapping(target = "folders", source = "entity.folders") })
 
-	FolderDto entityToDto(Folder entity);
+	StructureFolderDto entityToDto(Folder entity);
 
-	List<FolderDto> entitysToDtos(List<Folder> entity);
+	List<StructureFolderDto> entitysToDtos(List<Folder> entity);
 
 	@Mappings({ @Mapping(target = "view", source = "dto.view"),
 		@Mapping(target = "files", source = "dto.files"),
