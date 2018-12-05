@@ -3,7 +3,7 @@ package driverstorage.server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import driverstorage.server.dto.FileStructureDto;
+import driverstorage.server.dto.ViewDto;
 import driverstorage.server.entity.File;
 import driverstorage.server.entity.Folder;
 import driverstorage.server.mapper.FileMapper;
@@ -31,9 +31,9 @@ public class EditService {
 	 * Create a new folder in given location
 	 * 
 	 * @param folderId, folderName
-	 * @return FileStructureDto
+	 * @return ViewDto
 	 */
-	public FileStructureDto createFolder(Long folderId, String folderName) {
+	public ViewDto createFolder(Long folderId, String folderName) {
 		Folder newFolder = new Folder();
 		newFolder.setFolderName(folderName);
 		
@@ -41,60 +41,61 @@ public class EditService {
 		
 		parentFolder.getFolders().add(this.folderRepository.save(newFolder));
 		
-		FileStructureDto root = new FileStructureDto();
+		ViewDto root = new ViewDto();
 		return root;
 	}
 	/**
 	 * delete a file in given location
 	 * 
 	 * @param fileId
-	 * @return FileStructureDto
+	 * @return ViewDto
 	 */
-	public FileStructureDto deleteFile(Long fileId) {
+	public ViewDto deleteFile(Long fileId) {
 		Folder trashbin = this.folderRepository.getFolderById((long) 2);
 		
 		
-		FileStructureDto root = new FileStructureDto();
+		ViewDto root = new ViewDto();
 		return root;
 	}
 	/**
 	 * delete a folder in given location
 	 * 
 	 * @param folderId
-	 * @return FileStructureDto
+	 * @return ViewDto
 	 */
-	public FileStructureDto deleteFolder(Long folderId) {
+	public ViewDto deleteFolder(Long folderId) {
 		
-		FileStructureDto root = new FileStructureDto();
+		ViewDto root = new ViewDto();
 		return root;
 	}
 	/**
 	 * move a file to a given location
 	 * 
 	 * @param fileId, locationFolderId
-	 * @return FileStructureDto
+	 * @return ViewDto
 	 */
-	public FileStructureDto moveFile(Long fileId, Long locationFolderId) {
+	public ViewDto moveFile(Long fileId, Long locationFolderId) {
 		Folder newLocation = this.folderRepository.getFolderById(locationFolderId);
 		File file = this.fileRepository.getFileById(fileId);
 		Folder fileParent = file.getParent();
 		
 		newLocation.getFiles().add(file);
 		this.folderRepository.save(newLocation);
-		file.getParent().getFiles().remove(file);
+		fileParent.getFiles().remove(file);
+		this.folderRepository.save(fileParent);
 		
-		FileStructureDto root = new FileStructureDto();
+		ViewDto root = new ViewDto();
 		return root;
 	}
 	/**
 	 * move a folder to a given location
 	 * 
 	 * @param folderId, locationFolderId
-	 * @return FileStructureDto
+	 * @return ViewDto
 	 */
-	public FileStructureDto moveFolder(Long folderId, Long locationFolderId) {
+	public ViewDto moveFolder(Long folderId, Long locationFolderId) {
 		
-		FileStructureDto root = new FileStructureDto();
+		ViewDto root = new ViewDto();
 		return root;
 		
 	}
@@ -102,24 +103,24 @@ public class EditService {
 	 * Rename a file
 	 * 
 	 * @param fileId, newName
-	 * @return FileStructureDto
+	 * @return ViewDto
 	 */
-	public FileStructureDto renameFile(Long fileId, String newName) {
+	public ViewDto renameFile(Long fileId, String newName) {
 
 		
-		FileStructureDto root = new FileStructureDto();
+		ViewDto root = new ViewDto();
 		return root;
 	}
 	/**
 	 * Rename a folder
 	 * 
 	 * @param folderId, newName
-	 * @return FileStructureDto
+	 * @return ViewDto
 	 */
-	public FileStructureDto renameFolder(Long folderId, String newName) {
+	public ViewDto renameFolder(Long folderId, String newName) {
 
 		
-		FileStructureDto root = new FileStructureDto();
+		ViewDto root = new ViewDto();
 		return root;
 	}
 }

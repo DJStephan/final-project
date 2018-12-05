@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import driverstorage.server.dto.ResultDto;
 import driverstorage.server.dto.UploadDto;
@@ -29,6 +30,10 @@ public class UploadService {
 		this.folderMapper = folderMapper;
 		this.fileRepository = fileRepository;
 		this.folderRepository = folderRepository;
+	}
+	public UploadResultDto upload(MultipartFile file) {
+		
+		return new UploadResultDto();
 	}
 	
 	public UploadResultDto upload(UploadDto uploadDto) {

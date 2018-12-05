@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import driverstorage.server.dto.ViewDto;
 import driverstorage.server.entity.File;
 import driverstorage.server.entity.Folder;
 import driverstorage.server.repository.FileRepository;
@@ -21,8 +22,8 @@ public class ViewService {
 		this.fileRepository = fileRepository;
 	}
 
-	public viewFile() {
-		
+	public ViewDto viewFile() {
+		return new ViewDto();
 		
 		//this commented out section is used for testing
 /*
