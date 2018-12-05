@@ -1,4 +1,5 @@
 const GET_FILETREE_FROM_DATABASE = 'GET_FILETREE_FROM_DATABASE'
+const UPDATE_SELECTED_ID = 'UPDATE_SELECTED_ID'
 const UPLOAD_FILE = 'UPLOAD_FILE'
 const DOWNLOAD_FILE = 'DOWNLOAD_FILE'
 const MOVE_FILE = 'MOVE_FILE'
@@ -49,7 +50,8 @@ const initialState = {
         }
       ]
     }
-  ]
+  ],
+  selectedId: null
 }
 
 const filetreeReducer = (state = initialState, action) => {
@@ -60,19 +62,26 @@ const filetreeReducer = (state = initialState, action) => {
         files: action.files,
         folders: action.folders
       }
+    case UPDATE_SELECTED_ID:
+      return {
+        ...state,
+        selectedId: action.id === state.selectedId ? null : action.id
+      }
     default:
       return state
   }
 }
 
-const getFiletreeFromDatabase = () => {
-  console.log('test')
-  return ({
-    type: GET_FILETREE_FROM_DATABASE,
-    files: initialState.files,
-    folders: initialState.folders
-  })
-}
+const getFiletreeFromDatabase = () => ({
+  type: GET_FILETREE_FROM_DATABASE,
+  files: initialState.files,
+  folders: initialState.folders
+})
+
+const updateSelectedId = (id) => ({
+  type: UPDATE_SELECTED_ID,
+  id: id
+})
 
 const uploadFile = () => ({
   type: UPLOAD_FILE
@@ -120,6 +129,7 @@ export {
   getFiletreeFromDatabase,
   moveFile,
   moveFolder,
+  updateSelectedId,
   uploadFile,
   uploadFolder
 }
