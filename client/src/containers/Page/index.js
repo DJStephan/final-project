@@ -3,7 +3,7 @@ import { CssBaseline, MuiThemeProvider } from '@material-ui/core'
 import { createMuiTheme } from '@material-ui/core/styles'
 
 import { Browser } from '..'
-// import { Sidebar } from '../../components'
+import { Sidebar } from '../../components'
 
 const theme = createMuiTheme({
   typography: {
@@ -21,7 +21,11 @@ class Page extends Component {
             <Sidebar />
             <Browser />
           </div> */}
-          <Browser />
+          {/* <Browser /> */}
+          <Sidebar />
+          <div style={{marginLeft: '210px'}}>
+            <Browser />
+          </div>
         </MuiThemeProvider>
       </Fragment>
     )

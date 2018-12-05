@@ -67,11 +67,13 @@ const filetreeReducer = (state = initialState, action) => {
     case SELECT_FILE:
       return {
         ...state,
-        selectedFile: action.payload === state.selectedFile ? initialState.selectedFile : action.payload
+        selectedFile: action.payload === state.selectedFile ? initialState.selectedFile : action.payload,
+        //selectedFolder: initialState.selectedFolder // maybe delete this thing
       }
     case SELECT_FOLDER:
       return {
         ...state,
+        selectedFile: initialState.selectedFile,
         selectedFolder: action.payload === state.selectedFolder ? initialState.selectedFolder : action.payload
       }
     default:
