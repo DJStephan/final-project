@@ -8,6 +8,8 @@ const UPLOAD_FOLDER = 'UPLOAD_FOLDER'
 const DOWNLOAD_FOLDER = 'DOWNLOAD_FOLDER'
 const MOVE_FOLDER = 'MOVE_FOLDER'
 const DELETE_FOLDER = 'DELETE_FOLDER'
+const SELECT_FOLDER = 'SELECT_FOLDER'
+const SELECT_FILE = 'SELECT_FILE'
 
 const initialState = {
   files: [
@@ -49,7 +51,8 @@ const initialState = {
         }
       ]
     }
-  ]
+  ],
+  selectedFolder: 1 //root
 }
 
 const filetreeReducer = (state = initialState, action) => {
@@ -59,6 +62,16 @@ const filetreeReducer = (state = initialState, action) => {
         ...state,
         files: action.files,
         folders: action.folders
+      }
+    case SELECT_FOLDER:
+      return {
+        ...state,
+        selectedFolder: action.payload
+      }
+    case SELECT_FILE:
+      return {
+        ...state,
+        selectedFile: action.payload
       }
     default:
       return state
@@ -110,6 +123,16 @@ const deleteFolder = () => ({
   type: DELETE_FOLDER
 })
 
+const selectFolder = (folderId) => ({
+  type: SELECT_FOLDER,
+  payload: folderId
+})
+
+const selectFile = (fileId) => ({
+  type: SELECT_FILE,
+  payload: fileId
+})
+
 export {
   createFolder,
   deleteFile,
@@ -121,5 +144,7 @@ export {
   moveFile,
   moveFolder,
   uploadFile,
-  uploadFolder
+  uploadFolder,
+  selectFolder,
+  selectFile
 }
