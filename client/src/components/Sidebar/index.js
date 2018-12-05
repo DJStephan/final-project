@@ -1,6 +1,11 @@
 import React from 'react'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react-icons/md'
+import { createFolder } from '../../services/api'
+
+function creatNewFolder() {
+  createFolder(1, 'newFolder')
+}
 
 const Sidebar = () =>
   <Drawer variant="permanent">
@@ -28,6 +33,12 @@ const Sidebar = () =>
           <MdDelete />
         </ListItemIcon>
         <ListItemText primary="Delete" />
+      </ListItem>
+      <ListItem button onClick={creatNewFolder}>
+        <ListItemIcon>
+          <MdFileDownload />
+        </ListItemIcon>
+        <ListItemText primary="Test" />
       </ListItem>
     </List>
   </Drawer>
