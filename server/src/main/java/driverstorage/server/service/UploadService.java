@@ -1,5 +1,6 @@
 package driverstorage.server.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +32,31 @@ public class UploadService {
 		this.fileRepository = fileRepository;
 		this.folderRepository = folderRepository;
 	}
-	public UploadResultDto upload(MultipartFile file) {
-		
+	public UploadResultDto upload(MultipartFile[] files) {
+		System.out.println("Uploading");
+		for(MultipartFile f: files) {
+			System.out.println(f.getOriginalFilename());
+			try {
+				if(!f.isEmpty()) {
+					File newFile = new File();
+					newFile.setData(f.getBytes());
+					newFile.setFileName(f.getOriginalFilename());
+					
+					Folder parentFolder = this.folderRepository.getFolderById((long) 1);
+					newFile.setParent(parentFolder);
+					/*
+					if(parentFolder.getFiles().isEmpty()) {
+						parentFolder.setFiles(new ArrayList<File>());
+					}*/
+					parentFolder.getFiles().add(this.fileRepository.save(newFile));
+					this.folderRepository.save(parentFolder);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("ERROR");
+				e.printStackTrace();
+			}
+		}
 		return new UploadResultDto();
 	}
 	

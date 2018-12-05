@@ -33,8 +33,8 @@ public class UploadController {
 		return this.uploadService.upload(uploadDto);
 	}
 	
-	@PostMapping("upload/files")
-	public UploadResultDto uploadMult(@RequestParam("file") MultipartFile[] file) {
-		return this.uploadService.upload(file[0]);
+	@PostMapping(path = "upload/files", consumes = "multipart/form-data")
+	public UploadResultDto uploadMult(@RequestParam("files") MultipartFile[] files) {
+		return this.uploadService.upload(files);
 	}
 }
