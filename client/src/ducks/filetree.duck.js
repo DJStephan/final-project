@@ -1,5 +1,4 @@
 const GET_FILETREE_FROM_DATABASE = 'GET_FILETREE_FROM_DATABASE'
-const UPDATE_SELECTED_ID = 'UPDATE_SELECTED_ID'
 const UPLOAD_FILE = 'UPLOAD_FILE'
 const DOWNLOAD_FILE = 'DOWNLOAD_FILE'
 const MOVE_FILE = 'MOVE_FILE'
@@ -9,6 +8,8 @@ const UPLOAD_FOLDER = 'UPLOAD_FOLDER'
 const DOWNLOAD_FOLDER = 'DOWNLOAD_FOLDER'
 const MOVE_FOLDER = 'MOVE_FOLDER'
 const DELETE_FOLDER = 'DELETE_FOLDER'
+const SELECT_FILE = 'SELECT_FILE'
+const SELECT_FOLDER = 'SELECT_FOLDER'
 
 const initialState = {
   files: [
@@ -51,7 +52,8 @@ const initialState = {
       ]
     }
   ],
-  selectedId: null
+  selectedFile: null,
+  selectedFolder: null //root
 }
 
 const filetreeReducer = (state = initialState, action) => {
@@ -62,10 +64,15 @@ const filetreeReducer = (state = initialState, action) => {
         files: action.files,
         folders: action.folders
       }
-    case UPDATE_SELECTED_ID:
+    case SELECT_FILE:
       return {
         ...state,
-        selectedId: action.id === state.selectedId ? null : action.id
+        selectedFile: action.payload
+      }
+    case SELECT_FOLDER:
+      return {
+        ...state,
+        selectedFolder: action.payload
       }
     default:
       return state
@@ -76,11 +83,6 @@ const getFiletreeFromDatabase = () => ({
   type: GET_FILETREE_FROM_DATABASE,
   files: initialState.files,
   folders: initialState.folders
-})
-
-const updateSelectedId = (id) => ({
-  type: UPDATE_SELECTED_ID,
-  id: id
 })
 
 const uploadFile = () => ({
@@ -119,6 +121,16 @@ const deleteFolder = () => ({
   type: DELETE_FOLDER
 })
 
+const selectFolder = (folderId) => ({
+  type: SELECT_FOLDER,
+  payload: folderId
+})
+
+const selectFile = (fileId) => ({
+  type: SELECT_FILE,
+  payload: fileId
+})
+
 export {
   createFolder,
   deleteFile,
@@ -129,7 +141,8 @@ export {
   getFiletreeFromDatabase,
   moveFile,
   moveFolder,
-  updateSelectedId,
   uploadFile,
-  uploadFolder
+  uploadFolder,
+  selectFolder,
+  selectFile
 }
