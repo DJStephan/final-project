@@ -1,6 +1,6 @@
 package driverstorage.server.dto;
 
-public class FileStructureDto {
+public class ViewDto {
 	private ResultDto result;
 	private StructureFolderDto root;
 	
