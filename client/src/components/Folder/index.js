@@ -15,16 +15,17 @@ import {
   MdExpandMore
 } from 'react-icons/md'
 
-import { selectFolder } from '../../ducks/filetree.duck'
+import { selectFolder, activeFolder } from '../../ducks/filetree.duck'
 
-const Folder = ({ children, id, name, selectFolder, selectedFolder }) => {
-  const open = id === selectedFolder
+const Folder = ({ children, id, name, selectFolder, selectedFolder, activeFolder }) => {
+  const selected = id === selectedFolder // consider deleting
+  const open = id === activeFolder
 
   return (
     <Fragment>
       <ListItem
         button
-        selected={open}
+        selected={selected}
         onClick={() => selectFolder(id)}
       >
         <ListItemIcon>
@@ -48,11 +49,13 @@ Folder.propTypes = {
   name: PropTypes.string.isRequired,
   // optional vars
   id: PropTypes.number,
-  selectedFolder: PropTypes.number
+  selectedFolder: PropTypes.number,
+  activeFolder: PropTypes.number
 }
 
 const mapStateToProps = state => ({
-  selectedFolder: state.selectedFolder
+  selectedFolder: state.selectedFolder,
+  activeFolder: state.activeFolder
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -1,3 +1,5 @@
+import { view } from '../services/api'
+
 const GET_FILETREE_FROM_DATABASE = 'GET_FILETREE_FROM_DATABASE'
 const SELECT_FILE = 'SELECT_FILE'
 const UPLOAD_FILE = 'UPLOAD_FILE'
@@ -53,9 +55,10 @@ const initialState = {
     }
   ],
   selectedFile: null,
-  selectedFolder: 1 // root
+  selectedFolder: 1, // root
+  activeFolder: 1 // root
 }
-
+//view(1)
 const filetreeReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_FILETREE_FROM_DATABASE:
@@ -68,13 +71,14 @@ const filetreeReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedFile: action.payload === state.selectedFile ? initialState.selectedFile : action.payload,
-        //selectedFolder: initialState.selectedFolder // maybe delete this thing
+        selectedFolder: initialState.selectedFolder
       }
     case SELECT_FOLDER:
       return {
         ...state,
         selectedFile: initialState.selectedFile,
-        selectedFolder: action.payload === state.selectedFolder ? initialState.selectedFolder : action.payload
+        selectedFolder: action.payload === state.selectedFolder ? initialState.selectedFolder : action.payload,
+        activeFolder: action.payload === state.selectedFolder ? initialState.activeFolder : action.payload
       }
     default:
       return state
