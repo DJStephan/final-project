@@ -4,8 +4,7 @@ import PropTypes from 'prop-types'
 import { List, Paper } from '@material-ui/core'
 
 import { downloadFile, getFiletreeFromDatabase } from '../../ducks/filetree.duck'
-import { Folder } from '..'
-import { File } from '../../components'
+import { File, Folder } from '../../components'
 
 class Browser extends Component {
   render () {
@@ -14,15 +13,29 @@ class Browser extends Component {
     return (
       <Paper>
         <List>
-          {files.map(({ id, name }) =>
-            <File key={id} name={name} />
-          )}
           {folders.map(({ id, name, files }) =>
-            <Folder key={id} name={name}>{
-              files.map(({ id, name }, index) =>
-                <File key={id} name={name} last={index === files.length - 1} />
-              )}
+            <Folder
+              key={id}
+              id={id}
+              name={name}
+            >
+              {
+                files.map(({ id, name }, index) =>
+                  <File
+                    key={id}
+                    id={id}
+                    name={name}
+                    last={index === files.length - 1}
+                  />
+                )}
             </Folder>
+          )}
+          {files.map(({ id, name }) =>
+            <File
+              key={id}
+              id={id}
+              name={name}
+            />
           )}
         </List>
       </Paper>
@@ -43,8 +56,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  downloadFile: dispatch(downloadFile()),
-  getFiletreeFromDatabase: dispatch(getFiletreeFromDatabase())
+  downloadFile: () => dispatch(downloadFile()),
+  getFiletreeFromDatabase: () => dispatch(getFiletreeFromDatabase())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Browser)

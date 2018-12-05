@@ -8,8 +8,8 @@ const UPLOAD_FOLDER = 'UPLOAD_FOLDER'
 const DOWNLOAD_FOLDER = 'DOWNLOAD_FOLDER'
 const MOVE_FOLDER = 'MOVE_FOLDER'
 const DELETE_FOLDER = 'DELETE_FOLDER'
-const SELECT_FOLDER = 'SELECT_FOLDER'
 const SELECT_FILE = 'SELECT_FILE'
+const SELECT_FOLDER = 'SELECT_FOLDER'
 
 const initialState = {
   files: [
@@ -52,7 +52,8 @@ const initialState = {
       ]
     }
   ],
-  selectedFolder: 1 //root
+  selectedFile: null,
+  selectedFolder: null //root
 }
 
 const filetreeReducer = (state = initialState, action) => {
@@ -63,29 +64,26 @@ const filetreeReducer = (state = initialState, action) => {
         files: action.files,
         folders: action.folders
       }
-    case SELECT_FOLDER:
-      return {
-        ...state,
-        selectedFolder: action.payload
-      }
     case SELECT_FILE:
       return {
         ...state,
         selectedFile: action.payload
+      }
+    case SELECT_FOLDER:
+      return {
+        ...state,
+        selectedFolder: action.payload
       }
     default:
       return state
   }
 }
 
-const getFiletreeFromDatabase = () => {
-  console.log('test')
-  return ({
-    type: GET_FILETREE_FROM_DATABASE,
-    files: initialState.files,
-    folders: initialState.folders
-  })
-}
+const getFiletreeFromDatabase = () => ({
+  type: GET_FILETREE_FROM_DATABASE,
+  files: initialState.files,
+  folders: initialState.folders
+})
 
 const uploadFile = () => ({
   type: UPLOAD_FILE
