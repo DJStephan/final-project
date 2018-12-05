@@ -58,8 +58,8 @@ public class EditController {
 	 * @param fileId, locationFolderId
 	 * @return ViewDto
 	 */
-	@PatchMapping("edit/move/file")
-	public ViewDto moveFile(@RequestParam("fileId") Long fileId, @RequestParam("locationFolderId") Long locationFolderId) {
+	@PatchMapping("edit/move/file/{fileId}/{locationFolderId}")
+	public ViewDto moveFile(@PathVariable("fileId") Long fileId, @PathVariable("locationFolderId") Long locationFolderId) {
 		return editService.moveFile(fileId, locationFolderId);
 	}
 	
@@ -69,8 +69,8 @@ public class EditController {
 	 * @param folderId, locationFolderId
 	 * @return ViewDto
 	 */
-	@PatchMapping("edit/move/folder")
-	public ViewDto moveFolder(@RequestParam("folderId") Long folderId, @RequestParam("locationFolderId") Long locationFolderId) {
+	@PatchMapping("edit/move/folder/{folderId}/{locationFolderId}")
+	public ViewDto moveFolder(@PathVariable("folderId") Long folderId, @PathVariable("locationFolderId") Long locationFolderId) {
 		return editService.moveFolder(folderId, locationFolderId);
 	}
 	/**
@@ -79,8 +79,8 @@ public class EditController {
 	 * @param fileId, newName
 	 * @return ViewDto
 	 */
-	@PatchMapping("edit/rename/file/{newName}")
-	public ViewDto renameFile(@RequestParam("fileId") Long fileId, @PathVariable("newName") String newName) {
+	@PatchMapping("edit/rename/file/{fileId}/{newName}")
+	public ViewDto renameFile(@PathVariable("fileId") Long fileId, @PathVariable("newName") String newName) {
 		return editService.renameFile(fileId, newName);
 	}
 
@@ -90,8 +90,8 @@ public class EditController {
 	 * @param folderId, newName
 	 * @return ViewDto
 	 */
-	@PatchMapping("edit/rename/folder/{newName}")
-	public ViewDto renameFolder(@RequestParam("folderId") Long folderId, @PathVariable("newName") String newName) {
+	@PatchMapping("edit/rename/folder/{folderId}/{newName}")
+	public ViewDto renameFolder(@PathVariable("folderId") Long folderId, @PathVariable("newName") String newName) {
 		return editService.renameFolder(folderId, newName);
 	}
 }

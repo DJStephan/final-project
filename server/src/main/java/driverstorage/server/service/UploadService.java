@@ -34,6 +34,7 @@ public class UploadService {
 	}
 	public UploadResultDto upload(MultipartFile[] files) {
 		System.out.println("Uploading");
+		System.out.println(files.length);
 		for(MultipartFile f: files) {
 			System.out.println(f.getOriginalFilename());
 			try {
