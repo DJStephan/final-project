@@ -3,6 +3,7 @@ import { CssBaseline, MuiThemeProvider } from '@material-ui/core'
 import { createMuiTheme } from '@material-ui/core/styles'
 
 import { Browser } from '..'
+import { Upload } from '../../components'
 
 const theme = createMuiTheme({
   typography: {
@@ -16,7 +17,7 @@ class Page extends Component {
       <Fragment>
         <CssBaseline />
         <MuiThemeProvider theme={theme}>
-          <Browser />
+          <Upload/>
         </MuiThemeProvider>
       </Fragment>
     )

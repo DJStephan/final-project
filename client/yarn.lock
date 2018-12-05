@@ -3873,6 +3873,13 @@ file-loader@2.0.0:
     loader-utils "^1.0.2"
     schema-utils "^1.0.0"
 
+file-selector@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.1.5.tgz#2ac3fed734b44c89646cdf8c088842ea53a6814a"
+  integrity sha512-ZyfPlFPvwQAnZ/xoIbwALTUYxoP1eE5X3E90H48NNrKkxT0bX1WMnMgRha8sTDjgsx1gHS2c5ndQYj0ojNuZnA==
+  dependencies:
+    tslib "^1.9.0"
+
 filename-regex@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/filename-regex/-/filename-regex-2.0.1.tgz#c1c4b9bee3e09725ddb106b75c1e301fe2f18b26"
