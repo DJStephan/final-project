@@ -8,14 +8,14 @@ import {
 } from '@material-ui/core'
 import { MdInsertDriveFile } from 'react-icons/md'
 
-import { updateSelectedId } from '../../ducks/filetree.duck'
+import { selectFile } from '../../ducks/filetree.duck'
 
-const File = ({ id, last, name, selectedId, updateSelectedId }) =>
+const File = ({ id, last, name, selectFile, selectedFile }) =>
   <ListItem
     button
     divider={last}
-    selected={id === selectedId}
-    onClick={() => updateSelectedId(id)}
+    selected={id === selectedFile}
+    onClick={() => selectFile(id)}
   >
     <ListItemIcon>
       <MdInsertDriveFile />
@@ -25,21 +25,21 @@ const File = ({ id, last, name, selectedId, updateSelectedId }) =>
 
 File.propTypes = {
   // functions
-  updateSelectedId: PropTypes.func.isRequired,
+  selectFile: PropTypes.func.isRequired,
   // required vars
   name: PropTypes.string.isRequired,
   // optional vars
   id: PropTypes.number,
   last: PropTypes.bool,
-  selectedId: PropTypes.number
+  selectedFile: PropTypes.number
 }
 
 const mapStateToProps = state => ({
-  selectedId: state.selectedId
+  selectedFile: state.selectedFile
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateSelectedId: id => dispatch(updateSelectedId(id))
+  selectFile: id => dispatch(selectFile(id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(File)
