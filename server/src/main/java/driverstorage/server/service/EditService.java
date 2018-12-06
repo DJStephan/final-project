@@ -19,7 +19,7 @@ import driverstorage.server.repository.FolderRepository;
 public class EditService {
 	private FileRepository fileRepository;
 	private FolderRepository folderRepository;
-
+	private final static Long TRASH_FOLDER_ID = (long) 2;
 	@Autowired
 	public EditService(FileRepository fileRepository, FolderRepository folderRepository) {
 		this.fileRepository = fileRepository;
@@ -64,19 +64,47 @@ public class EditService {
 	 * @return ResultDto
 	 */
 	public ResultDto trashFile(Long fileId) {
-		File file = this.fileRepository.getFileById(fileId);
-		if (file == null) {
-			return new ResultDto((long) 404, String.format("No file with file id %d found.", fileId));
-		}
-		moveFile(fileId, (long) 2);
-		return new ResultDto((long) 200, String.format("File %d moved to trash", fileId));
+		return moveFile(fileId, TRASH_FOLDER_ID);
 	}
+
+	private void removeFileFromParent (File file, Folder oldParent, boolean save) {
+		if (file == null || oldParent == null) {
+			return;
+		}
+		List<File> files = oldParent.getFiles();
+		files.remove(file);
+		oldParent.setFiles(files);
+		if (save) {
+			this.folderRepository.save(oldParent);
+		}
+	}
+
+	private void removeFolderFromParent (Folder folder, Folder oldParent, boolean save) {
+		if (folder == null || oldParent == null) {
+			return;
+		}
+		List<Folder> folders = oldParent.getFolders();
+		folders.remove(folder);
+		oldParent.setFolders(folders);
+		if (save) {
+			this.folderRepository.save(oldParent);
+		}
+
+	}
+
+	private void deleteFileFromDatabase (File file) {
+		Folder oldParent = file.getParent();
+		removeFileFromParent(file, oldParent, true);
+		this.fileRepository.delete(file);
+	}
+
 	/**
 	 * delete a file in given location
 	 * 
 	 * @param fileId
 	 * @return ResultDto
 	 */
+
 	public ResultDto deleteFile(Long fileId) {
 		Folder trashBin = this.folderRepository.getFolderById((long) 2);
 		File file = this.fileRepository.getFileById(fileId);
@@ -85,7 +113,7 @@ public class EditService {
 		}
 		//IF it is in trash bin
 		if(trashBin.getFiles().contains(file)) {
-			this.fileRepository.delete(file);
+			deleteFileFromDatabase(file);
 		} else {
 			return new ResultDto((long) 404,
 					String.format("No file with file id %d found in trash.", fileId));
@@ -102,17 +130,7 @@ public class EditService {
 	 * @return ResultDto
 	 */
 	public ResultDto trashFolder(Long folderId) {
-		Folder folder = this.folderRepository.getFolderById(folderId);
-		if (folder == null) {
-			return new ResultDto((long) 404, String.format("No folder with id %d found.", folderId));
-		}
-
-		if (folderId < 3) {
-			return new ResultDto((long) 400,
-					String.format("The %s folder cannot be moved to the trash", folder.getFolderName()));
-		}
-		moveFolder(folderId, (long) 2);
-		return new ResultDto((long) 200, String.format("Folder %d moved to trash", folderId));
+		return moveFolder(folderId, TRASH_FOLDER_ID);
 	}
 
 	/**
@@ -135,17 +153,22 @@ public class EditService {
 			return new ResultDto((long) 404,
 					String.format("No folder with id %d found in trash.", folderId));
 		}
+		Folder parentFolder = folder.getParentFolder();
+		removeFolderFromParent(folder, parentFolder, true);
+
 		deleteRecursively(folder);
 		return new ResultDto((long) 200, String.format("Folder %d and all contents deleted permanently", folderId));
 	}
 
 	private void deleteRecursively(Folder folder) {
 		for (File file: folder.getFiles()) {
-			this.fileRepository.delete(file);
+			deleteFileFromDatabase(file);
 		}
 		for (Folder innerFolder : folder.getFolders()) {
+			removeFolderFromParent(innerFolder, folder, false);
 			deleteRecursively(innerFolder);
 		}
+
 		this.folderRepository.delete(folder);
 	}
 
@@ -165,12 +188,7 @@ public class EditService {
 		if (newParent == null) {
 			return new ResultDto((long) 404, String.format("No folder with id %d found.", locationFolderId));
 		}
-		if (oldParent != null) {
-			List<File> files = oldParent.getFiles();
-			files.remove(file);
-			oldParent.setFiles(files);
-			this.folderRepository.save(oldParent);
-		}
+		removeFileFromParent(file, oldParent, true);
 		List<File> files = newParent.getFiles();
 		files.add(file);
 		newParent.setFiles(files);
@@ -180,7 +198,7 @@ public class EditService {
 		this.fileRepository.save(file);
 
 		return new ResultDto((long) 200, String.format(
-				"File %d moved to folder %d successfully", fileId, locationFolderId));
+				"File %d moved to %s folder successfully", fileId, newParent.getFolderName()));
 
 	}
 	/**
@@ -190,7 +208,7 @@ public class EditService {
 	 * @return ResultDto
 	 */
 	public ResultDto moveFolder(Long folderId, Long locationFolderId) {
-		if (locationFolderId < 3 || folderId == locationFolderId) {
+		if (folderId < 3 || folderId == locationFolderId) {
 			return new ResultDto((long) 404, "Could not move folder");
 		}
 
@@ -205,12 +223,7 @@ public class EditService {
 		}
 
 		Folder oldParent = folder.getParentFolder();
-		if (oldParent != null) {
-			List<Folder> folders = oldParent.getFolders();
-			folders.remove(folder);
-			oldParent.setFolders(folders);
-			this.folderRepository.save(oldParent);
-		}
+		removeFolderFromParent(folder, oldParent, true);
 
 		List<Folder> folders = newParent.getFolders();
 		folders.add(folder);
@@ -221,7 +234,7 @@ public class EditService {
 		this.folderRepository.save(folder);
 
 		return new ResultDto((long) 200, String.format(
-				"Folder %d moved to folder %d successfully", folderId, locationFolderId));
+				"Folder %d moved to %s folder successfully", folderId, newParent.getFolderName()));
 	}
 	/**
 	 * Rename a file
