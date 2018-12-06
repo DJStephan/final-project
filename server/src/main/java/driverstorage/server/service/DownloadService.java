@@ -53,7 +53,6 @@ public class DownloadService {
 	public DownloadResultDto downloadFolder(DownloadFolderDto downloadFolderDto) {
 	//	List<Long> folders = (downloadFolderDto.getFolderIds());
 	//	List<Long> files = (downloadFolderDto.getFileIds());
-
 		DownloadResultDto result = new DownloadResultDto();
 
 		return result;
