@@ -8,8 +8,13 @@ import { ListItem, Button } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog';
 import {fromEvent} from 'file-selector'
 //import Typography from '@material-ui/core/Typography';
+import Slide from '@material-ui/core/Slide';
 
 import { uploadFiles, createFolder } from '../../services/api'
+
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
+}
 
 class Upload extends Component {
   constructor() {
@@ -90,16 +95,22 @@ class Upload extends Component {
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
+          TransitionComponent={Transition}
+          keepMounted
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+          scroll="paper"
         >
           <DialogTitle>Upload File</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Drag files here of click to browse
-            </DialogContentText>
             <ReactDropzone 
+              className='dropzone'
               getDataTransferItems={evt => fromEvent(evt)}
               onDrop={this.onDrop}
             >
+              <DialogContentText>
+                Drag files or click to browse
+              </DialogContentText>
             </ReactDropzone>
           </DialogContent>
           <Button onClick={this.handleClose}>Close</Button>
