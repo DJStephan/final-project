@@ -42,14 +42,16 @@ class Upload extends Component {
             .catch(err => console.log(err));
         } else if(accepted.length > 1) { */
           // let data = new FormData();
-          data.append("files", accepted);
+          data.append('files', accepted);
+          console.log(accepted[0])
           //{
           //  'Content-Type': 'application/json',
           //  'Authorization': 'JWT fefege...' 
           //}
           //headers: { 'Content-Type': 'multipart/form-data' } }
           //send file(s) to DB
-          console.log(data)
+          console.log(data.get('folderId'))
+          console.log(data.get('files'))
           uploadFiles(data)
             .then(response => console.log(response))
             .catch(err => console.log(err));

@@ -11,8 +11,8 @@ const axiosDelete = (url, params) => {
   return axios.delete(localPath+url, {params: params})
     .then(response => response.data);
 }
-const axiosPost = (url, data, header={}) => {
-  return axios.post(localPath+url, data, {headers: header})
+const axiosPost = (url, data, config) => {
+  return axios.post(localPath+url, data, config)
     .then(response => response.data)
 }
 const axiosPatch = (url, params) => {
@@ -20,14 +20,11 @@ const axiosPatch = (url, params) => {
     .then(response => response.data)
 }
 
-
 export const uploadFile = (data) =>
   axiosPost(`upload/file`, data)
-export const uploadFiles = (data) => {
-  let config = { 'Content-Type': 'multipart/form-data' }
-  return axios.post(localPath+`upload/files`, data, {headers: config})
-  //axiosPost(`upload/files`, data, header)
-  }
+export const uploadFiles = (data) =>
+  //axiosPost('upload/files', data)
+  axiosPost('upload/files', data, { headers: { 'Content-Type': 'multipart/form-data' }})
 
 export const downloadFile = (fileId) =>
   axiosGet(`download/files/${fileId}`,{})
