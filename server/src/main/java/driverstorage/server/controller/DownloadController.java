@@ -18,13 +18,13 @@ public class DownloadController {
         this.downloadService = downloadService;
     }
 
-    @GetMapping("/files")
-    public DownloadResultDto downloadFile(@RequestBody DownloadFileDto downloadFileDto) {
-        return this.downloadService.downloadFile(downloadFileDto);
+    @GetMapping("/files/{fileId}")
+    public DownloadFileDto downloadFile(@PathVariable("fileId") Long fileId) {
+        return this.downloadService.downloadFile(fileId);
     }
 
-    @GetMapping("/folders")
-    public DownloadResultDto downloadFolder(@RequestBody DownloadFolderDto downloadFolderDto) {
-        return this.downloadService.downloadFolder(downloadFolderDto);
+    @GetMapping("/folders/{folderId}")
+    public DownloadFolderDto downloadFolder(@PathVariable("folderId") Long folderId) {
+        return this.downloadService.downloadFolder(folderId);
     }
 }

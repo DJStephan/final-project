@@ -22,7 +22,7 @@ public class EditController {
      * @param parentFolderId, folderName
      * @return ViewDto
      */
-    @PostMapping("edit/create/{folderName}")
+    @PostMapping("/create/{folderName}")
     public ViewDto createFolder(@PathVariable("folderName") String folderName, @RequestParam Long parentFolderId) {
         System.out.println(String.format("parentFolderId: %d", parentFolderId));
         return editService.createFolder(parentFolderId, folderName);
