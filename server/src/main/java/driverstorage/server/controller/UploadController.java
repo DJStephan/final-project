@@ -35,6 +35,7 @@ public class UploadController {
 	@PostMapping(path = "/files", consumes = "multipart/form-data")
 	public ResultDto uploadMult(MultipartHttpServletRequest multRequest, @RequestParam("files") MultipartFile[] files,
 			@RequestParam String folderId) {
+		System.out.println("");
 		return this.uploadService.upload(files, folderId);
 	}
 }
