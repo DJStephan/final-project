@@ -1,6 +1,7 @@
 package driverstorage.server.controller;
 
-import driverstorage.server.dto.ViewDto;
+import driverstorage.server.dto.ResultDto;
+import driverstorage.server.dto.idDto;
 import driverstorage.server.service.EditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,21 @@ public class EditController {
      * @return ViewDto
      */
     @PostMapping("/create/{folderName}")
-    public ViewDto createFolder(@PathVariable("folderName") String folderName, @RequestParam Long parentFolderId) {
-        System.out.println(String.format("parentFolderId: %d", parentFolderId));
+    public idDto createFolder(@PathVariable("folderName") String folderName, @RequestParam Long parentFolderId) {
         return editService.createFolder(parentFolderId, folderName);
     }
+
+    /**
+     * Moves a file to the trash
+     *
+     * @param fileId
+     * @return ViewDto
+     */
+    @PatchMapping("/trash/file/{fileId}")
+    public ResultDto trashFile(@PathVariable("fileId") Long fileId) {
+        return editService.trashFile(fileId);
+    }
+
 
     /**
      * delete a file in given location
@@ -35,9 +47,21 @@ public class EditController {
      * @return ViewDto
      */
     @DeleteMapping("/delete/file/{fileId}")
-    public ViewDto deleteFile(@PathVariable("fileId") Long fileId) {
+    public ResultDto deleteFile(@PathVariable("fileId") Long fileId) {
         return editService.deleteFile(fileId);
     }
+
+    /**
+     * Moves a folder to the trash
+     *
+     * @param folderId
+     * @return ViewDto
+     */
+    @PatchMapping("/trash/folder/{folderId}")
+    public ResultDto trashFolder(@PathVariable("folderId") Long folderId) {
+        return editService.trashFolder(folderId);
+    }
+
 
     /**
      * delete a folder in given location
@@ -46,7 +70,7 @@ public class EditController {
      * @return ViewDto
      */
     @DeleteMapping("/delete/folder/{folderId}")
-    public ViewDto deleteFolder(@PathVariable("folderId") Long folderId) {
+    public ResultDto deleteFolder(@PathVariable("folderId") Long folderId) {
         return editService.deleteFolder(folderId);
     }
 
@@ -57,7 +81,7 @@ public class EditController {
      * @return ViewDto
      */
     @PatchMapping("/move/file/{fileId}/{locationFolderId}")
-    public ViewDto moveFile(@PathVariable("fileId") Long fileId, @PathVariable("locationFolderId") Long locationFolderId) {
+    public ResultDto moveFile(@PathVariable("fileId") Long fileId, @PathVariable("locationFolderId") Long locationFolderId) {
         return editService.moveFile(fileId, locationFolderId);
     }
 
@@ -68,7 +92,7 @@ public class EditController {
      * @return ViewDto
      */
     @PatchMapping("/move/folder/{folderId}/{locationFolderId}")
-    public ViewDto moveFolder(@PathVariable("folderId") Long folderId, @PathVariable("locationFolderId") Long locationFolderId) {
+    public ResultDto moveFolder(@PathVariable("folderId") Long folderId, @PathVariable("locationFolderId") Long locationFolderId) {
         return editService.moveFolder(folderId, locationFolderId);
     }
 
@@ -79,7 +103,7 @@ public class EditController {
      * @return ViewDto
      */
     @PatchMapping("/rename/file/{fileId}/{newName}")
-    public ViewDto renameFile(@PathVariable("fileId") Long fileId, @PathVariable("newName") String newName) {
+    public ResultDto renameFile(@PathVariable("fileId") Long fileId, @PathVariable("newName") String newName) {
         return editService.renameFile(fileId, newName);
     }
 
@@ -90,7 +114,7 @@ public class EditController {
      * @return ViewDto
      */
     @PatchMapping("/rename/folder/{folderId}/{newName}")
-    public ViewDto renameFolder(@PathVariable("folderId") Long folderId, @PathVariable("newName") String newName) {
+    public ResultDto renameFolder(@PathVariable("folderId") Long folderId, @PathVariable("newName") String newName) {
         return editService.renameFolder(folderId, newName);
     }
 }

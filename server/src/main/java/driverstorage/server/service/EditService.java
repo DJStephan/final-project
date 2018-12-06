@@ -1,11 +1,13 @@
 package driverstorage.server.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import driverstorage.server.dto.ViewDto;
+import driverstorage.server.dto.ResultDto;
+import driverstorage.server.dto.idDto;
 import driverstorage.server.entity.File;
 import driverstorage.server.entity.Folder;
 import driverstorage.server.mapper.FileMapper;
@@ -28,17 +30,18 @@ public class EditService {
 	/**
 	 * Create a new folder in given location
 	 * 
-	 * @param folderId, folderName
-	 * @return ViewDto
+	 * @param parentFolderId, folderName
+	 * @return ResultDto
 	 */
-	public ViewDto createFolder(Long folderId, String folderName) {
+	public idDto createFolder(Long parentFolderId, String folderName) {
+
 		Folder newFolder = new Folder();
 		newFolder.setFolderName(folderName);
 		Folder parentFolder;
-		if(folderId == null) {
+		if(parentFolderId == null) {
 			parentFolder = this.folderRepository.getFolderById((long) 1);
 		} else {
-			parentFolder = this.folderRepository.getFolderById(folderId);
+			parentFolder = this.folderRepository.getFolderById(parentFolderId);
 		}
 		
 		if(parentFolder.getFolders().isEmpty()) {
@@ -49,101 +52,211 @@ public class EditService {
 
 		parentFolder.getFolders().add(this.folderRepository.save(newFolder));
 		this.folderRepository.save(parentFolder);
-		
-		ViewDto root = new ViewDto();
-		return root;
+		ResultDto result = new ResultDto((long) 200, String.format("Folder %s created successfully", folderName));
+
+		return new idDto(result, newFolder.getId());
+	}
+
+	/**
+	 * delete a file in given location
+	 *
+	 * @param fileId
+	 * @return ResultDto
+	 */
+	public ResultDto trashFile(Long fileId) {
+		File file = this.fileRepository.getFileById(fileId);
+		if (file == null) {
+			return new ResultDto((long) 404, String.format("No file with file id %d found.", fileId));
+		}
+		moveFile(fileId, (long) 2);
+		return new ResultDto((long) 200, String.format("File %d moved to trash", fileId));
 	}
 	/**
 	 * delete a file in given location
 	 * 
 	 * @param fileId
-	 * @return ViewDto
+	 * @return ResultDto
 	 */
-	public ViewDto deleteFile(Long fileId) {
-		Folder trashbin = this.folderRepository.getFolderById((long) 2);
+	public ResultDto deleteFile(Long fileId) {
+		Folder trashBin = this.folderRepository.getFolderById((long) 2);
 		File file = this.fileRepository.getFileById(fileId);
+		if (file == null) {
+			return new ResultDto((long) 404, String.format("No file with file id %d found.", fileId));
+		}
 		//IF it is in trash bin
-		if(trashbin.getFiles().contains(file)) {
+		if(trashBin.getFiles().contains(file)) {
 			this.fileRepository.delete(file);
 		} else {
-			//move to trashbin
-			moveFile(fileId, (long) 2);
+			return new ResultDto((long) 404,
+					String.format("No file with file id %d found in trash.", fileId));
 		}
-		
-		ViewDto root = new ViewDto();
-		return root;
+
+		;
+		return new ResultDto((long) 200, String.format("File %d deleted permanently", fileId));
 	}
+
+	/**
+	 * move a folder to the trash
+	 *
+	 * @param folderId
+	 * @return ResultDto
+	 */
+	public ResultDto trashFolder(Long folderId) {
+		Folder folder = this.folderRepository.getFolderById(folderId);
+		if (folder == null) {
+			return new ResultDto((long) 404, String.format("No folder with id %d found.", folderId));
+		}
+
+		if (folderId < 3) {
+			return new ResultDto((long) 400,
+					String.format("The %s folder cannot be moved to the trash", folder.getFolderName()));
+		}
+		moveFolder(folderId, (long) 2);
+		return new ResultDto((long) 200, String.format("Folder %d moved to trash", folderId));
+	}
+
 	/**
 	 * delete a folder in given location
 	 * 
 	 * @param folderId
-	 * @return ViewDto
+	 * @return ResultDto
 	 */
-	public ViewDto deleteFolder(Long folderId) {
-		Folder trashbin = this.folderRepository.getFolderById((long) 2);
+	public ResultDto deleteFolder(Long folderId) {
+		Folder trashBin = this.folderRepository.getFolderById((long) 2);
 		Folder folder = this.folderRepository.getFolderById(folderId);
-		//IF it is in trash bin
-		if(trashbin.getFolders().contains(folder)) {
-			this.folderRepository.delete(folder);
-		} else {
-			//move to trashbin
-			moveFolder(folderId, (long) 2);
+		if (folder == null) {
+			return new ResultDto((long) 404, String.format("No folder with id %d found.", folderId));
 		}
-		ViewDto root = new ViewDto();
-		return root;
+		if (folderId < 3) {
+			return new ResultDto((long) 400,
+					String.format("The %s folder cannot be deleted", folder.getFolderName()));
+		}
+		if(!trashBin.getFolders().contains(folder)) {
+			return new ResultDto((long) 404,
+					String.format("No folder with id %d found in trash.", folderId));
+		}
+		deleteRecursively(folder);
+		return new ResultDto((long) 200, String.format("Folder %d and all contents deleted permanently", folderId));
 	}
+
+	private void deleteRecursively(Folder folder) {
+		for (File file: folder.getFiles()) {
+			this.fileRepository.delete(file);
+		}
+		for (Folder innerFolder : folder.getFolders()) {
+			deleteRecursively(innerFolder);
+		}
+		this.folderRepository.delete(folder);
+	}
+
 	/**
 	 * move a file to a given location
 	 * 
 	 * @param fileId, locationFolderId
-	 * @return ViewDto
+	 * @return ResultDto
 	 */
-	public ViewDto moveFile(Long fileId, Long locationFolderId) {
+	public ResultDto moveFile(Long fileId, Long locationFolderId) {
 		File file = this.fileRepository.getFileById(fileId);
-		file.setParent(this.folderRepository.getFolderById(locationFolderId));
+		if (file == null) {
+			return new ResultDto((long) 404, String.format("No file with file id %d found.", fileId));
+		}
+		Folder oldParent = file.getParent();
+		Folder newParent = (this.folderRepository.getFolderById(locationFolderId));
+		if (newParent == null) {
+			return new ResultDto((long) 404, String.format("No folder with id %d found.", locationFolderId));
+		}
+		if (oldParent != null) {
+			List<File> files = oldParent.getFiles();
+			files.remove(file);
+			oldParent.setFiles(files);
+			this.folderRepository.save(oldParent);
+		}
+		List<File> files = newParent.getFiles();
+		files.add(file);
+		newParent.setFiles(files);
+		this.folderRepository.save(newParent);
+
+		file.setParent(newParent);
 		this.fileRepository.save(file);
-		
-		ViewDto root = new ViewDto();
-		return root;
+
+		return new ResultDto((long) 200, String.format(
+				"File %d moved to folder %d successfully", fileId, locationFolderId));
+
 	}
 	/**
 	 * move a folder to a given location
 	 * 
 	 * @param folderId, locationFolderId
-	 * @return ViewDto
+	 * @return ResultDto
 	 */
-	public ViewDto moveFolder(Long folderId, Long locationFolderId) {
+	public ResultDto moveFolder(Long folderId, Long locationFolderId) {
+		if (locationFolderId < 3 || folderId == locationFolderId) {
+			return new ResultDto((long) 404, "Could not move folder");
+		}
+
 		Folder folder = this.folderRepository.getFolderById(folderId);
+		if (folder == null) {
+			return new ResultDto((long) 404, String.format("No folder with id %d found.", folderId));
+		}
+
+		Folder newParent = this.folderRepository.getFolderById(locationFolderId);
+		if (newParent == null) {
+			return new ResultDto((long) 404, String.format("No parent folder with id %d found.", locationFolderId));
+		}
+
+		Folder oldParent = folder.getParentFolder();
+		if (oldParent != null) {
+			List<Folder> folders = oldParent.getFolders();
+			folders.remove(folder);
+			oldParent.setFolders(folders);
+			this.folderRepository.save(oldParent);
+		}
+
+		List<Folder> folders = newParent.getFolders();
+		folders.add(folder);
+		newParent.setFolders(folders);
+		this.folderRepository.save(newParent);
+
 		folder.setParentFolder(this.folderRepository.getFolderById(locationFolderId));
 		this.folderRepository.save(folder);
 
-		ViewDto root = new ViewDto();
-		return root;
+		return new ResultDto((long) 200, String.format(
+				"Folder %d moved to folder %d successfully", folderId, locationFolderId));
 	}
 	/**
 	 * Rename a file
 	 * 
 	 * @param fileId, newName
-	 * @return ViewDto
+	 * @return ResultDto
 	 */
-	public ViewDto renameFile(Long fileId, String newName) {
+	public ResultDto renameFile(Long fileId, String newName) {
 		File file = this.fileRepository.getFileById(fileId);
+		if (file == null) {
+			return new ResultDto((long) 404, String.format("No file with file id %d found.", fileId));
+		}
 		file.setFileName(newName);
 		this.fileRepository.save(file);
-		ViewDto root = new ViewDto();
-		return root;
+		return new ResultDto((long) 200, String.format("File %d renamed to %s", fileId, newName));
 	}
 	/**
 	 * Rename a folder
 	 * 
 	 * @param folderId, newName
-	 * @return ViewDto
+	 * @return ResultDto
 	 */
-	public ViewDto renameFolder(Long folderId, String newName) {
+	public ResultDto renameFolder(Long folderId, String newName) {
+		if (folderId < 3) {
+			return new ResultDto((long) 404, "Could not rename core folder");
+		}
 		Folder folder = this.folderRepository.getFolderById(folderId);
+		if (folder == null) {
+			return new ResultDto((long) 404, String.format("No folder with id %d found.", folderId));
+		}
+
 		folder.setFolderName(newName);
 		this.folderRepository.save(folder);
-		ViewDto root = new ViewDto();
-		return root;
+		ResultDto root = new ResultDto();
+		return new ResultDto((long) 200, String.format(
+				"Folder %d renamed to %s", folderId, newName));
 	}
 }

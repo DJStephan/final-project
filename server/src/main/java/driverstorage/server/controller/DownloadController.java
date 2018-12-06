@@ -2,7 +2,6 @@ package driverstorage.server.controller;
 
 import driverstorage.server.dto.DownloadFileDto;
 import driverstorage.server.dto.DownloadFolderDto;
-import driverstorage.server.dto.DownloadResultDto;
 import driverstorage.server.service.DownloadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
