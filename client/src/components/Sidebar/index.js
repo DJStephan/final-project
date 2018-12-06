@@ -31,7 +31,7 @@ function download() {
     .then(response => {
       console.log(response.file.data)
       console.log(base64ToArrayBuffer(response.file.data))
-      if(response.result.statusCode == 200) {
+      if(response.result.statusCode === 200) {
         //Create file and ask for download
         saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data));
       } else {

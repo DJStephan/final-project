@@ -9,7 +9,7 @@ import Dialog from '@material-ui/core/Dialog';
 import {fromEvent} from 'file-selector'
 //import Typography from '@material-ui/core/Typography';
 
-import { uploadFile, uploadFiles, createFolder } from '../../services/api'
+import { uploadFiles, createFolder } from '../../services/api'
 
 class Upload extends Component {
   constructor() {
@@ -44,11 +44,7 @@ class Upload extends Component {
           // let data = new FormData();
           data.append('files', accepted);
           console.log(accepted[0])
-          //{
-          //  'Content-Type': 'application/json',
-          //  'Authorization': 'JWT fefege...' 
-          //}
-          //headers: { 'Content-Type': 'multipart/form-data' } }
+          
           //send file(s) to DB
           console.log(data.get('folderId'))
           console.log(data.get('files'))
