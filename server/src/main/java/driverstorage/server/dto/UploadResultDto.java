@@ -3,7 +3,7 @@ package driverstorage.server.dto;
 public class UploadResultDto {
 
 	private ResultDto result;
-	private StructureFolderDto root;
+//	private StructureFolderDto root;
 	
 	public UploadResultDto(ResultDto result) {
 		this.result = result;
@@ -15,10 +15,10 @@ public class UploadResultDto {
 	public void setResult(ResultDto result) {
 		this.result = result;
 	}
-	public StructureFolderDto getRoot() {
-		return root;
-	}
-	public void setRoot(StructureFolderDto root) {
-		this.root = root;
-	}
+//	public StructureFolderDto getRoot() {
+//		return root;
+//	}
+//	public void setRoot(StructureFolderDto root) {
+//		this.root = root;
+//	}
 }
