@@ -32,23 +32,18 @@ public class UploadService {
 		this.fileRepository = fileRepository;
 		this.folderRepository = folderRepository;
 	}
-	public UploadResultDto upload(MultipartFile[] files) {
-		System.out.println("Uploading");
-		System.out.println(files.length);
+	public ResultDto upload(MultipartFile[] files, String folderId) {
+//		System.out.println("Uploading");
+//		System.out.println(files.length);
+		Folder parentFolder = this.folderRepository.getFolderById(Long.parseLong(folderId));;
 		for(MultipartFile f: files) {
-			System.out.println(f.getOriginalFilename());
+
 			try {
 				if(!f.isEmpty()) {
 					File newFile = new File();
 					newFile.setData(f.getBytes());
 					newFile.setFileName(f.getOriginalFilename());
-					
-					Folder parentFolder = this.folderRepository.getFolderById((long) 1);
 					newFile.setParent(parentFolder);
-					/*
-					if(parentFolder.getFiles().isEmpty()) {
-						parentFolder.setFiles(new ArrayList<File>());
-					}*/
 					parentFolder.getFiles().add(this.fileRepository.save(newFile));
 					this.folderRepository.save(parentFolder);
 				}
@@ -56,37 +51,40 @@ public class UploadService {
 				// TODO Auto-generated catch block
 				System.out.println("ERROR");
 				e.printStackTrace();
+				Long status = (long) 500;
+				return new ResultDto(status, "Problem with file upload");
 			}
 		}
-		return new UploadResultDto();
+		Long status = (long) 200;
+		return new  ResultDto(status, "Files uploaded successfully");
 	}
 	
-	public UploadResultDto upload(UploadDto uploadDto) {
-		Long locationId = uploadDto.getFolderId();
-		List<Folder> folders = folderMapper.dtosToEntitys(uploadDto.getFolders());
-		List<File> files = fileMapper.dtosToEntitys(uploadDto.getFiles());
-		
-		Folder saveLocation = folderRepository.getFolderById(locationId);
-		
-		System.out.println("Uploading");
-		System.out.println(locationId);
-		System.out.println(folders.get(0).getFolderName());
-		
-		if(folders != null) {
-			saveLocation.getFolders().addAll(saveFolders(folders));
-		}
-		if(files != null) {
-			saveLocation.getFiles().addAll(this.fileRepository.saveAll(files));
-		}
-		this.folderRepository.save(saveLocation);
-		
-		UploadResultDto result = new UploadResultDto();
-		ResultDto resultdt = new ResultDto();
-		resultdt.setStatusCode((long) 500);
-		result.setResult(resultdt);
-		
-		return result;
-	}
+//	public UploadResultDto upload(UploadDto uploadDto) {
+//		Long locationId = uploadDto.getFolderId();
+//		List<Folder> folders = folderMapper.dtosToEntitys(uploadDto.getFolders());
+//		List<File> files = fileMapper.dtosToEntitys(uploadDto.getFiles());
+//		
+//		Folder saveLocation = folderRepository.getFolderById(locationId);
+//		
+//		System.out.println("Uploading");
+//		System.out.println(locationId);
+//		System.out.println(folders.get(0).getFolderName());
+//		
+//		if(folders != null) {
+//			saveLocation.getFolders().addAll(saveFolders(folders));
+//		}
+//		if(files != null) {
+//			saveLocation.getFiles().addAll(this.fileRepository.saveAll(files));
+//		}
+//		this.folderRepository.save(saveLocation);
+//		
+//		UploadResultDto result = new UploadResultDto();
+//		ResultDto resultdt = new ResultDto();
+//		resultdt.setStatusCode((long) 500);
+//		result.setResult(resultdt);
+//		
+//		return result;
+//	}
 	
 	private List<Folder> saveFolders(List<Folder> folders) {
 		List<Folder> saves = new ArrayList<Folder>();

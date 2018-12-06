@@ -5,6 +5,10 @@ public class UploadResultDto {
 	private ResultDto result;
 	private StructureFolderDto root;
 	
+	public UploadResultDto(ResultDto result) {
+		this.result = result;
+	}
+	
 	public ResultDto getResult() {
 		return result;
 	}

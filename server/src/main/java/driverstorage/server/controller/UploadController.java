@@ -1,5 +1,6 @@
 package driverstorage.server.controller;
 
+import driverstorage.server.dto.ResultDto;
 import driverstorage.server.dto.UploadDto;
 import driverstorage.server.dto.UploadResultDto;
 import driverstorage.server.service.UploadService;
@@ -29,25 +30,17 @@ public class UploadController {
      * @return upload results
      * @throws LocationNotFound if location does not exist or is deleted
      */
-    @PostMapping("/")
-    public UploadResultDto upload(@RequestBody UploadDto uploadDto) {
-        return this.uploadService.upload(uploadDto);
-    }
 
     @PostMapping(path = "/files", consumes = "multipart/form-data")
-    public UploadResultDto uploadMult(MultipartHttpServletRequest multRequest, @RequestParam("files") MultipartFile[] files) {
+    public ResultDto uploadMult(MultipartHttpServletRequest multRequest, @RequestParam("files") MultipartFile[] files,
+    		@RequestParam String folderId) {
         System.out.println(files.length);
+        System.out.println(files);
+        System.out.println(folderId);
         for (Map.Entry<String, MultipartFile> entry : multRequest.getFileMap().entrySet()) {
             System.out.println(entry.getKey());
             System.out.println(entry.getValue());
         }
-        return this.uploadService.upload(files);
-    }
-
-    @PostMapping(path = "/file", consumes = "multipart/form-data")
-    public UploadResultDto uploadMultM(@RequestParam("file") MultipartFile file) {
-        MultipartFile[] files = new MultipartFile[1];
-        files[0] = file;
-        return this.uploadService.upload(files);
+        return this.uploadService.upload(files, folderId);
     }
 }
