@@ -19,12 +19,15 @@ class NewFolder extends Component {
   constructor() {
     super()
     this.state = {
-      open: false
+      open: false,
+      name: 'New Folder'
     }
+    this.textInput = React.createRef();
   }
 
   state = {
     open: false,
+    name: 'New Folder'
   }
 
   handleOpen = () => {
@@ -41,11 +44,17 @@ class NewFolder extends Component {
     })
   }
 
-  createNewFolder(folderName, id) {
-    this.handleClose()
-    createFolder(id, folderName)
+  createNewFolder = () => {
+    let id = 1
+    createFolder(id, this.state.name)
       .then(response => console.log(response))
       .catch(err => console.log(err));
+    this.handleClose()
+    this.setState({name: 'New Folder'})
+  }
+  
+  setName = (e) => {
+    this.setState({name: e.target.value})
   }
 
   render() {
@@ -63,13 +72,14 @@ class NewFolder extends Component {
         >
           <DialogTitle>Create New Folder</DialogTitle>
           <DialogContent>
-            <TextField
+            <TextField ref={this.textInput}
               autoFocus
               margin="dense"
               id="name"
-              label="File Name"
+              label="New Folder"
               type="name"
               fullWidth
+              onChange={this.setName}
             />
           </DialogContent>
           <DialogActions>
