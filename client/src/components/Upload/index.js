@@ -29,7 +29,6 @@ class Upload extends Component {
   onDrop(accepted, rejected) {
     let split = accepted[0].path.split('/')
     let folderName
-    let data = new FormData();
     //temp hard code root get real folder to send to from state
     let parentFolderId = 1; //Hard coded (folder selected to be uploaded into)
     //Creating files in the database
@@ -51,32 +50,33 @@ class Upload extends Component {
       }
     }
 
-    const createFolders = (accepted, rejected, data, parentFolderId, folderName, index) => {
+    const createFolders = (accepted, rejected, parentFolderId, folderName, index) => {
       createFolder(parentFolderId, folderName)
         .then(response => {
-          console.log(response)
           let folderId = response.id;
+          let data = new FormData()
           data.append('folderId', folderId)
           if (rejected.length) {
             //do something with rejected files
             console.log("rejected")
             console.log(rejected)
           } else {
-            for(let f of accepted) {
-              console.log(f.path)
-              console.log(f.path.split('/').length)
-            }
             let files = accepted.filter(f => f.path.split('/').length <= 3 + index)
-            console.log(files)
             let folders = accepted.filter(f => f.path.split('/').length > 3 + index)
-            console.log(folders)
             for(let f of files) {
-              console.log(f.path)
               data.append('files', f)
             }
-            let subFolder = [];
+            let subFolder = {};
             for(let f of folders) {
-              console.log(f.path)
+              let sub = f.path.split('/')[index+2]
+              if(subFolder.hasOwnProperty(sub)) {
+                subFolder[sub].push(f)
+              } else {
+                subFolder[sub] = [f];
+              }
+            }
+            for(let k in subFolder) {
+              createFolders(subFolder[k], [], folderId, k, index + 1)
             }
     
             //send file(s) to DB
@@ -92,9 +92,10 @@ class Upload extends Component {
       folderName = split[1]
       //create folder in DB get back folder ID
       console.log(folderName)
-      createFolders(accepted, rejected, data, parentFolderId, folderName, 0)
+      createFolders(accepted, rejected, parentFolderId, folderName, 0)
     }else{
       //create folders
+      let data = new FormData();
       data.append('folderId', parentFolderId)
       createFiles(accepted,rejected,data)
     }
