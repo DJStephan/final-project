@@ -4,12 +4,8 @@ import PropTypes from 'prop-types'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react-icons/md'
 
-// import { view } from '../../services/api'
-// import { getFiletreeFromDatabase } from '../../ducks/filetree.duck' // consider deleting
 import Upload from '../Upload'
 import { downloadFile, createFolder } from '../../services/api'
-
-// const id = 1 // temporary?
 
 function download() {
   //Change the base64 into array buffer
@@ -48,21 +44,17 @@ function download() {
     .catch(err => console.log(err))
 }
 
-function createNewFolder(id) {
-  // console.log(this.props)
-  createFolder(id, "newFolder")
-    .then(response => console.log(response))
-    .catch(err => console.log(err))
-}
 
 class Sidebar extends Component {
-  // componentDidMount() {
-  //   view(1)
-  //     .then(t => {console.log(t); return t;})// delete later
-  //     .then(response => this.props.getFiletreeFromDatabase(response.root)) // maybe delete
-  // }
   componentDidMount() {
     console.log(this.props)
+  }
+
+  createNewFolder = () => {
+    console.log(this.props.selectedFolder)
+    createFolder(this.props.selectedFolder, "newFolder")
+      .then(response => console.log(response))
+      .catch(err => console.log(err))
   }
   
   render () {
@@ -81,7 +73,7 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText primary="Upload" />
           </Upload>
-          <ListItem button onClick={createNewFolder(this.props.selectedFolder)}>
+          <ListItem button onClick={this.createNewFolder}>
             <ListItemIcon>
               <MdCreateNewFolder />
             </ListItemIcon>
@@ -111,9 +103,9 @@ const mapStateToProps = state => ({
   selectedFolder: state.selectedFolder
 })
 
-const mapDispatchToProps = dispatch => ({
-  // downloadFile: () => dispatch(downloadFile()),
-  // getFiletreeFromDatabase: config => dispatch(getFiletreeFromDatabase(config)),
-})
+// const mapDispatchToProps = dispatch => ({
+//   // downloadFile: () => dispatch(downloadFile()),
+//   // getFiletreeFromDatabase: config => dispatch(getFiletreeFromDatabase(config)),
+// })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
+export default connect(mapStateToProps)(Sidebar)

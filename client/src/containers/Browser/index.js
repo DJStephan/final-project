@@ -9,32 +9,50 @@ import { File, Folder } from '../../components'
 
 class Browser extends Component {
   componentDidMount() {
-    view(1)
-      .then(t => {console.log(t); return t;})// delete later
-      .then(response => this.props.getFiletreeFromDatabase(response.root))
+    view(1).then(response => this.props.getFiletreeFromDatabase(response.root))
   }
 
   render () {
     const { files, folders } = this.props
 
+    const showFolders = folders =>
+      folders.map(({id, folderName, files, folders}) =>
+        <Folder
+          key={id}
+          id={id}
+          name={folderName}
+        >
+          {files.map(({ id, fileName }, index) =>
+            <File
+              key={id}
+              id={id}
+              name={fileName}
+              last={index === files.length - 1}
+            />
+          )}
+          {showFolders(folders)} 
+        </Folder>
+    )
+
+
     return (
       <Paper>
         <List>
-          {folders.map(({ id, folderName, files }) =>
+          {folders.map(({ id, folderName, files, folders }) =>
             <Folder
               key={id}
               id={id}
               name={folderName}
             >
-              {
-                files.map(({ id, fileName }, index) =>
-                  <File
-                    key={id}
-                    id={id}
-                    name={fileName}
-                    last={index === files.length - 1}
-                  />
-                )}
+              {files.map(({ id, fileName }, index) =>
+                <File
+                  key={id}
+                  id={id}
+                  name={fileName}
+                  last={index === files.length - 1}
+                />
+              )}
+              {showFolders(folders)} 
             </Folder>
           )}
           {files.map(({ id, fileName }) =>
@@ -51,7 +69,6 @@ class Browser extends Component {
 }
 
 Browser.propTypes = {
-  // downloadFile: PropTypes.func.isRequired,// what is this even doing here?
   getFiletreeFromDatabase: PropTypes.func.isRequired,
   files: PropTypes.array.isRequired,
   folders: PropTypes.array.isRequired
@@ -63,7 +80,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  // downloadFile: () => dispatch(downloadFile()),
   getFiletreeFromDatabase: config => dispatch(getFiletreeFromDatabase(config)),
 })
 

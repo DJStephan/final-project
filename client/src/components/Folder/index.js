@@ -20,6 +20,10 @@ import { selectFolder, activeFolder } from '../../ducks/filetree.duck'
 const Folder = ({ children, id, name, selectFolder, selectedFolder, activeFolder }) => {
   const selected = id === selectedFolder // consider deleting
   const open = id === activeFolder
+  // const open = false
+  // const openFolder = () => {
+  //   open != open;
+  // }
 
   return (
     <Fragment>

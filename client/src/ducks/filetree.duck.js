@@ -39,7 +39,7 @@ const filetreeReducer = (state = initialState, action) => {
         selectedFile: initialState.selectedFile,
         selectedFolder: action.payload === state.selectedFolder ? initialState.selectedFolder : action.payload,
         activeFolder: action.payload === state.selectedFolder ? initialState.activeFolder : action.payload
-      }
+      } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
     default:
       return state
   }
