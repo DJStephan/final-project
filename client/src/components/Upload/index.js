@@ -22,32 +22,6 @@ class Upload extends Component {
     }
   }
 
-  //Creating files in the database
-  createFiles(accepted,rejected,data) {
-    if (rejected.length) {
-      //do something with rejected files
-      console.log("rejected")
-      console.log(rejected)
-    } else {
-      if(accepted.length === 1) {
-        data.append("file", accepted[0])
-        uploadFile(data)
-          .catch(err => console.log(err));
-      } else if(accepted.length > 1) {
-        // let data = new FormData();
-        data.append("file", accepted);
-        /*for (let i = 0; i < accepted.length; i++) {
-          let file = accepted[i];
-          //data.append("file" + i, file, file.name);
-          data.append("file", file, file.name);
-        }*/
-        //send file(s) to DB
-        uploadFiles(data)
-          .catch(err => console.log(err));
-      }
-      //If there are no files don't do anything
-    }
-  }
 
   onDrop(accepted, rejected) {
     let split = accepted[0].path.split('/')
@@ -55,20 +29,42 @@ class Upload extends Component {
     let data = new FormData();
     //temp hard code root get real folder to send to from state
     let parentFolderId = 1; //Hard coded (folder selected to be uploaded into)
+    //Creating files in the database
+    const createFiles = (accepted,rejected,data) => {
+      if (rejected.length) {
+        //do something with rejected files
+        console.log("rejected")
+        console.log(rejected)
+      } else {
+        //If only one file
+        if(accepted.length === 1) {
+          data.append("file", accepted[0])
+          uploadFile(data)
+            .catch(err => console.log(err));
+        } else if(accepted.length > 1) {
+          // let data = new FormData();
+          data.append("file", accepted);
+          //send file(s) to DB
+          uploadFiles(data)
+            .catch(err => console.log(err));
+        }
+      }
+    }
+    
     if(split.length > 2){
       folderName = split[1]
       //create folder in DB get back folder ID
       createFolder(parentFolderId, folderName)
         .then(response => {
           data.append('folderId', parentFolderId)
-          this.createFiles(accepted,rejected,data)
+          createFiles(accepted,rejected,data)
         })
         .catch(err => console.log(err));
       console.log(folderName)
     }else{
       //create folders
       data.append('folderId', parentFolderId)
-      this.createFiles(accepted,rejected,data)
+      createFiles(accepted,rejected,data)
     }
   }
 
