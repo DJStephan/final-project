@@ -34,20 +34,11 @@ class Upload extends Component {
         console.log("rejected")
         console.log(rejected)
       } else {
-        /*
-        //If only one file
-        if(accepted.length === 1) {
-          data.append("file", accepted[0])
-          uploadFile(data)
-            .catch(err => console.log(err));
-        } else if(accepted.length > 1) { */
-          // let data = new FormData();
-          data.append('files', accepted);
-          console.log(accepted[0])
-          
+          for(let t of accepted) {
+            data.append('files', t)
+          }
+
           //send file(s) to DB
-          console.log(data.get('folderId'))
-          console.log(data.get('files'))
           uploadFiles(data)
             .then(response => console.log(response))
             .catch(err => console.log(err));
