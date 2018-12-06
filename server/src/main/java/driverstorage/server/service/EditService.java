@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 import driverstorage.server.dto.ResultDto;
@@ -15,7 +16,7 @@ import driverstorage.server.mapper.FolderMapper;
 import driverstorage.server.repository.FileRepository;
 import driverstorage.server.repository.FolderRepository;
 
-@RestController
+@Service
 public class EditService {
 	private FileRepository fileRepository;
 	private FolderRepository folderRepository;
@@ -161,14 +162,17 @@ public class EditService {
 	}
 
 	private void deleteRecursively(Folder folder) {
-		for (File file: folder.getFiles()) {
+		List<File> files = folder.getFiles();
+		folder.setFiles(new ArrayList<>());
+		for (File file: files) {
 			deleteFileFromDatabase(file);
 		}
-		for (Folder innerFolder : folder.getFolders()) {
+		List<Folder> folders = folder.getFolders();
+		folder.setFolders(new ArrayList<>());
+		for (Folder innerFolder : folders) {
 			removeFolderFromParent(innerFolder, folder, false);
 			deleteRecursively(innerFolder);
 		}
-
 		this.folderRepository.delete(folder);
 	}
 

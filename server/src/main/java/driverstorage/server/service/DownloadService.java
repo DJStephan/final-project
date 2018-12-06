@@ -12,12 +12,13 @@ import driverstorage.server.mapper.FolderMapper;
 import driverstorage.server.repository.FileRepository;
 import driverstorage.server.repository.FolderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.ArrayList;
 
-@RestController
+@Service
 public class DownloadService {
     private FileRepository fileRepository;
     private FolderRepository folderRepository;
