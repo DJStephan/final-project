@@ -42,8 +42,8 @@ public class DownloadService {
 	}
 
 	public DownloadResultDto downloadFile(DownloadFileDto downloadFileDto) {
-		List<Long> folders = (downloadFileDto.getFolderIds());
-		List<Long> files = (downloadFileDto.getFileIds());
+	//	List<Long> folders = (downloadFileDto.getFolderIds());
+	//	List<Long> files = (downloadFileDto.getFileIds());
 
 		DownloadResultDto result = new DownloadResultDto();
 
@@ -51,8 +51,8 @@ public class DownloadService {
 	}
 
 	public DownloadResultDto downloadFolder(DownloadFolderDto downloadFolderDto) {
-		List<Long> folders = (downloadFolderDto.getFolderIds());
-		List<Long> files = (downloadFolderDto.getFileIds());
+	//	List<Long> folders = (downloadFolderDto.getFolderIds());
+	//	List<Long> files = (downloadFolderDto.getFileIds());
 
 		DownloadResultDto result = new DownloadResultDto();
 
