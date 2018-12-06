@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import ReactDropzone from "react-dropzone";
-import { MdFileUpload } from "react-icons/md";
 //import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
+import { ListItem, Button } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog';
-import Icon from '@material-ui/core/Icon'
 import {fromEvent} from 'file-selector'
 //import Typography from '@material-ui/core/Typography';
 
@@ -54,13 +52,13 @@ class Upload extends Component {
     if(split.length > 2){
       folderName = split[1]
       //create folder in DB get back folder ID
+      console.log(folderName)
       createFolder(parentFolderId, folderName)
         .then(response => {
           data.append('folderId', parentFolderId)
           createFiles(accepted,rejected,data)
         })
         .catch(err => console.log(err));
-      console.log(folderName)
     }else{
       //create folders
       data.append('folderId', parentFolderId)
@@ -73,10 +71,12 @@ class Upload extends Component {
   }
 
   handleOpen = () => {
-    this.setState({ 
-      ...this.state,  
-      open: true 
-    });
+    if(!this.state.open) {
+      this.setState({ 
+        ...this.state,  
+        open: true 
+      });
+    }
   }
 
   handleClose = () => {
@@ -87,21 +87,14 @@ class Upload extends Component {
   }
 
   render() {
-    //const { classes } = this.props;
     return (
-      <div>
-        <Button onClick = {this.handleOpen}><Icon><MdFileUpload/></Icon></Button>
+      <ListItem button onClick = {this.handleOpen}>
+        {this.props.children}
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
         >
           <DialogTitle>Upload File</DialogTitle>
-          {/*<form method="POST" encType="multipart/form-data" action="http://localhost:8080/upload/file">
-            <table>
-              <tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
-              <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
-            </table>
-    </form>*/}
           <DialogContent>
             <DialogContentText>
               Drag files here of click to browse
@@ -112,8 +105,9 @@ class Upload extends Component {
             >
             </ReactDropzone>
           </DialogContent>
+          <Button onClick={this.handleClose}>Close</Button>
         </Dialog>
-      </div>
+      </ListItem>
     );
   }
 }

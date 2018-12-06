@@ -2,24 +2,36 @@ import React from 'react'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react-icons/md'
 import Upload from '../Upload'
+import { downloadFile, createFolder } from '../../services/api'
+
+function download() {
+  downloadFile(1)
+    .then(response => console.log(response))
+    .catch(err => console.log(err))
+}
+
+function createNewFolder() {
+  createFolder(1, "newFolder")
+    .then(response => console.log(response))
+    .catch(err => console.log(err))
+}
 
 const Sidebar = () =>
   <Drawer variant="permanent">
     <List>
-      <ListItem button>
+      <ListItem button onClick={download}>
         <ListItemIcon>
           <MdFileDownload />
         </ListItemIcon>
         <ListItemText primary="Download" />
       </ListItem>
-      <ListItem button>
+      <Upload>
         <ListItemIcon>
           <MdFileUpload />
         </ListItemIcon>
         <ListItemText primary="Upload" />
-        <Upload />
-      </ListItem>
-      <ListItem button>
+      </Upload>
+      <ListItem button onClick={createNewFolder}>
         <ListItemIcon>
           <MdCreateNewFolder />
         </ListItemIcon>

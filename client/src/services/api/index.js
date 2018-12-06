@@ -31,7 +31,7 @@ export const uploadFolder = (data) =>
 
 
 export const downloadFile = (fileId) =>
-  axiosGet('download/file',{fileId: fileId})
+  axiosGet('download/files',{fileId: fileId})
 export const downloadFolder = (folderId) =>
   axiosGet('download/folder',{folderId: folderId})
 
