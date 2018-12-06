@@ -33,34 +33,66 @@ class Upload extends Component {
     //temp hard code root get real folder to send to from state
     let parentFolderId = 1; //Hard coded (folder selected to be uploaded into)
     //Creating files in the database
+
     const createFiles = (accepted,rejected,data) => {
       if (rejected.length) {
         //do something with rejected files
         console.log("rejected")
         console.log(rejected)
       } else {
-          for(let t of accepted) {
-            data.append('files', t)
-          }
+        for(let t of accepted) {
+          data.append('files', t)
+        }
 
-          //send file(s) to DB
-          uploadFiles(data)
-            .then(response => console.log(response))
-            .catch(err => console.log(err));
-        //}
+        //send file(s) to DB
+        uploadFiles(data)
+          .then(response => console.log(response))
+          .catch(err => console.log(err));
       }
+    }
+
+    const createFolders = (accepted, rejected, data, parentFolderId, folderName, index) => {
+      createFolder(parentFolderId, folderName)
+        .then(response => {
+          console.log(response)
+          let folderId = response.id;
+          data.append('folderId', folderId)
+          if (rejected.length) {
+            //do something with rejected files
+            console.log("rejected")
+            console.log(rejected)
+          } else {
+            for(let f of accepted) {
+              console.log(f.path)
+              console.log(f.path.split('/').length)
+            }
+            let files = accepted.filter(f => f.path.split('/').length <= 3 + index)
+            console.log(files)
+            let folders = accepted.filter(f => f.path.split('/').length > 3 + index)
+            console.log(folders)
+            for(let f of files) {
+              console.log(f.path)
+              data.append('files', f)
+            }
+            let subFolder = [];
+            for(let f of folders) {
+              console.log(f.path)
+            }
+    
+            //send file(s) to DB
+            uploadFiles(data)
+              .then(response => console.log(response))
+              .catch(err => console.log(err));
+          }
+        })
+        .catch(err => console.log(err));
     }
     
     if(split.length > 2){
       folderName = split[1]
       //create folder in DB get back folder ID
       console.log(folderName)
-      createFolder(parentFolderId, folderName)
-        .then(response => {
-          data.append('folderId', parentFolderId)
-          createFiles(accepted,rejected,data)
-        })
-        .catch(err => console.log(err));
+      createFolders(accepted, rejected, data, parentFolderId, folderName, 0)
     }else{
       //create folders
       data.append('folderId', parentFolderId)
