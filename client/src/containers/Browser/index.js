@@ -4,14 +4,13 @@ import PropTypes from 'prop-types'
 import { List, Paper } from '@material-ui/core'
 
 import { view } from '../../services/api'
-import { downloadFile, getFiletreeFromDatabase } from '../../ducks/filetree.duck'
+import { getFiletreeFromDatabase } from '../../ducks/filetree.duck'
 import { File, Folder } from '../../components'
 
 class Browser extends Component {
   componentDidMount() {
-    // this.props.getFiletreeFromDatabase()
     view(1)
-      .then(t => {console.log(t); return t;})
+      .then(t => {console.log(t); return t;})// delete later
       .then(response => this.props.getFiletreeFromDatabase(response.root))
   }
 
@@ -52,9 +51,8 @@ class Browser extends Component {
 }
 
 Browser.propTypes = {
-  downloadFile: PropTypes.func.isRequired,
+  // downloadFile: PropTypes.func.isRequired,// what is this even doing here?
   getFiletreeFromDatabase: PropTypes.func.isRequired,
-  // getFiletree: PropTypes.func.isRequired,
   files: PropTypes.array.isRequired,
   folders: PropTypes.array.isRequired
 }
@@ -65,9 +63,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  downloadFile: () => dispatch(downloadFile()),
+  // downloadFile: () => dispatch(downloadFile()),
   getFiletreeFromDatabase: config => dispatch(getFiletreeFromDatabase(config)),
-  // getFiletree: () => dispatch(getFiletree()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Browser)

@@ -1,8 +1,15 @@
-import React from 'react'
+import React, {Component} from 'react'
+import connect from 'react-redux/es/connect/connect'
+import PropTypes from 'prop-types'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react-icons/md'
+
+// import { view } from '../../services/api'
+// import { getFiletreeFromDatabase } from '../../ducks/filetree.duck' // consider deleting
 import Upload from '../Upload'
 import { downloadFile, createFolder } from '../../services/api'
+
+// const id = 1 // temporary?
 
 function download() {
   //Change the base64 into array buffer
@@ -41,40 +48,72 @@ function download() {
     .catch(err => console.log(err))
 }
 
-function createNewFolder() {
-  createFolder(1, "newFolder")
+function createNewFolder(id) {
+  // console.log(this.props)
+  createFolder(id, "newFolder")
     .then(response => console.log(response))
     .catch(err => console.log(err))
 }
 
-const Sidebar = () =>
-  <Drawer variant="permanent">
-    <List>
-      <ListItem button onClick={download}>
-        <ListItemIcon>
-          <MdFileDownload />
-        </ListItemIcon>
-        <ListItemText primary="Download" />
-      </ListItem>
-      <Upload>
-        <ListItemIcon>
-          <MdFileUpload />
-        </ListItemIcon>
-        <ListItemText primary="Upload" />
-      </Upload>
-      <ListItem button onClick={createNewFolder}>
-        <ListItemIcon>
-          <MdCreateNewFolder />
-        </ListItemIcon>
-        <ListItemText primary="Create Folder" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <MdDelete />
-        </ListItemIcon>
-        <ListItemText primary="Delete" />
-      </ListItem>
-    </List>
-  </Drawer>
+class Sidebar extends Component {
+  // componentDidMount() {
+  //   view(1)
+  //     .then(t => {console.log(t); return t;})// delete later
+  //     .then(response => this.props.getFiletreeFromDatabase(response.root)) // maybe delete
+  // }
+  componentDidMount() {
+    console.log(this.props)
+  }
+  
+  render () {
+    return(
+      <Drawer variant="permanent">
+        <List>
+          <ListItem button onClick={download}>
+            <ListItemIcon>
+              <MdFileDownload />
+            </ListItemIcon>
+            <ListItemText primary="Download" />
+          </ListItem>
+          <Upload>
+            <ListItemIcon>
+              <MdFileUpload />
+            </ListItemIcon>
+            <ListItemText primary="Upload" />
+          </Upload>
+          <ListItem button onClick={createNewFolder(this.props.selectedFolder)}>
+            <ListItemIcon>
+              <MdCreateNewFolder />
+            </ListItemIcon>
+            <ListItemText primary="Create Folder" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <MdDelete />
+            </ListItemIcon>
+            <ListItemText primary="Delete" />
+          </ListItem>
+        </List>
+      </Drawer>
+    )
+  }
+}
 
-export default Sidebar
+Sidebar.propTypes = {
+  // getFiletreeFromDatabase: PropTypes.func.isRequired,
+  files: PropTypes.array.isRequired,
+  folders: PropTypes.array.isRequired
+}
+
+const mapStateToProps = state => ({
+  files: state.files,
+  folders: state.folders,
+  selectedFolder: state.selectedFolder
+})
+
+const mapDispatchToProps = dispatch => ({
+  // downloadFile: () => dispatch(downloadFile()),
+  // getFiletreeFromDatabase: config => dispatch(getFiletreeFromDatabase(config)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
