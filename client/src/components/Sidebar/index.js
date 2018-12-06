@@ -5,8 +5,39 @@ import Upload from '../Upload'
 import { downloadFile, createFolder } from '../../services/api'
 
 function download() {
+  //Change the base64 into array buffer
+  function base64ToArrayBuffer(base64) {
+    var binary_string =  window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array( len );
+    for (var i = 0; i < len; i++)        {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+  
+  //Create file(blob) and download (brower defined)
+  function saveByteArray(reportName, byte) {
+    var blob = new Blob([byte], {type: "application/pdf"});
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    var fileName = reportName;
+    link.download = fileName;
+    link.click();
+  }
+
   downloadFile(1)
-    .then(response => console.log(response))
+    .then(response => {console.log(response); return response;})
+    .then(response => {
+      console.log(response.file.data)
+      console.log(base64ToArrayBuffer(response.file.data))
+      if(response.result.statusCode == 200) {
+        //Create file and ask for download
+        saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data));
+      } else {
+        console.log(response.result.message);
+      }
+    })
     .catch(err => console.log(err))
 }
 

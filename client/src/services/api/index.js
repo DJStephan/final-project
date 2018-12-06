@@ -11,8 +11,8 @@ const axiosDelete = (url, params) => {
   return axios.delete(localPath+url, {params: params})
     .then(response => response.data);
 }
-const axiosPost = (url, data) => {
-  return axios.post(localPath+url, data)
+const axiosPost = (url, data, header={}) => {
+  return axios.post(localPath+url, data, {headers: header})
     .then(response => response.data)
 }
 const axiosPatch = (url, params) => {
@@ -23,15 +23,14 @@ const axiosPatch = (url, params) => {
 
 export const uploadFile = (data) =>
   axiosPost(`upload/file`, data)
-export const uploadFiles = (data) =>
-  axiosPost(`upload/files`, data)
-
-export const uploadFolder = (data) =>
-  axiosPost(`upload/folder`,{params: data})
-
+export const uploadFiles = (data) => {
+  let config = { 'Content-Type': 'multipart/form-data' }
+  return axios.post(localPath+`upload/files`, data, {headers: config})
+  //axiosPost(`upload/files`, data, header)
+  }
 
 export const downloadFile = (fileId) =>
-  axiosGet('download/files',{fileId: fileId})
+  axiosGet(`download/files/${fileId}`,{})
 export const downloadFolder = (folderId) =>
   axiosGet('download/folder',{folderId: folderId})
 
@@ -41,8 +40,8 @@ export const deleteFile = (fileId) =>
 export const deleteFolder = (folderId) =>
   axiosDelete('edit/delete/folder',{folderId: folderId})
 
-export const createFolder = (folderId, folderName) =>
-  axiosPost('edit/create',{params: {folderId: folderId, folderName: folderName}})
+export const createFolder = (parentFolderId, folderName) =>
+  axiosPost(`edit/create/${folderName}?parentFolderId=${parentFolderId}`,{})
 
 export const moveFile = (fileId, locationFolderId) =>
   axiosPatch('edit/move/file',{fileId: fileId, locationFolderId: locationFolderId})
