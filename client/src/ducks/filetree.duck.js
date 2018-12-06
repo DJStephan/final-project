@@ -14,45 +14,45 @@ const MOVE_FOLDER = 'MOVE_FOLDER'
 const DELETE_FOLDER = 'DELETE_FOLDER'
 
 const initialState = {
-  files: [
-    {
-      id: 1,
-      name: "Test file 1"
-    },
-    {
-      id: 4,
-      name: "Test file 4"
-    }
+  files: [ // consider deleting or commenting out
+    // {
+    //   id: 1,
+    //   name: "Test file 1"
+    // },
+    // {
+    //   id: 4,
+    //   name: "Test file 4"
+    // }
   ],
-  folders: [
-    {
-      id: 3,
-      name: "Test folder 1",
-      files: [
-        {
-          id: 2,
-          name: "Test file 2"
-        },
-        {
-          id: 3,
-          name: "Test file 3"
-        }
-      ]
-    },
-    {
-      id: 4,
-      name: "Test folder 2",
-      files: [
-        {
-          id: 5,
-          name: "Test file 5"
-        },
-        {
-          id: 6,
-          name: "Test file 6"
-        }
-      ]
-    }
+  folders: [ // consider deleting or commenting out
+    // {
+    //   id: 3,
+    //   name: "Test folder 1",
+    //   files: [
+    //     {
+    //       id: 2,
+    //       name: "Test file 2"
+    //     },
+    //     {
+    //       id: 3,
+    //       name: "Test file 3"
+    //     }
+    //   ]
+    // },
+    // {
+    //   id: 4,
+    //   name: "Test folder 2",
+    //   files: [
+    //     {
+    //       id: 5,
+    //       name: "Test file 5"
+    //     },
+    //     {
+    //       id: 6,
+    //       name: "Test file 6"
+    //     }
+    //   ]
+    // }
   ],
   selectedFile: null,
   selectedFolder: 1, // root
@@ -85,13 +85,32 @@ const filetreeReducer = (state = initialState, action) => {
   }
 }
 
-const getFiletreeFromDatabase = () => ({
+// const getFiletree = () => 
+//   (dispatch) =>
+//     view(1)
+//     .then(rootFolder => { return dispatch( getFiletreeFromDatabase(rootFolder) )} )
+//     .catch(err => console.log(err))
+
+const getFiletreeFromDatabase = (root) => ({ // rootFolder
   type: GET_FILETREE_FROM_DATABASE,
   payload: {
-    files: initialState.files,
-    folders: initialState.folders
+    files: root.files,
+    folders: root.folders // rootFolder
   }
 })
+
+// const getFiletreeFromDatabase = () =>
+// (dispatch) =>
+//   view(1)
+//   .then(rootFolder => ({
+//     type: GET_FILETREE_FROM_DATABASE,
+//     payload: {
+//       files: initialState.files, // change this?
+//       folders: rootFolder//initialState.folders // change this?
+//     }
+//   })
+//   .then(thing => {return dispatch(thing)})
+// ).catch(err => console.log(err))
 
 const selectFile = fileId => ({
   type: SELECT_FILE,
@@ -146,6 +165,7 @@ export {
   downloadFile,
   downloadFolder,
   filetreeReducer,
+  // getFiletree,
   getFiletreeFromDatabase,
   moveFile,
   moveFolder,
