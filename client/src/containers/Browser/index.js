@@ -9,7 +9,8 @@ import { File, Folder } from '../../components'
 
 class Browser extends Component {
   componentDidMount() {
-    view(1).then(response => this.props.getFiletreeFromDatabase(response.root))
+    view(1)
+      .then(response => this.props.getFiletreeFromDatabase(response.root))
   }
 
   render () {
@@ -33,7 +34,6 @@ class Browser extends Component {
           {showFolders(folders)} 
         </Folder>
     )
-
 
     return (
       <Paper>
@@ -64,7 +64,7 @@ class Browser extends Component {
           )}
         </List>
       </Paper>
-    )
+    ) // problem w/ files showing up where they're supposed to
   }
 }
 
