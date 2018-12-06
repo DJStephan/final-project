@@ -5,7 +5,8 @@ import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui
 import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react-icons/md'
 
 import Upload from '../Upload'
-import { downloadFile, createFolder } from '../../services/api'
+import NewFolder from '../NewFolder'
+import { downloadFile } from '../../services/api'
 
 function download() {
   //Change the base64 into array buffer
@@ -49,13 +50,6 @@ class Sidebar extends Component {
   componentDidMount() {
     console.log(this.props)
   }
-
-  createNewFolder = () => {
-    console.log(this.props.selectedFolder)
-    createFolder(this.props.selectedFolder, "newFolder")
-      .then(response => console.log(response))
-      .catch(err => console.log(err))
-  }
   
   render () {
     return(
@@ -73,12 +67,12 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText primary="Upload" />
           </Upload>
-          <ListItem button onClick={this.createNewFolder}>
+          <NewFolder>
             <ListItemIcon>
               <MdCreateNewFolder />
             </ListItemIcon>
             <ListItemText primary="Create Folder" />
-          </ListItem>
+          </NewFolder>
           <ListItem button>
             <ListItemIcon>
               <MdDelete />
@@ -92,7 +86,6 @@ class Sidebar extends Component {
 }
 
 Sidebar.propTypes = {
-  // getFiletreeFromDatabase: PropTypes.func.isRequired,
   files: PropTypes.array.isRequired,
   folders: PropTypes.array.isRequired
 }
@@ -102,10 +95,5 @@ const mapStateToProps = state => ({
   folders: state.folders,
   selectedFolder: state.selectedFolder
 })
-
-// const mapDispatchToProps = dispatch => ({
-//   // downloadFile: () => dispatch(downloadFile()),
-//   // getFiletreeFromDatabase: config => dispatch(getFiletreeFromDatabase(config)),
-// })
 
 export default connect(mapStateToProps)(Sidebar)

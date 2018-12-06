@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 //import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -24,12 +23,6 @@ class NewFolder extends Component {
     }
   }
 
-  createNewFolder(folderName, id) {
-    createFolder(id, folderName)
-      .then(response => console.log(response))
-      .catch(err => console.log(err));
-  }
-
   state = {
     open: false,
   }
@@ -48,6 +41,13 @@ class NewFolder extends Component {
     })
   }
 
+  createNewFolder(folderName, id) {
+    this.handleClose()
+    createFolder(id, folderName)
+      .then(response => console.log(response))
+      .catch(err => console.log(err));
+  }
+
   render() {
     return (
       <ListItem button onClick = {this.handleOpen}>
@@ -63,9 +63,6 @@ class NewFolder extends Component {
         >
           <DialogTitle>Create New Folder</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              New Folder Name
-            </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
@@ -79,11 +76,10 @@ class NewFolder extends Component {
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.createNewFolder} color="primary">
               Create
             </Button>
           </DialogActions>
-          <Button onClick={this.handleClose}>Close</Button>
         </Dialog>
       </ListItem>
     );
