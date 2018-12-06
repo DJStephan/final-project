@@ -22,7 +22,9 @@ const axiosPatch = (url, params) => {
 
 
 export const uploadFile = (data) =>
-  axiosPost(`upload/file`,{params: {file: data}})
+  axiosPost(`upload/file`, data)
+export const uploadFiles = (data) =>
+  axiosPost(`upload/files`, data)
 
 export const uploadFolder = (data) =>
   axiosPost(`upload/folder`,{params: data})
