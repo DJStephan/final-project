@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import connect from 'react-redux/es/connect/connect'
 import { Dialog, DialogContent, DialogTitle, ListItem, Button, Slide } from '@material-ui/core'
 import FolderSkeleton from './FolderSkeleton'
 import Error from '../Error'
+import {moveFileOrFolder} from '../../ducks/filetree.duck'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -59,6 +60,11 @@ class Move extends Component {
       selectedFolder: state.selectedFolder,
       activeFolder: state.activeFolder
       */
+      if(this.props.selectedFile!==null) {
+        this.props.moveFileOrFolder(this.props.selectedFile,this.state.selected,false);
+      } else {
+        this.props.moveFileOrFolder(this.props.selectedFolder,this.state.selected,true);
+      }
       this.handleClose()
     }
   }
@@ -127,4 +133,8 @@ const mapStateToProps = state => ({
   activeFolder: state.activeFolder
 })
 
-export default connect(mapStateToProps, null)(Move)
+const mapDispatchToProps = dispatch => ({
+  moveFileOrFolder: (id, destinationId, which) => moveFileOrFolder(id, destinationId, which)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Move)

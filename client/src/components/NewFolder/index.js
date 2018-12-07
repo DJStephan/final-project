@@ -1,13 +1,6 @@
 import React, { Component } from "react";
-//import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-import DialogActions from '@material-ui/core/DialogActions';
-import { ListItem, Button } from '@material-ui/core'
-import Dialog from '@material-ui/core/Dialog';
-//import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
+import connect from 'react-redux/es/connect/connect'
+import { Dialog, DialogContent, DialogTitle, DialogActions, ListItem, Slide, TextField, Button } from '@material-ui/core'
 
 import { createFolder } from '../../services/api'
 
@@ -45,12 +38,9 @@ class NewFolder extends Component {
   }
 
   createNewFolder = () => {
-    let id = 1
-    createFolder(id, this.state.name)
-      .then(response => console.log(response))
-      .catch(err => console.log(err));
-    this.handleClose()
+    this.props.createFolder(this.props.selectedFolder, this.state.name)
     this.setState({name: 'New Folder'})
+    this.handleClose()
   }
   
   setName = (e) => {
@@ -95,7 +85,11 @@ class NewFolder extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  selectedFolder: state.selectedFolder
+})
+const mapDispatchToProps = dispatch => ({
+  createFolder: (id,name) => createFolder(id, name)
+})
 
-
-
-export default NewFolder
+export default connect(mapStateToProps, mapDispatchToProps)(NewFolder)

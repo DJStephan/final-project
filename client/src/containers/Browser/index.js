@@ -3,14 +3,12 @@ import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types'
 import { List, Paper } from '@material-ui/core'
 
-import { view } from '../../services/api'
-import { getFiletreeFromDatabase } from '../../ducks/filetree.duck'
+import { fetchFileTreeFromDatabase } from '../../ducks/filetree.duck'
 import { File, Folder } from '../../components'
 
 class Browser extends Component {
   componentDidMount() {
-    view(1)
-      .then(response => this.props.getFiletreeFromDatabase(response.root))
+    this.props.fetchFileTreeFromDatabase();
   }
 
   render () {
@@ -69,7 +67,7 @@ class Browser extends Component {
 }
 
 Browser.propTypes = {
-  getFiletreeFromDatabase: PropTypes.func.isRequired,
+  fetchFileTreeFromDatabase: PropTypes.func.isRequired,
   files: PropTypes.array.isRequired,
   folders: PropTypes.array.isRequired
 }
@@ -80,7 +78,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getFiletreeFromDatabase: config => dispatch(getFiletreeFromDatabase(config)),
+  fetchFileTreeFromDatabase: () => fetchFileTreeFromDatabase()(dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Browser)
