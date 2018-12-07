@@ -27,6 +27,7 @@ public class ViewService {
 	}
 
 	public ViewDto viewFolder(Long id) throws FolderNotFound {
+		System.out.println(String.format("Folder id: %d.  exists: %b", id, folderExists(id)));
 		if (!folderExists(id)) {
 			throw new FolderNotFound();
 		}
