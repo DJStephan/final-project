@@ -2,11 +2,12 @@ import React, {Component} from 'react'
 import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types'
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
-import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react-icons/md'
+import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload, MdOpenWith } from 'react-icons/md'
 
 import Upload from '../Upload'
 import NewFolder from '../NewFolder'
 import Delete from '../Delete'
+import Move from '../Move'
 import { downloadFile } from '../../services/api'
 
 function download() {
@@ -68,6 +69,12 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText primary="Upload" />
           </Upload>
+          <Move>
+            <ListItemIcon>
+              <MdOpenWith />
+            </ListItemIcon>
+            <ListItemText primary="Move" />
+          </Move>
           <NewFolder>
             <ListItemIcon>
               <MdCreateNewFolder />
