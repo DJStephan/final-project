@@ -1,16 +1,9 @@
-import { deleteFile, deleteFolder, view } from '../services/api'
+import * as api from '../services/api'
 
 const GET_FILETREE_FROM_DATABASE = 'GET_FILETREE_FROM_DATABASE'
 const SELECT_FILE = 'SELECT_FILE'
-const UPLOAD_FILE = 'UPLOAD_FILE'
-const LOAD_ERROR = 'LOAD_ERROR'
-const MOVE_FILE = 'MOVE_FILE'
-const CREATE_FOLDER = 'CREATE_FOLDER'
 const SELECT_FOLDER = 'SELECT_FOLDER'
-const UPLOAD_FOLDER = 'UPLOAD_FOLDER'
-const DOWNLOAD_FOLDER = 'DOWNLOAD_FOLDER'
-const MOVE_FOLDER = 'MOVE_FOLDER'
-const DELETE_FOLDER = 'DELETE_FOLDER'
+const LOAD_ERROR = 'LOAD_ERROR'
 
 const initialState = {
   files: [],
@@ -57,11 +50,17 @@ export const filetreeReducer = (state = initialState, action) => {
         folderSelected: true,
         error: null
       } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
+    case LOAD_ERROR:
+      return {
+        ...state,
+        error: action.error
+      }
     default:
       return state
   }
 }
 
+// getFiletreeFromDatabase is being deprecated
 export const getFiletreeFromDatabase = root => ({
   type: GET_FILETREE_FROM_DATABASE,
   payload: {
@@ -71,49 +70,82 @@ export const getFiletreeFromDatabase = root => ({
 })
 
 export const fetchFileTreeFromDatabase = () => dispatch => {
-  view(1).then(response => dispatch(getFiletreeFromDatabase(response.root)))
+  api
+    .view(1)
+    .then(response => dispatch(getFiletreeFromDatabase(response.root)))
+    .catch(e => dispatch(loadError(e.message)))
+}
+
+const requestRefreshMapper = (action, dispatch, ...args) => {
+  action(...args)
+    .then(() => dispatch(fetchFileTreeFromDatabase()))
+    .catch(e => dispatch(loadError(e.message)))
 }
 
 const loadError = error => ({
-  LOAD_ERROR,
+  type: LOAD_ERROR,
   error
 })
 
-export const moveFolder = () => dispatch => {
-  dispatch({
-    type: MOVE_FOLDER
-  })
+export const uploadFiles = data => dispatch => {
+  requestRefreshMapper(api.uploadFiles, dispatch, data)
 }
 
-export const selectFile = fileId => ({
-  type: SELECT_FILE,
-  payload: fileId
-})
+export const createFolder = (id, name) => dispatch => {
+  requestRefreshMapper(api.createFolder, dispatch, id, name)
+}
 
-export const uploadFile = () => ({
-  type: UPLOAD_FILE
-})
-
-export const moveFile = () => ({
-  type: MOVE_FILE
-})
-
-export const deleteFileOrFolder = () => (dispatch, getState) => {
-  const { folderSelected, selectedFile, selectedFolder } = getState()
+export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
+  const { folderSelected } = getState()
   if (folderSelected) {
-    deleteFolder(selectedFolder)
-      .then(() => {
-        dispatch(selectFolder(1))
-        dispatch(fetchFileTreeFromDatabase())
-      })
-      .catch(e => dispatch(loadError(e.message)))
+    api.moveFolder(id, destinationId)
   } else {
-    deleteFile(selectedFile)
-      .then(() => {
-        dispatch(selectFolder(selectedFolder))
-        dispatch(fetchFileTreeFromDatabase())
-      })
-      .catch(e => dispatch(loadError(e.message)))
+    api.moveFile(id, destinationId)
+  }
+}
+
+const deleteOrTrashFile = (
+  modifyFunction,
+  dispatch,
+  selectedFile,
+  selectedFolder
+) => {
+  modifyFunction(selectedFile)
+    .then(() => {
+      dispatch(selectFolder(selectedFolder))
+      dispatch(fetchFileTreeFromDatabase())
+    })
+    .catch(e => dispatch(loadError(e.message)))
+}
+
+const deleteOrTrashFolder = (modifyFunction, dispatch, selectedFolder) => {
+  modifyFunction(selectedFolder)
+    .then(() => {
+      dispatch(selectFolder(1))
+      dispatch(fetchFileTreeFromDatabase())
+    })
+    .catch(e => {
+      console.log(e.message, LOAD_ERROR)
+      dispatch(loadError(e.message))
+    })
+}
+
+export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
+  const {
+    folderSelected,
+    selectedFile,
+    selectedFolder,
+    activeFolder
+  } = getState()
+  const inTrash = activeFolder === 2
+  if (folderSelected && !inTrash) {
+    deleteOrTrashFolder(api.trashFolder, dispatch, selectedFolder)
+  } else if (folderSelected && inTrash) {
+    deleteOrTrashFolder(api.deleteFolder, dispatch, selectedFolder)
+  } else if (!folderSelected && !inTrash) {
+    deleteOrTrashFile(api.trashFile, dispatch, selectedFile, selectedFolder)
+  } else if (!folderSelected && inTrash) {
+    deleteOrTrashFile(api.deleteFile, dispatch, selectedFile, selectedFolder)
   }
 }
 
@@ -122,6 +154,7 @@ export const selectFolder = folderId => ({
   payload: folderId
 })
 
-export const uploadFolder = () => ({
-  type: UPLOAD_FOLDER
+export const selectFile = fileId => ({
+  type: SELECT_FILE,
+  payload: fileId
 })

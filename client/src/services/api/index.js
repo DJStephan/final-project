@@ -37,6 +37,10 @@ export const deleteFile = fileId =>
 export const deleteFolder = folderId =>
   axiosDelete(`edit/delete/folder/${folderId}`, {})
 
+export const trashFile = fileId => axiosPatch(`edit/trash/file/${fileId}`, {})
+export const trashFolder = folderId =>
+  axiosPatch(`edit/trash/folder/${folderId}`, {})
+
 export const createFolder = (parentFolderId, folderName) =>
   axiosPost(`edit/create/${folderName}?parentFolderId=${parentFolderId}`, {})
 
