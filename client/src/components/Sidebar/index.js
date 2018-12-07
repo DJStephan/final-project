@@ -6,6 +6,7 @@ import { MdCreateNewFolder, MdDelete, MdFileDownload, MdFileUpload } from 'react
 
 import Upload from '../Upload'
 import NewFolder from '../NewFolder'
+import Delete from '../Delete'
 import { downloadFile } from '../../services/api'
 
 function download() {
@@ -73,12 +74,12 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText primary="Create Folder" />
           </NewFolder>
-          <ListItem button>
+          <Delete>
             <ListItemIcon>
               <MdDelete />
             </ListItemIcon>
             <ListItemText primary="Delete" />
-          </ListItem>
+          </Delete>
         </List>
       </Drawer>
     )
