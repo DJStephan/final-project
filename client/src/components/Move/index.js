@@ -53,6 +53,12 @@ class Move extends Component {
     } else {
       //Move file using selectedFolder/File id and then this state selected id
       // !!!!=> this.state.selected <=!!! this has the id to move the file/folder to
+      //Not sure which one you need, but I put all the things in the props
+      /*
+      selectedFile: state.selectedFile,
+      selectedFolder: state.selectedFolder,
+      activeFolder: state.activeFolder
+      */
       this.handleClose()
     }
   }
@@ -87,6 +93,12 @@ class Move extends Component {
           scroll="paper">
           <DialogTitle>Select Folder</DialogTitle>
           <DialogContent>
+            <FolderSkeleton
+              key={1}
+              id={1}
+              name='root'
+              selectedFolder={this.state.selected}
+              selectSkeletonFolder={this.selectFolder}>
             {this.props.folders.map(({ id, folderName, files, folders }) =>
               <FolderSkeleton
                 key={id}
@@ -97,6 +109,7 @@ class Move extends Component {
                 {showFolders(folders)} 
               </FolderSkeleton>
             )}
+            </FolderSkeleton>
           </DialogContent>
           <Button onClick={this.moveFileFolder}>Confirm</Button>
           <Button onClick={this.handleClose}>Cancel</Button>
@@ -108,7 +121,10 @@ class Move extends Component {
 }
 
 const mapStateToProps = state => ({
-  folders: state.folders
+  folders: state.folders,
+  selectedFile: state.selectedFile,
+  selectedFolder: state.selectedFolder,
+  activeFolder: state.activeFolder
 })
 
 export default connect(mapStateToProps, null)(Move)
