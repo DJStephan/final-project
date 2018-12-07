@@ -1,9 +1,10 @@
+import { deleteFile, deleteFolder, view } from '../services/api'
+
 const GET_FILETREE_FROM_DATABASE = 'GET_FILETREE_FROM_DATABASE'
 const SELECT_FILE = 'SELECT_FILE'
 const UPLOAD_FILE = 'UPLOAD_FILE'
-const DOWNLOAD_FILE = 'DOWNLOAD_FILE'
+const LOAD_ERROR = 'LOAD_ERROR'
 const MOVE_FILE = 'MOVE_FILE'
-const DELETE_FILE = 'DELETE_FILE'
 const CREATE_FOLDER = 'CREATE_FOLDER'
 const SELECT_FOLDER = 'SELECT_FOLDER'
 const UPLOAD_FOLDER = 'UPLOAD_FOLDER'
@@ -14,38 +15,54 @@ const DELETE_FOLDER = 'DELETE_FOLDER'
 const initialState = {
   files: [],
   folders: [],
+  error: null,
   selectedFile: null,
-  selectedFolder: 1, // root
+  selectedFolder: 1, // root,
+  folderSelected: true,
   activeFolder: 1 // root
 }
 
-const filetreeReducer = (state = initialState, action) => {
+export const filetreeReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_FILETREE_FROM_DATABASE:
       return {
         ...state,
         files: action.payload.files,
-        folders: action.payload.folders
+        folders: action.payload.folders,
+        error: null
       }
     case SELECT_FILE:
       return {
         ...state,
-        selectedFile: action.payload === state.selectedFile ? initialState.selectedFile : action.payload,
-        selectedFolder: initialState.selectedFolder
+        selectedFile:
+          action.payload === state.selectedFile
+            ? initialState.selectedFile
+            : action.payload,
+        selectedFolder: initialState.selectedFolder,
+        folderSelected: false,
+        error: null
       }
     case SELECT_FOLDER:
       return {
         ...state,
         selectedFile: initialState.selectedFile,
-        selectedFolder: action.payload === state.selectedFolder ? initialState.selectedFolder : action.payload,
-        activeFolder: action.payload === state.selectedFolder ? initialState.activeFolder : action.payload
+        selectedFolder:
+          action.payload === state.selectedFolder
+            ? initialState.selectedFolder
+            : action.payload,
+        activeFolder:
+          action.payload === state.selectedFolder
+            ? initialState.activeFolder
+            : action.payload,
+        folderSelected: true,
+        error: null
       } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
     default:
       return state
   }
 }
 
-const getFiletreeFromDatabase = (root) => ({
+export const getFiletreeFromDatabase = root => ({
   type: GET_FILETREE_FROM_DATABASE,
   payload: {
     files: root.files,
@@ -53,64 +70,58 @@ const getFiletreeFromDatabase = (root) => ({
   }
 })
 
-const selectFile = fileId => ({
+export const fetchFileTreeFromDatabase = () => dispatch => {
+  view(1).then(response => dispatch(getFiletreeFromDatabase(response.root)))
+}
+
+const loadError = error => ({
+  LOAD_ERROR,
+  error
+})
+
+export const moveFolder = () => dispatch => {
+  dispatch({
+    type: MOVE_FOLDER
+  })
+}
+
+export const selectFile = fileId => ({
   type: SELECT_FILE,
   payload: fileId
 })
 
-const uploadFile = () => ({
+export const uploadFile = () => ({
   type: UPLOAD_FILE
 })
 
-const downloadFile = () => ({
-  type: DOWNLOAD_FILE
-})
-
-const moveFile = () => ({
+export const moveFile = () => ({
   type: MOVE_FILE
 })
 
-const deleteFile = () => ({
-  type: DELETE_FILE
-})
+export const deleteFileOrFolder = () => (dispatch, getState) => {
+  const { folderSelected, selectedFile, selectedFolder } = getState()
+  if (folderSelected) {
+    deleteFolder(selectedFolder)
+      .then(() => {
+        dispatch(selectFolder(1))
+        dispatch(fetchFileTreeFromDatabase())
+      })
+      .catch(e => dispatch(loadError(e.message)))
+  } else {
+    deleteFile(selectedFile)
+      .then(() => {
+        dispatch(selectFolder(selectedFolder))
+        dispatch(fetchFileTreeFromDatabase())
+      })
+      .catch(e => dispatch(loadError(e.message)))
+  }
+}
 
-const createFolder = () => ({
-  type: CREATE_FOLDER
-})
-
-const selectFolder = folderId => ({
+export const selectFolder = folderId => ({
   type: SELECT_FOLDER,
   payload: folderId
 })
 
-const uploadFolder = () => ({
+export const uploadFolder = () => ({
   type: UPLOAD_FOLDER
 })
-
-const downloadFolder = () => ({
-  type: DOWNLOAD_FOLDER
-})
-
-const moveFolder = () => ({
-  type: MOVE_FOLDER
-})
-
-const deleteFolder = () => ({
-  type: DELETE_FOLDER
-})
-
-export {
-  createFolder,
-  deleteFile,
-  deleteFolder,
-  downloadFile,
-  downloadFolder,
-  filetreeReducer,
-  getFiletreeFromDatabase,
-  moveFile,
-  moveFolder,
-  selectFile,
-  selectFolder,
-  uploadFile,
-  uploadFolder
-}
