@@ -1,12 +1,9 @@
 package driverstorage.server.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import driverstorage.server.dto.ResultDto;
@@ -32,18 +29,18 @@ public class UploadService {
 	public ResultDto upload(MultipartFile[] files, String folderId) {
 //		System.out.println("Uploading");
 //		System.out.println(files.length);
-		if(folderId.equals("2")) {
+		if (folderId.equals("2")) {
 			Long status = (long) 400;
 			return new ResultDto(status, "Cannot upload to trash folder!");
 		}
 		Folder parentFolder = this.folderRepository.getFolderById(Long.parseLong(folderId));
-		if(parentFolder == null) {
+		if (parentFolder == null) {
 			Long status = (long) 400;
 			return new ResultDto(status, "No folder with ID#" + folderId + " exists");
 		}
 		System.out.println("in upload service");
 		System.out.println(files.length);
-		if(files.length == 0) {
+		if (files.length == 0) {
 			Long status = (long) 400;
 			return new ResultDto(status, "No files sent ya dingas!");
 		}
@@ -57,8 +54,14 @@ public class UploadService {
 					newFile.setData(f.getBytes());
 					newFile.setFileName(f.getOriginalFilename());
 					newFile.setParent(parentFolder);
-					parentFolder.getFiles().add(this.fileRepository.save(newFile));
-					this.folderRepository.save(parentFolder);
+					parentFolder.getFiles().add(this.fileRepository.saveAndFlush(newFile));
+					this.folderRepository.saveAndFlush(parentFolder);
+				} else {
+					File newFile = new File();
+					newFile.setFileName(f.getOriginalFilename());
+					newFile.setParent(parentFolder);
+					parentFolder.getFiles().add(this.fileRepository.saveAndFlush(newFile));
+					this.folderRepository.saveAndFlush(parentFolder);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
