@@ -12,11 +12,48 @@ const MOVE_FOLDER = 'MOVE_FOLDER'
 const DELETE_FOLDER = 'DELETE_FOLDER'
 
 const initialState = {
-  files: [],
-  folders: [],
+  files: [
+    {
+      id: 1,
+      name: "Test file 1"
+    },
+    {
+      id: 4,
+      name: "Test file 4"
+    }
+  ],
+  folders: [
+    {
+      id: 3,
+      name: "Test folder 1",
+      files: [
+        {
+          id: 2,
+          name: "Test file 2"
+        },
+        {
+          id: 3,
+          name: "Test file 3"
+        }
+      ]
+    },
+    {
+      id: 4,
+      name: "Test folder 2",
+      files: [
+        {
+          id: 5,
+          name: "Test file 5"
+        },
+        {
+          id: 6,
+          name: "Test file 6"
+        }
+      ]
+    }
+  ],
   selectedFile: null,
-  selectedFolder: 1, // root
-  activeFolder: 1 // root
+  selectedFolder: 1 // root
 }
 
 const filetreeReducer = (state = initialState, action) => {
@@ -31,25 +68,24 @@ const filetreeReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedFile: action.payload === state.selectedFile ? initialState.selectedFile : action.payload,
-        selectedFolder: initialState.selectedFolder
+        //selectedFolder: initialState.selectedFolder // maybe delete this thing
       }
     case SELECT_FOLDER:
       return {
         ...state,
         selectedFile: initialState.selectedFile,
-        selectedFolder: action.payload === state.selectedFolder ? initialState.selectedFolder : action.payload,
-        activeFolder: action.payload === state.selectedFolder ? initialState.activeFolder : action.payload
-      } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
+        selectedFolder: action.payload === state.selectedFolder ? initialState.selectedFolder : action.payload
+      }
     default:
       return state
   }
 }
 
-const getFiletreeFromDatabase = (root) => ({
+const getFiletreeFromDatabase = () => ({
   type: GET_FILETREE_FROM_DATABASE,
   payload: {
-    files: root.files,
-    folders: root.folders
+    files: initialState.files,
+    folders: initialState.folders
   }
 })
 

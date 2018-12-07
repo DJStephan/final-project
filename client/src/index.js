@@ -6,7 +6,6 @@ import { devToolsEnhancer } from 'redux-devtools-extension'
 
 import { filetreeReducer } from './ducks/filetree.duck'
 import { Page } from './containers'
-import './index.css'
 
 const store = createStore(filetreeReducer, devToolsEnhancer())
 
