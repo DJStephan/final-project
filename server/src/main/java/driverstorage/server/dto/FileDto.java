@@ -4,6 +4,13 @@ public class FileDto {
 	private String fileName;
 	private byte[] data;
 
+	public FileDto () {}
+
+	public FileDto(String fileName, byte[] data) {
+		this.fileName = fileName;
+		this.data = data;
+	}
+
 	public String getFileName() {
 		return fileName;
 	}
