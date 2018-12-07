@@ -1,5 +1,6 @@
 package driverstorage.server.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 import driverstorage.server.dto.StructureFolderDto;
@@ -9,7 +10,7 @@ import driverstorage.server.mapper.ViewMapper;
 import driverstorage.server.repository.FileRepository;
 import driverstorage.server.repository.FolderRepository;
 
-@RestController
+@Service
 public class ViewService {
 	private FolderRepository folderRepository;
 	private FileRepository fileRepository;
@@ -27,6 +28,7 @@ public class ViewService {
 	}
 
 	public ViewDto viewFolder(Long id) throws FolderNotFound {
+		System.out.println(String.format("Folder id: %d.  exists: %b", id, folderExists(id)));
 		if (!folderExists(id)) {
 			throw new FolderNotFound();
 		}

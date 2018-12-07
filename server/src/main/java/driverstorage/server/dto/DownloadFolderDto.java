@@ -5,8 +5,13 @@ import java.util.List;
 public class DownloadFolderDto {
 
 	private ResultDto result;
-	private List<FolderDto> folders;
-	private List<FileDto> files;
+	private FolderDto folder;
+
+	public DownloadFolderDto() {}
+	public DownloadFolderDto(ResultDto result, FolderDto folder) {
+		this.result = result;
+		this.folder = folder;
+	}
 
 	public ResultDto getResult() {
 		return result;
@@ -16,20 +21,11 @@ public class DownloadFolderDto {
 		this.result = result;
 	}
 
-	public List<FolderDto> getFolders() {
-		return folders;
+	public FolderDto getFolder() {
+		return folder;
 	}
 
-	public void setFolders(List<FolderDto> folders) {
-		this.folders = folders;
+	public void setFolder(FolderDto folder) {
+		this.folder = folder;
 	}
-
-	public List<FileDto> getFiles() {
-		return files;
-	}
-
-	public void setFiles(List<FileDto> files) {
-		this.files = files;
-	}
-
 }

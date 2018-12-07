@@ -1,31 +1,29 @@
 package driverstorage.server.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import driverstorage.server.dto.DownloadFileDto;
 import driverstorage.server.dto.DownloadFolderDto;
-import driverstorage.server.dto.DownloadResultDto;
 import driverstorage.server.service.DownloadService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
+@RequestMapping("/download")
 public class DownloadController {
-	private DownloadService downloadService;
+    private DownloadService downloadService;
 
-	@Autowired
-	public DownloadController(DownloadService downloadService) {
-		this.downloadService = downloadService;
-	}
+    @Autowired
+    public DownloadController(DownloadService downloadService) {
+        this.downloadService = downloadService;
+    }
 
-	@GetMapping("download/files")
-	public DownloadResultDto downloadFile(@RequestBody DownloadFileDto downloadFileDto) {
-		return this.downloadService.downloadFile(downloadFileDto);
-	}
+    @GetMapping("/files/{fileId}")
+    public DownloadFileDto downloadFile(@PathVariable("fileId") Long fileId) {
+        return this.downloadService.downloadFile(fileId);
+    }
 
-	@GetMapping("download/folders")
-	public DownloadResultDto downloadFolder(@RequestBody DownloadFolderDto downloadFolderDto) {
-		return this.downloadService.downloadFolder(downloadFolderDto);
-	}
+    @GetMapping("/folders/{folderId}")
+    public DownloadFolderDto downloadFolder(@PathVariable("folderId") Long folderId) {
+        return this.downloadService.downloadFolder(folderId);
+    }
 }

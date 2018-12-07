@@ -3,7 +3,7 @@ import { deleteFile, deleteFolder, view } from '../services/api'
 const GET_FILETREE_FROM_DATABASE = 'GET_FILETREE_FROM_DATABASE'
 const SELECT_FILE = 'SELECT_FILE'
 const UPLOAD_FILE = 'UPLOAD_FILE'
-const DOWNLOAD_FILE = 'DOWNLOAD_FILE'
+const LOAD_ERROR = 'LOAD_ERROR'
 const MOVE_FILE = 'MOVE_FILE'
 const CREATE_FOLDER = 'CREATE_FOLDER'
 const SELECT_FOLDER = 'SELECT_FOLDER'
@@ -15,19 +15,21 @@ const DELETE_FOLDER = 'DELETE_FOLDER'
 const initialState = {
   files: [],
   folders: [],
+  error: null,
   selectedFile: null,
   selectedFolder: 1, // root,
   folderSelected: true,
   activeFolder: 1 // root
 }
 
-const filetreeReducer = (state = initialState, action) => {
+export const filetreeReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_FILETREE_FROM_DATABASE:
       return {
         ...state,
         files: action.payload.files,
-        folders: action.payload.folders
+        folders: action.payload.folders,
+        error: null
       }
     case SELECT_FILE:
       return {
@@ -37,7 +39,8 @@ const filetreeReducer = (state = initialState, action) => {
             ? initialState.selectedFile
             : action.payload,
         selectedFolder: initialState.selectedFolder,
-        folderSelected: false
+        folderSelected: false,
+        error: null
       }
     case SELECT_FOLDER:
       return {
@@ -51,14 +54,15 @@ const filetreeReducer = (state = initialState, action) => {
           action.payload === state.selectedFolder
             ? initialState.activeFolder
             : action.payload,
-        folderSelected: true
+        folderSelected: true,
+        error: null
       } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
     default:
       return state
   }
 }
 
-const getFiletreeFromDatabase = root => ({
+export const getFiletreeFromDatabase = root => ({
   type: GET_FILETREE_FROM_DATABASE,
   payload: {
     files: root.files,
@@ -66,79 +70,58 @@ const getFiletreeFromDatabase = root => ({
   }
 })
 
-
-
-const fetchFileTreeFromDatabase = () => dispatch => {
+export const fetchFileTreeFromDatabase = () => dispatch => {
   view(1).then(response => dispatch(getFiletreeFromDatabase(response.root)))
 }
 
-const selectFile = fileId => ({
+const loadError = error => ({
+  LOAD_ERROR,
+  error
+})
+
+export const moveFolder = () => dispatch => {
+  dispatch({
+    type: MOVE_FOLDER
+  })
+}
+
+export const selectFile = fileId => ({
   type: SELECT_FILE,
   payload: fileId
 })
 
-const uploadFile = () => ({
+export const uploadFile = () => ({
   type: UPLOAD_FILE
 })
 
-const downloadFile = () => ({
-  type: DOWNLOAD_FILE
-})
-
-const moveFile = () => ({
+export const moveFile = () => ({
   type: MOVE_FILE
 })
 
-const deleteFileOrFolder = () => (dispatch, getState) => {
+export const deleteFileOrFolder = () => (dispatch, getState) => {
   const { folderSelected, selectedFile, selectedFolder } = getState()
   if (folderSelected) {
-    
-  } else {
-    deleteFile
-      .then(console.log)
+    deleteFolder(selectedFolder)
       .then(() => {
-        
-        dispatch(selectFolder(selectedFolder))
+        dispatch(selectFolder(1))
+        dispatch(fetchFileTreeFromDatabase())
       })
+      .catch(e => dispatch(loadError(e.message)))
+  } else {
+    deleteFile(selectedFile)
+      .then(() => {
+        dispatch(selectFolder(selectedFolder))
+        dispatch(fetchFileTreeFromDatabase())
+      })
+      .catch(e => dispatch(loadError(e.message)))
   }
 }
 
-const moveFolder = () => ({
-  type: MOVE_FOLDER
-})
-
-const fetchFileTreeFromDatabase = () => dispatch => {
-const createFolder = () => dispatch => {
-  dispatch({ type: CREATE_FOLDER})
-
-}
-  
-  
-
-const selectFolder = folderId => ({
+export const selectFolder = folderId => ({
   type: SELECT_FOLDER,
   payload: folderId
 })
 
-const uploadFolder = () => ({
+export const uploadFolder = () => ({
   type: UPLOAD_FOLDER
 })
-
-const downloadFolder = () => ({
-  type: DOWNLOAD_FOLDER
-})
-
-export {
-  createFolder,
-  deleteFileOrFolder,
-  downloadFile,
-  downloadFolder,
-  filetreeReducer,
-  getFiletreeFromDatabase,
-  moveFile,
-  moveFolder,
-  selectFile,
-  selectFolder,
-  uploadFile,
-  uploadFolder
-}

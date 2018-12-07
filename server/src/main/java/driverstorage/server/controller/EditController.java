@@ -1,97 +1,120 @@
 package driverstorage.server.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import driverstorage.server.dto.ViewDto;
+import driverstorage.server.dto.ResultDto;
+import driverstorage.server.dto.idDto;
 import driverstorage.server.service.EditService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
+@RequestMapping("/edit")
 public class EditController {
-	private EditService editService;
+    private EditService editService;
 
-	@Autowired
-	public EditController(EditService editService) {
-		this.editService = editService;
-	}
-	
-	/**
-	 * Create a new folder in given location
-	 * 
-	 * @param folderId, folderName
-	 * @return ViewDto
-	 */
-	@PostMapping("edit/create/{folderName}")
-	public ViewDto createFolder(@PathVariable("folderName") String folderName, @RequestParam Long folderId) {
-		return editService.createFolder(folderId, folderName);
-	}
-	/**
-	 * delete a file in given location
-	 * 
-	 * @param fileId
-	 * @return ViewDto
-	 */
-	@DeleteMapping("edit/delete/file/{fileId}")
-	public ViewDto deleteFile(@PathVariable("fileId") Long fileId) {
-		return editService.deleteFile(fileId);
-	}
+    @Autowired
+    public EditController(EditService editService) {
+        this.editService = editService;
+    }
 
-	/**
-	 * delete a folder in given location
-	 * 
-	 * @param folderId
-	 * @return ViewDto
-	 */
-	@DeleteMapping("edit/delete/folder/{folderId}")
-	public ViewDto deleteFolder(@PathVariable("folderId") Long folderId) {
-		return editService.deleteFolder(folderId);
-	}
+    /**
+     * Create a new folder in given location
+     *
+     * @param parentFolderId, folderName
+     * @return ViewDto
+     */
+    @PostMapping("/create/{folderName}")
+    public idDto createFolder(@PathVariable("folderName") String folderName, @RequestParam Long parentFolderId) {
+        return editService.createFolder(parentFolderId, folderName);
+    }
 
-	/**
-	 * move a file to a given location
-	 * 
-	 * @param fileId, locationFolderId
-	 * @return ViewDto
-	 */
-	@PatchMapping("edit/move/file/{fileId}/{locationFolderId}")
-	public ViewDto moveFile(@PathVariable("fileId") Long fileId, @PathVariable("locationFolderId") Long locationFolderId) {
-		return editService.moveFile(fileId, locationFolderId);
-	}
-	
-	/**
-	 * move a folder to a given location
-	 * 
-	 * @param folderId, locationFolderId
-	 * @return ViewDto
-	 */
-	@PatchMapping("edit/move/folder/{folderId}/{locationFolderId}")
-	public ViewDto moveFolder(@PathVariable("folderId") Long folderId, @PathVariable("locationFolderId") Long locationFolderId) {
-		return editService.moveFolder(folderId, locationFolderId);
-	}
-	/**
-	 * Rename a file
-	 * 
-	 * @param fileId, newName
-	 * @return ViewDto
-	 */
-	@PatchMapping("edit/rename/file/{fileId}/{newName}")
-	public ViewDto renameFile(@PathVariable("fileId") Long fileId, @PathVariable("newName") String newName) {
-		return editService.renameFile(fileId, newName);
-	}
+    /**
+     * Moves a file to the trash
+     *
+     * @param fileId
+     * @return ViewDto
+     */
+    @PatchMapping("/trash/file/{fileId}")
+    public ResultDto trashFile(@PathVariable("fileId") Long fileId) {
+        return editService.trashFile(fileId);
+    }
 
-	/**
-	 * Rename a folder
-	 * 
-	 * @param folderId, newName
-	 * @return ViewDto
-	 */
-	@PatchMapping("edit/rename/folder/{folderId}/{newName}")
-	public ViewDto renameFolder(@PathVariable("folderId") Long folderId, @PathVariable("newName") String newName) {
-		return editService.renameFolder(folderId, newName);
-	}
+
+    /**
+     * delete a file in given location
+     *
+     * @param fileId
+     * @return ViewDto
+     */
+    @DeleteMapping("/delete/file/{fileId}")
+    public ResultDto deleteFile(@PathVariable("fileId") Long fileId) {
+        return editService.deleteFile(fileId);
+    }
+
+    /**
+     * Moves a folder to the trash
+     *
+     * @param folderId
+     * @return ViewDto
+     */
+    @PatchMapping("/trash/folder/{folderId}")
+    public ResultDto trashFolder(@PathVariable("folderId") Long folderId) {
+        return editService.trashFolder(folderId);
+    }
+
+
+    /**
+     * delete a folder in given location
+     *
+     * @param folderId
+     * @return ViewDto
+     */
+    @DeleteMapping("/delete/folder/{folderId}")
+    public ResultDto deleteFolder(@PathVariable("folderId") Long folderId) {
+        return editService.deleteFolder(folderId);
+    }
+
+    /**
+     * move a file to a given location
+     *
+     * @param fileId, locationFolderId
+     * @return ViewDto
+     */
+    @PatchMapping("/move/file/{fileId}/{locationFolderId}")
+    public ResultDto moveFile(@PathVariable("fileId") Long fileId, @PathVariable("locationFolderId") Long locationFolderId) {
+        return editService.moveFile(fileId, locationFolderId);
+    }
+
+    /**
+     * move a folder to a given location
+     *
+     * @param folderId, locationFolderId
+     * @return ViewDto
+     */
+    @PatchMapping("/move/folder/{folderId}/{locationFolderId}")
+    public ResultDto moveFolder(@PathVariable("folderId") Long folderId, @PathVariable("locationFolderId") Long locationFolderId) {
+        return editService.moveFolder(folderId, locationFolderId);
+    }
+
+    /**
+     * Rename a file
+     *
+     * @param fileId, newName
+     * @return ViewDto
+     */
+    @PatchMapping("/rename/file/{fileId}/{newName}")
+    public ResultDto renameFile(@PathVariable("fileId") Long fileId, @PathVariable("newName") String newName) {
+        return editService.renameFile(fileId, newName);
+    }
+
+    /**
+     * Rename a folder
+     *
+     * @param folderId, newName
+     * @return ViewDto
+     */
+    @PatchMapping("/rename/folder/{folderId}/{newName}")
+    public ResultDto renameFolder(@PathVariable("folderId") Long folderId, @PathVariable("newName") String newName) {
+        return editService.renameFolder(folderId, newName);
+    }
 }
