@@ -91,6 +91,22 @@ export const uploadFiles = data => dispatch => {
   requestRefreshMapper(api.uploadFiles, dispatch, data)
 }
 
+export const uploadFolder = (folders, dataLists) => dispatch => {
+  const folderPromises = folders.map(({ folderName, parentId }) =>
+    api.createFolder(parentId, folderName)
+  )
+  Promise.all(folderPromises)
+    .then(responses => {
+      for (let i = 0; i < responses.length; i++) {
+        const data = dataLists[i]
+        const folderId = responses[i].id
+        data.append('folderId', folderId)
+        dispatch(uploadFiles(data))
+      }
+    })
+    .catch(e => dispatch(loadError(e.message)))
+}
+
 export const createFolder = (id, name) => dispatch => {
   requestRefreshMapper(api.createFolder, dispatch, id, name)
 }
