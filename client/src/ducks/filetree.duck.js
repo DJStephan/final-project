@@ -69,13 +69,6 @@ export const getFiletreeFromDatabase = root => ({
   }
 })
 
-export const fetchFileTreeFromDatabase = () => dispatch => {
-  api
-    .view(1)
-    .then(response => dispatch(getFiletreeFromDatabase(response.root)))
-    .catch(e => dispatch(loadError(e.message)))
-}
-
 const requestRefreshMapper = (action, dispatch, ...args) => {
   action(...args)
     .then(() => dispatch(fetchFileTreeFromDatabase()))
@@ -87,6 +80,13 @@ const loadError = error => ({
   error
 })
 
+export const fetchFileTreeFromDatabase = (folder = 1) => dispatch => {
+  api
+    .view(folder)
+    .then(response => dispatch(getFiletreeFromDatabase(response.root)))
+    .catch(e => dispatch(loadError(e.message)))
+}
+
 export const uploadFiles = data => dispatch => {
   requestRefreshMapper(api.uploadFiles, dispatch, data)
 }
@@ -96,11 +96,12 @@ export const createFolder = (id, name) => dispatch => {
 }
 
 export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
+  console.log(id, destinationId)
   const { folderSelected } = getState()
   if (folderSelected) {
-    api.moveFolder(id, destinationId)
+    requestRefreshMapper(api.moveFolder, dispatch, id, destinationId)
   } else {
-    api.moveFile(id, destinationId)
+    requestRefreshMapper(api.moveFile, dispatch, id, destinationId)
   }
 }
 

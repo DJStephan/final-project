@@ -2,25 +2,41 @@ import axios from 'axios'
 
 const localPath = 'http://localhost:8080/'
 
+const returnWrappedOrUnwrapped = ({ data }) => {
+  console.log(data)
+  if (data.hasOwnProperty('result')) {
+    const { statusCode, message } = data.result
+    if (statusCode !== 200) {
+      throw new Error(message)
+    }
+  } else {
+    const { statusCode, message } = data
+    if (statusCode !== 200) {
+      throw new Error(message)
+    }
+  }
+  return data
+}
+
 const axiosGet = (url, params) => {
   return axios
     .get(localPath + url, { params: params })
-    .then(response => response.data)
+    .then(returnWrappedOrUnwrapped)
 }
 const axiosDelete = (url, params) => {
   return axios
     .delete(localPath + url, { params: params })
-    .then(response => response.data)
+    .then(returnWrappedOrUnwrapped)
 }
 const axiosPost = (url, data, config) => {
   return axios
     .post(localPath + url, data, config)
-    .then(response => response.data)
+    .then(returnWrappedOrUnwrapped)
 }
 const axiosPatch = (url, params) => {
   return axios
     .patch(localPath + url, { params: params })
-    .then(response => response.data)
+    .then(returnWrappedOrUnwrapped)
 }
 
 export const uploadFiles = data =>
