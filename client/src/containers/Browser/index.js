@@ -3,63 +3,55 @@ import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types'
 import { List, Paper } from '@material-ui/core'
 
-import { fetchFileTreeFromDatabase } from '../../ducks/filetree.duck'
+import {
+  fetchFileTreeFromDatabase,
+  selectFile,
+  selectFolder
+} from '../../ducks/filetree.duck'
 import { File, Folder } from '../../components'
 
 class Browser extends Component {
-  componentDidMount() {
-    this.props.fetchFileTreeFromDatabase();
+  componentDidMount () {
+    this.props.fetchFileTreeFromDatabase()
   }
 
   render () {
     const { files, folders } = this.props
 
     const showFolders = folders =>
-      folders.map(({id, folderName, files, folders}) =>
-        <Folder
-          key={id}
-          id={id}
-          name={folderName}
-        >
-          {files.map(({ id, fileName }, index) =>
+      folders.map(({ id, folderName, files, folders }) => (
+        <Folder key={id} id={id} name={folderName}>
+          {files.map(({ id, fileName }, index) => (
             <File
               key={id}
               id={id}
               name={fileName}
               last={index === files.length - 1}
             />
-          )}
-          {showFolders(folders)} 
+          ))}
+          {showFolders(folders)}
         </Folder>
-    )
+      ))
 
     return (
       <Paper>
         <List>
-          {folders.map(({ id, folderName, files, folders }) =>
-            <Folder
-              key={id}
-              id={id}
-              name={folderName}
-            >
-              {files.map(({ id, fileName }, index) =>
+          {folders.map(({ id, folderName, files, folders }) => (
+            <Folder key={id} id={id} name={folderName}>
+              {files.map(({ id, fileName }, index) => (
                 <File
                   key={id}
                   id={id}
                   name={fileName}
                   last={index === files.length - 1}
                 />
-              )}
-              {showFolders(folders)} 
+              ))}
+              {showFolders(folders)}
             </Folder>
-          )}
-          {files.map(({ id, fileName }) =>
-            <File
-              key={id}
-              id={id}
-              name={fileName}
-            />
-          )}
+          ))}
+          {files.map(({ id, fileName }) => (
+            <File key={id} id={id} name={fileName} />
+          ))}
         </List>
       </Paper>
     ) // problem w/ files showing up where they're supposed to
@@ -77,8 +69,13 @@ const mapStateToProps = state => ({
   folders: state.folders
 })
 
-const mapDispatchToProps = dispatch => ({
-  fetchFileTreeFromDatabase: () => fetchFileTreeFromDatabase()(dispatch)
-})
+const mapDispatchToProps = {
+  fetchFileTreeFromDatabase,
+  selectFile,
+  selectFolder
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Browser)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Browser)

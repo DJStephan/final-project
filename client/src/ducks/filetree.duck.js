@@ -8,20 +8,66 @@ const LOAD_ERROR = 'LOAD_ERROR'
 const initialState = {
   files: [],
   folders: [],
+  openFolders: { 1: true, 2: false },
+  folderParents: {},
+  folderChildren: {},
   error: null,
   selectedFile: null,
   selectedFolder: 1, // root,
-  folderSelected: true,
-  activeFolder: 1 // root
+  folderSelected: true
+}
+
+// adds folders that are not already in the openFolders hash map and sets them to be unopened
+const populateClosedFolders = (
+  openFolders,
+  folderTree,
+  folderParents,
+  folderChildren,
+  parentFolderId
+) => {
+  let n = folderTree.length
+  for (let f = 0; f < n; f++) {
+    const { id, folders } = folderTree[f]
+    folderParents[id] = parentFolderId
+    if (!folderChildren[parentFolderId]) {
+      folderChildren[parentFolderId] = []
+    }
+    folderChildren[parentFolderId].push(id)
+    if (!openFolders[id]) {
+      openFolders[id] = false
+    }
+    if (folders.length) {
+      populateClosedFolders(
+        openFolders,
+        folders,
+        folderParents,
+        folderChildren,
+        id
+      )
+    }
+  }
 }
 
 export const filetreeReducer = (state = initialState, action) => {
+  const openFolders = { ...state.openFolders }
   switch (action.type) {
     case GET_FILETREE_FROM_DATABASE:
+      const folderParents = {}
+      const folderChildren = {}
+      populateClosedFolders(
+        openFolders,
+        action.payload.folders,
+        folderParents,
+        folderChildren,
+        1
+      )
       return {
         ...state,
         files: action.payload.files,
         folders: action.payload.folders,
+        folderParents,
+        openFolders,
+        folderChildren,
         error: null
       }
     case SELECT_FILE:
@@ -36,18 +82,24 @@ export const filetreeReducer = (state = initialState, action) => {
         error: null
       }
     case SELECT_FOLDER:
+      const selectedFolder = action.payload
+      const folderOpen = !openFolders[selectedFolder]
+      if (!folderOpen) {
+        const children = state.folderChildren[selectedFolder]
+        if (children) {
+          for (let c = 0; c < children.length; c++) {
+            openFolders[children[c]] = false
+          }
+        }
+      }
+      openFolders[selectedFolder] = folderOpen
+      const parentFolder = state.folderParents[selectedFolder]
       return {
         ...state,
         selectedFile: initialState.selectedFile,
-        selectedFolder:
-          action.payload === state.selectedFolder
-            ? initialState.selectedFolder
-            : action.payload,
-        activeFolder:
-          action.payload === state.selectedFolder
-            ? initialState.activeFolder
-            : action.payload,
+        selectedFolder: folderOpen ? selectedFolder : parentFolder,
         folderSelected: true,
+        openFolders,
         error: null
       } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
     case LOAD_ERROR:
@@ -147,14 +199,24 @@ const deleteOrTrashFolder = (modifyFunction, dispatch, selectedFolder) => {
     })
 }
 
+const isInTrash = (folder, folderParents) => {
+  if (folder === 1) {
+    return false
+  } else if (folder === 2) {
+    return true
+  } else {
+    return isInTrash(folderParents[folder], folderParents)
+  }
+}
+
 export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
   const {
     folderSelected,
     selectedFile,
     selectedFolder,
-    activeFolder
+    folderParents
   } = getState()
-  const inTrash = activeFolder === 2
+  const inTrash = isInTrash(selectedFolder, folderParents)
   if (folderSelected && !inTrash) {
     deleteOrTrashFolder(api.trashFolder, dispatch, selectedFolder)
   } else if (folderSelected && inTrash) {
