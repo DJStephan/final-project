@@ -1,5 +1,6 @@
 package driverstorage.server.service;
 
+import driverstorage.server.dto.ResultDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,37 +34,11 @@ public class ViewService {
 			throw new FolderNotFound();
 		}
 		StructureFolderDto structure = this.viewMapper.entityToDto(this.folderRepository.getFolderById(id));
-		ViewDto view = new ViewDto();
-		view.setRoot(structure);
-		return view;
+		if (structure == null) {
+			return new ViewDto(
+					new ResultDto((long) 404, String.format("No folder with id %d found.", id)), null);
+		}
+		return new ViewDto(
+				new ResultDto((long) 200, String.format("View for folder %d.", id)), structure);
 	}
-
-//	Folder folder = folderRepository.getFolderById(id);
-//	if (folder == null) {
-//		throw new FolderNotFound();
-//	} else {
-//		return folder;
-//	}
-//}
-
-	// this commented out section is used for testing
-	/*
-	 * Folder rootFolder = folderRepository.getFolderById((long) 1);
-	 * 
-	 * System.out.println(rootFolder.getFolderName()); for (File i :
-	 * rootFolder.getFiles()) { System.out.println(i.getFileName()); }
-	 * rootbeerFolder(rootFolder.getFolders());
-	 * 
-	 * }
-	 * 
-	 * private void rootbeerFolder(List<Folder> folder) { for (Folder f : folder) {
-	 * System.out.println(f.getFolderName()); if (!f.getFolders().isEmpty()) {
-	 * rootbeerFolder(f.getFolders()); } for (File i : f.getFiles()) {
-	 * System.out.println(i.getFileName()); }
-	 * 
-	 * }
-	 */
 }
-
-// need to print out what the root folder has (root folder name and files in the root) 
-// the get the sub folders (pass it to the rootbeer function

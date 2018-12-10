@@ -105,15 +105,23 @@ public class EditService {
 	 * @param fileId
 	 * @return ResultDto
 	 */
-
+	private boolean isInTrash(Folder folder) {
+		long id = folder.getId();
+		if (id == (long) 2) {
+			return true;
+		} else if (id == (long) 1) {
+			return false;
+		} else {
+			return isInTrash(folder.getParentFolder());
+		}
+	}
 	public ResultDto deleteFile(Long fileId) {
-		Folder trashBin = this.folderRepository.getFolderById((long) 2);
 		File file = this.fileRepository.getFileById(fileId);
 		if (file == null) {
 			return new ResultDto((long) 404, String.format("No file with file id %d found.", fileId));
 		}
 		//IF it is in trash bin
-		if(trashBin.getFiles().contains(file)) {
+		if(isInTrash(file.getParent())) {
 			deleteFileFromDatabase(file);
 		} else {
 			return new ResultDto((long) 404,
@@ -141,7 +149,6 @@ public class EditService {
 	 * @return ResultDto
 	 */
 	public ResultDto deleteFolder(Long folderId) {
-		Folder trashBin = this.folderRepository.getFolderById((long) 2);
 		Folder folder = this.folderRepository.getFolderById(folderId);
 		if (folder == null) {
 			return new ResultDto((long) 404, String.format("No folder with id %d found.", folderId));
@@ -150,7 +157,7 @@ public class EditService {
 			return new ResultDto((long) 400,
 					String.format("The %s folder cannot be deleted", folder.getFolderName()));
 		}
-		if(!trashBin.getFolders().contains(folder)) {
+		if(!isInTrash(folder.getParentFolder())) {
 			return new ResultDto((long) 404,
 					String.format("No folder with id %d found in trash.", folderId));
 		}
@@ -175,6 +182,8 @@ public class EditService {
 		}
 		this.folderRepository.delete(folder);
 	}
+
+	
 
 	/**
 	 * move a file to a given location
@@ -205,6 +214,16 @@ public class EditService {
 				"File %d moved to %s folder successfully", fileId, newParent.getFolderName()));
 
 	}
+	
+	private boolean ancestorIsSelf(Folder self, Folder ancestor) {
+		if (ancestor == null || ancestor.getId() < (long) 3) {
+			return false;
+		} else if (self == ancestor) {
+			return true;
+		} else {
+			return ancestorIsSelf(self, ancestor.getParentFolder());
+		}
+	}
 	/**
 	 * move a folder to a given location
 	 * 
@@ -222,6 +241,10 @@ public class EditService {
 		}
 
 		Folder newParent = this.folderRepository.getFolderById(locationFolderId);
+		if (ancestorIsSelf(folder, newParent.getParentFolder())) {
+			return new ResultDto((long) 400, String.format("Folder %d is an ancestor of the move to folder.  Cannot create an endless loop", folderId));
+		}
+		
 		if (newParent == null) {
 			return new ResultDto((long) 404, String.format("No parent folder with id %d found.", locationFolderId));
 		}
