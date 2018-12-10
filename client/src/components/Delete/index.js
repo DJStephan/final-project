@@ -37,6 +37,7 @@ class Delete extends Component {
       this.setState({
         open: true
       })
+      console.log(this.props)
       if (this.props.selectedFile) {
         this.props.folders.filter(folder => {
           folder.files.filter(file => {
@@ -62,7 +63,9 @@ class Delete extends Component {
         this.props.folders.filter(folder => {
           if (folder.id === this.props.selectedFolder) {
             this.setState({
-              message: `Are you sure you want to delete "${folder.folderName}"?`,
+              message: `Are you sure you want to delete "${
+                folder.folderName
+              }"?`,
               title: 'Delete Folder'
             })
           }
@@ -92,7 +95,7 @@ class Delete extends Component {
         )
       } else {
         return (
-          <DialogActions style={{justifyContent: 'center'}}>
+          <DialogActions style={{ justifyContent: 'center' }}>
             <Button onClick={this.trashOrDelete} color='primary'>
               Yes
             </Button>
@@ -116,13 +119,11 @@ class Delete extends Component {
           aria-describedby='alert-dialog-slide-description'
           scroll='paper'
         >
-          <DialogTitle style={{textAlign: 'center'}}>
+          <DialogTitle style={{ textAlign: 'center' }}>
             {this.state.title}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {this.state.message}
-            </DialogContentText>
+            <DialogContentText>{this.state.message}</DialogContentText>
           </DialogContent>
           {handleButtons()}
         </Dialog>
@@ -142,4 +143,7 @@ const mapDispatchToProps = dispatch => ({
   trashOrDeleteFileOrFolder: () => dispatch(trashOrDeleteFileOrFolder())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Delete)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Delete)

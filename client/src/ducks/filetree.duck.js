@@ -12,7 +12,11 @@ const initialState = {
   folderParents: {},
   folderChildren: {},
   error: null,
+  folderNames: {},
+  fileNames: {},
   selectedFile: null,
+  selectedFileName: null,
+  selectedFolderName: 'root',
   selectedFolder: 1, // root,
   folderSelected: true
 }
@@ -23,11 +27,18 @@ const populateClosedFolders = (
   folderTree,
   folderParents,
   folderChildren,
+  fileNames,
+  folderNames,
   parentFolderId
 ) => {
   let n = folderTree.length
   for (let f = 0; f < n; f++) {
-    const { id, folders } = folderTree[f]
+    const { id, folders, files, folderName } = folderTree[f]
+    for (let i = 0; i < files.length; i++) {
+      const { id, fileName } = files[i]
+      fileNames[id] = fileName
+    }
+    folderNames[id] = folderName
     folderParents[id] = parentFolderId
     if (!folderChildren[parentFolderId]) {
       folderChildren[parentFolderId] = []
@@ -42,6 +53,8 @@ const populateClosedFolders = (
         folders,
         folderParents,
         folderChildren,
+        fileNames,
+        folderNames,
         id
       )
     }
@@ -54,11 +67,15 @@ export const filetreeReducer = (state = initialState, action) => {
     case GET_FILETREE_FROM_DATABASE:
       const folderParents = {}
       const folderChildren = {}
+      const fileNames = {}
+      const folderNames = {}
       populateClosedFolders(
         openFolders,
         action.payload.folders,
         folderParents,
         folderChildren,
+        fileNames,
+        folderNames,
         1
       )
       return {
@@ -68,6 +85,8 @@ export const filetreeReducer = (state = initialState, action) => {
         folderParents,
         openFolders,
         folderChildren,
+        fileNames,
+        folderNames,
         error: null
       }
     case SELECT_FILE:
@@ -75,10 +94,11 @@ export const filetreeReducer = (state = initialState, action) => {
         ...state,
         selectedFile: action.payload,
         folderSelected: false,
+        selectedFileName: state.fileNames[action.payload],
         error: null
       }
     case SELECT_FOLDER:
-      const selectedFolder = action.payload
+      let selectedFolder = action.payload
       const folderOpen = !openFolders[selectedFolder]
       if (!folderOpen) {
         const children = state.folderChildren[selectedFolder]
@@ -90,11 +110,13 @@ export const filetreeReducer = (state = initialState, action) => {
       }
       openFolders[selectedFolder] = folderOpen
       const parentFolder = state.folderParents[selectedFolder]
+      selectedFolder = folderOpen ? selectedFolder : parentFolder
       return {
         ...state,
         selectedFile: initialState.selectedFile,
-        selectedFolder: folderOpen ? selectedFolder : parentFolder,
+        selectedFolder: selectedFolder,
         folderSelected: true,
+        selectedFolderName: state.folderNames[selectedFolder],
         openFolders,
         error: null
       } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
