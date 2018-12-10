@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import connect from 'react-redux/es/connect/connect'
 import {
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   ListItem,
@@ -9,8 +10,7 @@ import {
   Slide
 } from '@material-ui/core'
 import FolderSkeleton from './FolderSkeleton'
-import Error from '../Error'
-import { moveFileOrFolder, fetchFileTreeFromDatabase } from '../../ducks/filetree.duck'
+import { moveFileOrFolder, fetchFileTreeFromDatabase, loadError } from '../../ducks/filetree.duck'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />
@@ -21,16 +21,14 @@ class Move extends Component {
     super()
     this.state = {
       open: false,
-      selected: 0,
-      error: false
+      selected: 0
     }
   }
 
   state = {
     open: false,
     selected: 0,
-    folders: {},
-    error: false
+    folders: {}
   }
 
   handleOpen = () => {
@@ -45,31 +43,21 @@ class Move extends Component {
   handleClose = () => {
     this.setState({
       ...this.state,
-      open: false,
-      error: false
+      open: false
     })
   }
 
-  closeError = () => {
-    this.setState({ error: false })
-  }
-
   moveFileFolder = () => {
-    console.log("Sup: " + this.props.selectedFolder + ", " + this.props.selectedFile)
     if (this.state.selected === 0) {
-      console.log("No Folder")
-      // No folder was selected to return error
-      this.setState({ error: true })
+      // No folder was selected so return error
+      this.props.loadError("Select Folder to Move To")
     } else {
-      console.log("Ya")
       if (this.props.selectedFile !== null) {
-        console.log("File")
         this.props.moveFileOrFolder(
           this.props.selectedFile,
           this.state.selected
         )
       } else {
-        console.log("Folder: " + this.props.selectedFolder + ', ' + this.state.selected)
         this.props.moveFileOrFolder(
           this.props.selectedFolder,
           this.state.selected
@@ -131,13 +119,14 @@ class Move extends Component {
               ))}
             </FolderSkeleton>
           </DialogContent>
-          <Button onClick={this.moveFileFolder}>Confirm</Button>
-          <Button onClick={this.handleClose}>Cancel</Button>
-          <Error
-            open={this.state.error}
-            handleClose={this.closeError}
-            message='Select Folder to Move To'
-          />
+          <DialogActions>
+            <Button onClick={this.moveFileFolder} color="primary">
+              Confirm
+            </Button>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
         </Dialog>
       </ListItem>
     )
@@ -152,7 +141,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = ({
   moveFileOrFolder,
-  fetchFileTreeFromDatabase
+  fetchFileTreeFromDatabase,
+  loadError
 })
 
 export default connect(
