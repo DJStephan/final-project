@@ -1,32 +1,34 @@
 import React, { Component } from "react";
-import { ListItem, Button } from '@material-ui/core'
+import { Drawer, List, ListItem, ListItemIcon, ListItemText , Button } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types'
 import connect from 'react-redux/es/connect/connect'
-import {downloadFile, downloadFolder} from '../../services/api'
+import { downloadFile, downloadFolder } from '../../services/api'
+import { MdFileDownload } from 'react-icons/md'
+// import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 
 function base64ToArrayBuffer(base64) {
-    var binary_string =  window.atob(base64);
+    var binary_string = window.atob(base64);
     var len = binary_string.length;
-    var bytes = new Uint8Array( len );
-    for (var i = 0; i < len; i++)        {
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
         bytes[i] = binary_string.charCodeAt(i);
     }
     return bytes.buffer;
-  }
-  
-  //Create file(blob) and download (brower defined)
-  function saveByteArray(reportName, byte, type) {
-    var blob = new Blob([byte], {type: type});
+}
+
+//Create file(blob) and download (brower defined)
+function saveByteArray(reportName, byte, type) {
+    var blob = new Blob([byte], { type: type });
     var link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
     var fileName = reportName;
     link.download = fileName;
     link.click();
-  }
+}
 
 class Download extends Component {
     constructor() {
@@ -36,7 +38,7 @@ class Download extends Component {
             dialogText: 'something went wrong if you see this'
         }
     }
-    
+
 
     handleOpen = (message) => {
         this.setState({
@@ -54,33 +56,37 @@ class Download extends Component {
     }
 
     handleClick = () => {
-           //make ddownload
-        if(!this.props.selectedFile){
+        //make ddownload
+        if (!this.props.selectedFile) {
             downloadFolder(this.props.selectedFolder)
-            .then()//need to finish
-        }else{
+                .then()//need to finish
+        } else {
             downloadFile(this.props.selectedFile)
-            .then(response => {console.log(response); return response;})
-            .then(response => {
-              console.log(response.file.data)
-              console.log(base64ToArrayBuffer(response.file.data))
-              if(response.result.statusCode === 200) {
-                //Create file and ask for download
-                saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type))
-                this.handleOpen(response.result.message)
-              } else {
-                this.handleOpen(response.result.message)
-                console.log(response.result.message);
-              }
-            })
-            .catch(err => console.log(err))
+                .then(response => { console.log(response); return response; })
+                .then(response => {
+                    console.log(response.file.data)
+                    console.log(base64ToArrayBuffer(response.file.data))
+                    if (response.result.statusCode === 200) {
+                        //Create file and ask for download
+                        saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type))
+                        this.handleOpen(response.result.message)
+                    } else {
+                        this.handleOpen(response.result.message)
+                        console.log(response.result.message);
+                    }
+                })
+                .catch(err => console.log(err))
         }
     }
 
     render() {
         return (
             <ListItem button onClick={this.handleClick}>
-                <Dialog 
+                <ListItemIcon>
+                    <MdFileDownload />
+                </ListItemIcon>
+                <ListItemText primary="Download" />
+                {/* <Dialog 
                 open = {this.state.open}
                 onClose = {this.handleClose}>
                     <DialogTitle>Download Result</DialogTitle>
@@ -89,7 +95,7 @@ class Download extends Component {
                             {this.state.dialogText}
                         </DialogContentText>
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
             </ListItem>
         )
 

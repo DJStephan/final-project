@@ -9,6 +9,7 @@ import NewFolder from '../NewFolder'
 import Delete from '../Delete'
 import Move from '../Move'
 import { downloadFile } from '../../services/api'
+import Download from '../Download'
 
 function download() {
   //Change the base64 into array buffer
@@ -57,12 +58,12 @@ class Sidebar extends Component {
     return(
       <Drawer variant="permanent">
         <List>
-          <ListItem button onClick={download}>
+          <Download>
             <ListItemIcon>
               <MdFileDownload />
             </ListItemIcon>
             <ListItemText primary="Download" />
-          </ListItem>
+          </Download>
           <Upload>
             <ListItemIcon>
               <MdFileUpload />
