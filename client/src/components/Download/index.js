@@ -32,15 +32,17 @@ class Download extends Component {
     constructor() {
         super()
         this.state = {
-            open: false
+            open: false,
+            dialogText: 'something went wrong if you see this'
         }
     }
     
 
-    handleOpen = () => {
+    handleOpen = (message) => {
         this.setState({
             ...this.state,
-            open: true
+            open: true,
+            dialogText: message
         })
     }
 
@@ -55,7 +57,7 @@ class Download extends Component {
            //make ddownload
         if(!this.props.selectedFile){
             downloadFolder(this.props.selectedFolder)
-            .then()
+            .then()//need to finish
         }else{
             downloadFile(this.props.selectedFile)
             .then(response => {console.log(response); return response;})
@@ -64,8 +66,10 @@ class Download extends Component {
               console.log(base64ToArrayBuffer(response.file.data))
               if(response.result.statusCode === 200) {
                 //Create file and ask for download
-                saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type));
+                saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type))
+                this.handleOpen(response.result.message)
               } else {
+                this.handleOpen(response.result.message)
                 console.log(response.result.message);
               }
             })
@@ -82,7 +86,7 @@ class Download extends Component {
                     <DialogTitle>Download Result</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Tell user what resulted from Download
+                            {this.state.dialogText}
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>
