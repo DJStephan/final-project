@@ -16,8 +16,7 @@ class Browser extends Component {
   }
 
   render () {
-    const { files, folders } = this.props
-
+    const { folders, openFolders } = this.props
     const showFolders = folders =>
       folders.map(({ id, folderName, files, folders }) => (
         <Folder key={id} id={id} name={folderName}>
@@ -29,30 +28,13 @@ class Browser extends Component {
               last={index === files.length - 1}
             />
           ))}
-          {showFolders(folders)}
+          {openFolders[id] && showFolders(folders)}
         </Folder>
       ))
 
     return (
       <Paper>
-        <List>
-          {folders.map(({ id, folderName, files, folders }) => (
-            <Folder key={id} id={id} name={folderName}>
-              {files.map(({ id, fileName }, index) => (
-                <File
-                  key={id}
-                  id={id}
-                  name={fileName}
-                  last={index === files.length - 1}
-                />
-              ))}
-              {showFolders(folders)}
-            </Folder>
-          ))}
-          {files.map(({ id, fileName }) => (
-            <File key={id} id={id} name={fileName} />
-          ))}
-        </List>
+        <List>{showFolders(folders)}</List>
       </Paper>
     ) // problem w/ files showing up where they're supposed to
   }
@@ -66,7 +48,8 @@ Browser.propTypes = {
 
 const mapStateToProps = state => ({
   files: state.files,
-  folders: state.folders
+  folders: state.folders,
+  openFolders: state.openFolders
 })
 
 const mapDispatchToProps = {
