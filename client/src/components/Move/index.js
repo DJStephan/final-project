@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import FolderSkeleton from './FolderSkeleton'
 import Error from '../Error'
-import { moveFileOrFolder } from '../../ducks/filetree.duck'
+import { moveFileOrFolder, fetchFileTreeFromDatabase } from '../../ducks/filetree.duck'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />
@@ -55,21 +55,24 @@ class Move extends Component {
   }
 
   moveFileFolder = () => {
+    console.log("Sup: " + this.props.selectedFolder + ", " + this.props.selectedFile)
     if (this.state.selected === 0) {
+      console.log("No Folder")
       // No folder was selected to return error
       this.setState({ error: true })
     } else {
+      console.log("Ya")
       if (this.props.selectedFile !== null) {
+        console.log("File")
         this.props.moveFileOrFolder(
           this.props.selectedFile,
-          this.state.selected,
-          false
+          this.state.selected
         )
       } else {
+        console.log("Folder: " + this.props.selectedFolder + ', ' + this.state.selected)
         this.props.moveFileOrFolder(
           this.props.selectedFolder,
-          this.state.selected,
-          true
+          this.state.selected
         )
       }
       this.handleClose()
@@ -147,9 +150,9 @@ const mapStateToProps = state => ({
   selectedFolder: state.selectedFolder
 })
 
-const mapDispatchToProps = dispatch => ({
-  moveFileOrFolder: (id, destinationId, which) =>
-    moveFileOrFolder(id, destinationId, which)
+const mapDispatchToProps = ({
+  moveFileOrFolder,
+  fetchFileTreeFromDatabase
 })
 
 export default connect(

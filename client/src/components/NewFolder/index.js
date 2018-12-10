@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import connect from 'react-redux/es/connect/connect'
 import { Dialog, DialogContent, DialogTitle, DialogActions, ListItem, Slide, TextField, Button } from '@material-ui/core'
-
-import { createFolder } from '../../services/api'
+import {
+  fetchFileTreeFromDatabase,
+  createFolder
+} from '../../ducks/filetree.duck'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -38,8 +40,12 @@ class NewFolder extends Component {
   }
 
   createNewFolder = () => {
-    this.props.createFolder(this.props.selectedFolder, this.state.name)
-    this.setState({name: 'New Folder'})
+    if(this.props.selectedFolder !== null) {
+      this.props.createFolder(this.props.selectedFolder, this.state.name)
+    } else {
+      this.props.createFolder(1, this.state.name)
+    }
+    //this.props.fetchFileTreeFromDatabase()
     this.handleClose()
   }
   
@@ -89,7 +95,8 @@ const mapStateToProps = state => ({
   selectedFolder: state.selectedFolder
 })
 const mapDispatchToProps = dispatch => ({
-  createFolder: (id,name) => createFolder(id, name)
+  createFolder: (id,name) => dispatch(createFolder(id, name)),
+  fetchFileTreeFromDatabase: () => dispatch(fetchFileTreeFromDatabase())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewFolder)
