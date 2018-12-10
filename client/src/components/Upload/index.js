@@ -1,16 +1,18 @@
 import React, { Component } from "react";
+import connect from 'react-redux/es/connect/connect'
 import ReactDropzone from "react-dropzone";
-//import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { ListItem, Button } from '@material-ui/core'
-import Dialog from '@material-ui/core/Dialog';
+import { Dialog, DialogContent, DialogContentText, DialogTitle, ListItem, Button } from '@material-ui/core'
 import {fromEvent} from 'file-selector'
-//import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 
-import { uploadFiles, createFolder } from '../../services/api'
+import {
+  //uploadFiles,
+  createFolder } from '../../services/api'
+
+import {
+  fetchFileTreeFromDatabase,
+  uploadFiles
+} from '../../ducks/filetree.duck'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -24,15 +26,38 @@ class Upload extends Component {
       open: false
     }
   }
+  
+
+  state = {
+    open: false,
+  }
+
+  handleOpen = () => {
+    if(!this.state.open) {
+      this.setState({ 
+        ...this.state,  
+        open: true 
+      });
+    }
+  }
+
+  handleClose = () => {
+    this.setState({ 
+      ...this.state,
+      open: false 
+    })
+  }
 
 
-  onDrop(accepted, rejected) {
+  onDrop = (accepted, rejected) => {
     let split = accepted[0].path.split('/')
     let folderName
-    //temp hard code root get real folder to send to from state
-    let parentFolderId = 1; //Hard coded (folder selected to be uploaded into)
-    //Creating files in the database
+    let parentFolderId = 1;
+    if(this.props.selectedFolder !== null) {
+      parentFolderId = this.props.selectedFolder
+    }
 
+    //Creating files in the database
     const createFiles = (accepted,rejected,data) => {
       if (rejected.length) {
         //do something with rejected files
@@ -44,9 +69,9 @@ class Upload extends Component {
         }
 
         //send file(s) to DB
-        uploadFiles(data)
-          .then(response => console.log(response))
-          .catch(err => console.log(err));
+        this.props.uploadFiles(data)
+        //  .then(response => console.log(response))
+        //  .catch(err => console.log(err));
       }
     }
 
@@ -80,45 +105,27 @@ class Upload extends Component {
             }
     
             //send file(s) to DB
-            uploadFiles(data)
-              .then(response => console.log(response))
-              .catch(err => console.log(err));
+            this.props.uploadFiles(data)
+            //  .then(response => console.log(response))
+            //  .catch(err => console.log(err));
           }
         })
         .catch(err => console.log(err));
     }
     
     if(split.length > 2){
+      //upload folders
       folderName = split[1]
       //create folder in DB get back folder ID
       console.log(folderName)
       createFolders(accepted, rejected, parentFolderId, folderName, 0)
     }else{
-      //create folders
+      //upload files
       let data = new FormData();
       data.append('folderId', parentFolderId)
       createFiles(accepted,rejected,data)
     }
-  }
-
-  state = {
-    open: false,
-  }
-
-  handleOpen = () => {
-    if(!this.state.open) {
-      this.setState({ 
-        ...this.state,  
-        open: true 
-      });
-    }
-  }
-
-  handleClose = () => {
-    this.setState({ 
-      ...this.state,
-      open: false 
-    })
+    this.handleClose();
   }
 
   render() {
@@ -152,7 +159,16 @@ class Upload extends Component {
     );
   }
 }
-
-
-
-export default Upload
+const mapStateToProps = state => ({
+  selectedFolder: state.selectedFolder
+})
+const mapDispatchToProps = ({
+  fetchFileTreeFromDatabase,
+  uploadFiles
+//  uploadFolder,
+//  createFolder
+})
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Upload)
