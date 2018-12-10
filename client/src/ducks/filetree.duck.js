@@ -69,6 +69,11 @@ export const filetreeReducer = (state = initialState, action) => {
       const folderChildren = {}
       const fileNames = {}
       const folderNames = {}
+      const files = action.payload.files
+      for (let i = 0; i < files.length; i++) {
+        const { id, fileName } = files[i]
+        fileNames[id] = fileName
+      }
       populateClosedFolders(
         openFolders,
         action.payload.folders,
@@ -182,7 +187,6 @@ export const createFolder = (id, name) => dispatch => {
 }
 
 export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
-  console.log(id, destinationId)
   const { folderSelected } = getState()
   if (folderSelected) {
     requestRefreshMapper(api.moveFolder, dispatch, id, destinationId)
