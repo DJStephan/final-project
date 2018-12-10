@@ -1,15 +1,11 @@
 import React, { Component } from "react";
-import { Drawer, List, ListItem, ListItemIcon, ListItemText , Button } from '@material-ui/core'
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import connect from 'react-redux/es/connect/connect'
 import { downloadFile, downloadFolder } from '../../services/api'
 import { MdFileDownload } from 'react-icons/md'
-import Zip from 'zip-zip-top'
-// import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+import JSZip from 'jszip'
+import saveAs from 'file-saver'
 
 function base64ToArrayBuffer(base64) {
     var binary_string = window.atob(base64);
@@ -29,6 +25,16 @@ function saveByteArray(reportName, byte, type) {
     var fileName = reportName;
     link.download = fileName;
     link.click();
+}
+
+const bulid = (data, path, zip) =>{
+    for(let file of data.files){
+        zip.file(path + file.fileName, file.data, {base64: true})
+    }
+
+    for(let folder of data.folders){
+        bulid(folder, path + folder.folderName + '/', zip)
+    }
 }
 
 class Download extends Component {
@@ -57,22 +63,21 @@ class Download extends Component {
     }
 
     handleClick = () => {
-        //make ddownload
+        
         if (!this.props.selectedFile) {
             downloadFolder(this.props.selectedFolder)
                 .then(response => {
                     console.log(response.folder)
-                    let zip = new Zip()
-                    for(let file of response.folder.files){
-                        console.log(file.fileName)
-                    }
-                })//need to finish
+                    let zip = new JSZip()
+                    bulid(response.folder, '', zip)
+                    zip.generateAsync({type:"blob"}).then(function(content) {
+                        saveAs(content, response.folder.folderName);
+                    });
+                })
         } else {
             downloadFile(this.props.selectedFile)
                 .then(response => { console.log(response); return response; })
                 .then(response => {
-                    console.log(response.file.data)
-                    console.log(base64ToArrayBuffer(response.file.data))
                     if (response.result.statusCode === 200) {
                         //Create file and ask for download
                         saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type))
@@ -93,16 +98,6 @@ class Download extends Component {
                     <MdFileDownload />
                 </ListItemIcon>
                 <ListItemText primary="Download" />
-                {/* <Dialog 
-                open = {this.state.open}
-                onClose = {this.handleClose}>
-                    <DialogTitle>Download Result</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            {this.state.dialogText}
-                        </DialogContentText>
-                    </DialogContent>
-                </Dialog> */}
             </ListItem>
         )
 
