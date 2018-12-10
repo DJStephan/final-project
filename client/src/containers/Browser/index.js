@@ -38,18 +38,18 @@ class Browser extends Component {
         <List>
           {showFolders(folders,0)}
           {this.props.files.map(({ id, fileName }, index) => (
-              <File
-                open={openFolders[id]}
-                key={id}
-                id={id}
-                name={fileName}
-                last={index === this.props.files.length - 1}
-                layer={0}
-              />
-            ))}
+            <File
+              open={openFolders[id]}
+              key={id}
+              id={id}
+              name={fileName}
+              last={index === this.props.files.length - 1}
+              layer={0}
+            />
+          ))}
         </List>
       </Paper>
-    ) // problem w/ files showing up where they're supposed to
+    )
   }
 }
 

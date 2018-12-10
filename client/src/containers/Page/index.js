@@ -24,6 +24,10 @@ class Page extends Component {
     this.props.enqueueSnackbar(message, { variant });
   }
 
+  toggleSidebar = () => {
+    console.log("it worked (sorta)")
+  }
+
   render () {
     return (
       <Fragment>
@@ -31,6 +35,9 @@ class Page extends Component {
         <MuiThemeProvider theme={theme}>
           <Sidebar />
           <div style={{marginLeft: '210px'}}>
+            <React.Fragment>
+              <Button onClick={this.toggleSidebar}>Toggle Sidebar</Button>
+            </React.Fragment>
             <Browser />
           </div>
         </MuiThemeProvider>

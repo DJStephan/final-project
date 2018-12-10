@@ -56,7 +56,11 @@ class Sidebar extends Component {
   
   render () {
     return(
-      <Drawer variant="permanent">
+      <Drawer
+        variant="persistent"
+        anchor="left"
+        open={true}
+      >
         <List>
           <Download>
             <ListItemIcon>
