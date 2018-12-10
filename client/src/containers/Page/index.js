@@ -29,23 +29,23 @@ class Page extends Component {
     this.props.enqueueSnackbar(message, { variant });
   }
 
-  toggleSidebar = () => { // USE SETSTATE
-    this.setState({sidebarVisible: !this.state.sidebarVisible})
-    console.log("sidebarVisible = " + this.state.sidebarVisible)
+  toggleSidebar = () => {
+    this.setState({
+      sidebarVisible: !this.state.sidebarVisible
+    })
   }
 
   render () {
+    // const 
+
     return (
       <Fragment>
         <CssBaseline />
         <MuiThemeProvider theme={theme}>
           <Sidebar visible={this.state.sidebarVisible} />
-          <div style={{marginLeft: '210px'}}>
-            <Header toggleButton={this.toggleSidebar} />
-            <React.Fragment>
-              <Button onClick={this.toggleSidebar}>Toggle Sidebar</Button>
-            </React.Fragment>
-            <Browser />
+          <div style={{marginLeft: (this.state.sidebarVisible? '210px' : '0px')}}>
+            <Header indented={!this.state.sidebarVisible} toggleButton={this.toggleSidebar} />
+            <Browser indented={!this.state.sidebarVisible} />
           </div>
         </MuiThemeProvider>
         
