@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import connect from 'react-redux/es/connect/connect'
-import { downloadFile, downloadFolder } from '../../services/api'
+import { downloadFile, downloadFolder} from '../../services/api'
 import { MdFileDownload } from 'react-icons/md'
 import JSZip from 'jszip'
 import saveAs from 'file-saver'
+import {loadError} from '../../ducks/filetree.duck'
 
 function base64ToArrayBuffer(base64) {
     var binary_string = window.atob(base64);
@@ -67,12 +68,15 @@ class Download extends Component {
         if (!this.props.selectedFile) {
             downloadFolder(this.props.selectedFolder)
                 .then(response => {
-                    console.log(response.folder)
-                    let zip = new JSZip()
+                    if(response.result.statusCode === 200){
+                        let zip = new JSZip()
                     bulid(response.folder, '', zip)
                     zip.generateAsync({type:"blob"}).then(function(content) {
                         saveAs(content, response.folder.folderName);
                     });
+                    }else {
+                        return this.props.loadError(response.result.message)
+                    }
                 })
         } else {
             downloadFile(this.props.selectedFile)
@@ -83,11 +87,10 @@ class Download extends Component {
                         saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type))
                         this.handleOpen(response.result.message)
                     } else {
-                        this.handleOpen(response.result.message)
-                        console.log(response.result.message);
+                        this.props.loadError(response.result.message)
                     }
                 })
-                .catch(err => console.log(err))
+                .catch(err => this.props.loadError(err.message))
         }
     }
 
@@ -114,4 +117,8 @@ const mapStateToProps = state => ({
     selectedFolder: state.selectedFolder
 })
 
-export default connect(mapStateToProps)(Download)
+const mapDispatchToProps = ({
+    loadError
+  })
+
+export default connect(mapStateToProps, mapDispatchToProps)(Download)

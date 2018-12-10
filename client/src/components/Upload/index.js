@@ -4,12 +4,7 @@ import ReactDropzone from "react-dropzone";
 import { Dialog, DialogContent, DialogContentText, DialogTitle, ListItem, Button } from '@material-ui/core'
 import {fromEvent} from 'file-selector'
 import Slide from '@material-ui/core/Slide';
-// import { loadSuccess, loadError } from '../../ducks/filetree.duck'
-
-import {
-  //uploadFiles,
-  createFolder } from '../../services/api'
-
+import { createFolder } from '../../services/api'
 import {
   fetchFileTreeFromDatabase,
   uploadFiles,
@@ -139,6 +134,7 @@ class Upload extends Component {
       createFiles(accepted,rejected,data)
     }
     this.handleClose();
+    this.props.loadSuccess('File uploaded successfully')
   }
 
   render() {
