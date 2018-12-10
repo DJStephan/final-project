@@ -29,15 +29,6 @@ class Page extends Component {
     }
   }
 
-  handleClick = () => {
-    this.props.enqueueSnackbar('I love snacks.');
-  }
-
-  handleClickVariant = (variant, message) => () => {
-    // variant could be success, error, warning or info
-    this.props.enqueueSnackbar(message, { variant });
-  }
-
   toggleSidebar = () => {
     this.setState({
       sidebarVisible: !this.state.sidebarVisible
@@ -57,14 +48,6 @@ class Page extends Component {
             <Browser indented={!this.state.sidebarVisible} />
           </div>
         </MuiThemeProvider>
-        
-        <React.Fragment>
-          <Button onClick={this.handleClick}>Show snackbar</Button>
-          <Button onClick={this.handleClickVariant('success','Success')}>Show Success snackbar</Button>
-          <Button onClick={this.handleClickVariant('warning','WARNING')}>Show Warning snackbar</Button>
-          <Button onClick={this.handleClickVariant('error','ERROR')}>Show Error snackbar</Button>
-          <Button onClick={this.handleClickVariant('info','Info')}>Show Info snackbar</Button>
-        </React.Fragment>
       </Fragment>
     )
   }
