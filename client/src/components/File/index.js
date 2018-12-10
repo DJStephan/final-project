@@ -10,13 +10,13 @@ import { MdInsertDriveFile } from 'react-icons/md'
 
 import { selectFile } from '../../ducks/filetree.duck'
 
-const File = ({ id, last, name, selectFile, selectedFile, layer }) =>
+const File = ({ id, last, name, selectFile, selectedFile, layer, inTrash }) =>
   <ListItem
     button
     divider={last}
     selected={id === selectedFile}
     onClick={() => selectFile(id)}
-    style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (id === selectedFile? 'rgb(104, 133, 228)' : 'white')}}
+    style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: inTrash? (id === selectedFile? 'rgb(163, 192, 15)' : 'rgb(217, 243, 89)') : (id === selectedFile? 'rgb(104, 133, 228)' : 'white')}}
   >
     <ListItemIcon>
       <MdInsertDriveFile />

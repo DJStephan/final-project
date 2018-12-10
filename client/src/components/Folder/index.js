@@ -22,7 +22,7 @@ import { selectFolder } from '../../ducks/filetree.duck'
 class Folder extends Component {
 
   render () {
-    const { children, id, name, selectFolder, selectedFolder, layer, open } = this.props
+    const { children, id, name, selectFolder, selectedFolder, layer, open, inTrash} = this.props
     const selected = id === selectedFolder
 
     return (
@@ -31,16 +31,16 @@ class Folder extends Component {
           button
           selected={selected}
           onClick={() => {selectFolder(id)}}
-          style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (selected? 'rgb(104, 133, 228)' : open? 'rgb(200, 200, 250)' : 'white')}}
+          style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (inTrash? selected? 'rgb(163, 192, 15)' : open? 'rgb(201, 238, 17)' : 'rgb(217, 243, 89)' : selected? 'rgb(104, 133, 228)' : open? 'rgb(200, 200, 250)' : 'none')}}
         >
           <ListItemIcon>
-            {id === 2? open ? <MdDeleteForever /> : <MdDelete /> : open ? <MdFolderOpen /> : <MdFolder />}
+            {id===2? open ? <MdDeleteForever /> : <MdDelete /> : open ? <MdFolderOpen /> : <MdFolder />}
           </ListItemIcon>
           <ListItemText primary={name} />
           {open ? <MdExpandLess /> : <MdExpandMore />}
         </ListItem>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <List>
+          <List style={{backgroundColor: (inTrash? 'rgb(217, 243, 89)' : 'white')}} >
             {children}
           </List>
         </Collapse>

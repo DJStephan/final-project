@@ -17,12 +17,15 @@ class Browser extends Component {
 
   render () {
     const { folders, openFolders } = this.props
-    const showFolders = (folders, layer) =>
-      folders.map(({ id, folderName, files, folders }) => (
-        <Folder open={openFolders[id]} layer={layer} key={id} id={id} name={folderName}>
-          {openFolders[id] && showFolders(folders, layer + 1)}
+    const showFolders = (folders, layer, inTrash) =>
+      folders.map(({ id, folderName, files, folders }) => {
+        let trashed = (id === 2)
+        return (
+        <Folder inTrash={trashed? true : inTrash} open={openFolders[id]} layer={layer} key={id} id={id} name={folderName}>
+          {openFolders[id] && showFolders(folders, layer + 1, trashed? true : inTrash)}
           {files.map(({ id, fileName }, index) => (
             <File
+              inTrash={trashed? true : inTrash}
               key={id}
               id={id}
               name={fileName}
@@ -31,12 +34,12 @@ class Browser extends Component {
             />
           ))}
         </Folder>
-      ))
+      )})
 
     return (
       <Paper>
         <List>
-          {showFolders(folders,0)}
+          {showFolders(folders,0,false)}
           {this.props.files.map(({ id, fileName }, index) => (
             <File
               open={openFolders[id]}

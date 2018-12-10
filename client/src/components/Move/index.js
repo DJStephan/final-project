@@ -106,7 +106,7 @@ class Move extends Component {
               selectedFolder={this.state.selected}
               selectSkeletonFolder={this.selectFolder}
             >
-              {this.props.folders.map(({ id, folderName, files, folders }) => (
+              {this.props.folders.filter(({id}) => id !== 2 ).map(({ id, folderName, files, folders }) => (
                 <FolderSkeleton
                   key={id}
                   id={id}
@@ -120,11 +120,11 @@ class Move extends Component {
             </FolderSkeleton>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.moveFileFolder} color="primary">
-              Confirm
-            </Button>
             <Button onClick={this.handleClose} color="primary">
               Cancel
+            </Button>
+            <Button onClick={this.moveFileFolder} color="primary">
+              Confirm
             </Button>
           </DialogActions>
         </Dialog>
