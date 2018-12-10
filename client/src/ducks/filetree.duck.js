@@ -3,6 +3,7 @@ import * as api from '../services/api'
 const LOAD_FILETREE = 'LOAD_FILETREE'
 const SELECT_FILE = 'SELECT_FILE'
 const SELECT_FOLDER = 'SELECT_FOLDER'
+const NON_TOGGLE_SELECT_FOLDER = 'NON_TOGGLE_SELECT_FOLDER'
 const LOAD_ERROR = 'LOAD_ERROR'
 const LOAD_SUCCESS = 'LOAD_SUCCESS'
 
@@ -65,6 +66,7 @@ const populateClosedFolders = (
 
 export const filetreeReducer = (state = initialState, action) => {
   const openFolders = { ...state.openFolders }
+  let selectedFolder
   switch (action.type) {
     case LOAD_FILETREE:
       const folderParents = {}
@@ -76,6 +78,9 @@ export const filetreeReducer = (state = initialState, action) => {
         const { id, fileName } = files[i]
         fileNames[id] = fileName
       }
+
+      // TRASH ALWAYS RISES TO THE TOP!  DAVE AGREES
+      action.payload.folders.sort(f => (f.id === 2 ? -1 : 1))
       populateClosedFolders(
         openFolders,
         action.payload.folders,
@@ -105,8 +110,16 @@ export const filetreeReducer = (state = initialState, action) => {
         error: null,
         success: null
       }
+    case NON_TOGGLE_SELECT_FOLDER:
+      selectedFolder = action.payload
+      return {
+        ...state,
+        folderSelected: true,
+        selectedFolder: selectedFolder,
+        selectedFolderName: state.folderNames[selectedFolder]
+      }
     case SELECT_FOLDER:
-      let selectedFolder = action.payload
+      selectedFolder = action.payload
       const folderOpen = !openFolders[selectedFolder]
       if (!folderOpen) {
         const children = state.folderChildren[selectedFolder]
@@ -162,7 +175,11 @@ export const fetchFileTreeFromDatabase = (
   api
     .view(folder)
     .then(response => dispatch(loadFiletree(response.root)))
-    .then(() => dispatch(loadSuccess(message)))
+    .then(() => {
+      if (message) {
+        dispatch(loadSuccess(message))
+      }
+    })
     .catch(e => dispatch(loadError(e.message)))
 }
 
@@ -183,12 +200,7 @@ export const loadSuccess = success => ({
 })
 
 export const uploadFiles = data => dispatch => {
-  requestRefreshMapper(
-    api.uploadFiles,
-    dispatch,
-    'Files uploaded successfully',
-    data
-  )
+  requestRefreshMapper(api.uploadFiles, dispatch, null, data)
 }
 
 export const createFolder = (id, name) => dispatch => {
@@ -231,7 +243,7 @@ const deleteOrTrashFile = (
 ) => {
   modifyFunction(selectedFile)
     .then(() => {
-      dispatch(selectFolder(selectedFolder))
+      dispatch(nonToggleSelectFolder(selectedFolder))
       dispatch(fetchFileTreeFromDatabase(message))
     })
     .catch(e => dispatch(loadError(e.message)))
@@ -240,12 +252,13 @@ const deleteOrTrashFile = (
 const deleteOrTrashFolder = (
   modifyFunction,
   dispatch,
+  parentFolder,
   message,
   selectedFolder
 ) => {
   modifyFunction(selectedFolder)
     .then(() => {
-      dispatch(selectFolder(1))
+      dispatch(nonToggleSelectFolder(parentFolder))
       dispatch(fetchFileTreeFromDatabase(message))
     })
     .catch(e => {
@@ -274,10 +287,12 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
     fileNames
   } = getState()
   const inTrash = isInTrash(selectedFolder, folderParents)
+  const parentFolder = folderParents[selectedFolder]
   if (folderSelected && !inTrash) {
     deleteOrTrashFolder(
       api.trashFolder,
       dispatch,
+      parentFolder,
       `${folderNames[selectedFolder]} successfully moved to trash`,
       selectedFolder
     )
@@ -285,6 +300,7 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
     deleteOrTrashFolder(
       api.deleteFolder,
       dispatch,
+      parentFolder,
       `${folderNames[selectedFolder]} deleted permanently`,
       selectedFolder
     )
@@ -315,4 +331,9 @@ export const selectFolder = folderId => ({
 export const selectFile = fileId => ({
   type: SELECT_FILE,
   payload: fileId
+})
+
+const nonToggleSelectFolder = folderId => ({
+  type: NON_TOGGLE_SELECT_FOLDER,
+  payload: folderId
 })
