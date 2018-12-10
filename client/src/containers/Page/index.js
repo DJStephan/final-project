@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
+import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import { SnackbarProvider, withSnackbar } from 'notistack';
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core'
 import { createMuiTheme } from '@material-ui/core/styles'
 
@@ -18,6 +18,15 @@ const theme = createMuiTheme({
 class Page extends Component {
   state = {
     sidebarVisible: true
+  }
+
+  componentDidUpdate() {
+    if(this.props.success !== null) {
+      this.props.enqueueSnackbar(this.props.success, { variant: 'success' });
+    }
+    if(this.props.error !== null) {
+      this.props.enqueueSnackbar(this.props.error, { variant: 'error' });
+    }
   }
 
   handleClick = () => {
@@ -65,14 +74,10 @@ Page.propTypes = {
   enqueueSnackbar: PropTypes.func.isRequired,
 };
 
-const MyPage = withSnackbar(Page);
-
-function IntegrationNotistack() {
-  return (
-    <SnackbarProvider maxSnack={3}>
-      <MyPage />
-    </SnackbarProvider>
-  );
-}
-
-export default IntegrationNotistack;
+const mapStateToProps = state => ({
+  success: state.success,
+  error: state.error
+})
+export default connect(
+  mapStateToProps
+)(Page)
