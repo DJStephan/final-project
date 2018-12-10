@@ -43,7 +43,7 @@ class Delete extends Component {
           message: `Are you sure you want to delete "${this.props.selectedFileName}"?`,
           title: 'Delete File'
         })
-      } else if (this.props.selectedFolderName !== "root" && this.props.selectedFolderName !== "trash") {
+      } else if (this.props.selectedFolder !== 1 && this.props.selectedFolder !== 2) {
         this.setState({
           message: `Are you sure you want to delete "${this.props.selectedFolderName}"?`,
           title: 'Delete Folder'
