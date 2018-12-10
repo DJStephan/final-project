@@ -37,7 +37,7 @@ function ButtonAppBar(props) {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Tobo Drive
           </Typography>
-          <Button color="inherit">A Button </Button>
+          {/* <Button color="inherit">A Button </Button> */}
         </Toolbar>
       </AppBar>
     </div>

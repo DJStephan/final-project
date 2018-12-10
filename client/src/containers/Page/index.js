@@ -19,12 +19,14 @@ class Page extends Component {
     sidebarVisible: true
   }
 
-  componentDidUpdate() {
-    if(this.props.success !== null) {
-      this.props.enqueueSnackbar(this.props.success, { variant: 'success' });
-    }
-    if(this.props.error !== null) {
-      this.props.enqueueSnackbar(this.props.error, { variant: 'error' });
+  componentDidUpdate(prevProp) {
+    if(prevProp !== this.props) {
+      if(this.props.success !== null) {
+        this.props.enqueueSnackbar(this.props.success, { variant: 'success' });
+      }
+      if(this.props.error !== null) {
+        this.props.enqueueSnackbar(this.props.error, { variant: 'error' });
+      }
     }
   }
 
@@ -35,8 +37,6 @@ class Page extends Component {
   }
 
   render () {
-    // const 
-
     return (
       <Fragment>
         <CssBaseline />
