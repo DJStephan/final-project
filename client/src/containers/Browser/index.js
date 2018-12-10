@@ -20,6 +20,7 @@ class Browser extends Component {
     const showFolders = (folders, layer) =>
       folders.map(({ id, folderName, files, folders }) => (
         <Folder layer={layer} key={id} id={id} name={folderName}>
+          {openFolders[id] && showFolders(folders, layer + 1)}
           {files.map(({ id, fileName }, index) => (
             <File
               key={id}
@@ -29,7 +30,6 @@ class Browser extends Component {
               layer={layer + 1}
             />
           ))}
-          {openFolders[id] && showFolders(folders, layer + 1)}
         </Folder>
       ))
 
