@@ -20,9 +20,13 @@ class Page extends Component {
     sidebarVisible: true
   }
 
-  componentDidUpdate(prevProp) {
-    console.log(this.props.sucess)
-    console.log(this.props.error)
+  componentDidUpdate() {
+    if(this.props.success !== null) {
+      this.props.enqueueSnackbar(this.props.success, { variant: 'success' });
+    }
+    if(this.props.error !== null) {
+      this.props.enqueueSnackbar(this.props.error, { variant: 'error' });
+    }
   }
 
   handleClick = () => {
