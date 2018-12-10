@@ -189,7 +189,7 @@ const requestRefreshMapper = (action, dispatch, message, ...args) => {
     .catch(e => dispatch(loadError(e.message)))
 }
 
-const loadError = error => ({
+export const loadError = error => ({
   type: LOAD_ERROR,
   error
 })
