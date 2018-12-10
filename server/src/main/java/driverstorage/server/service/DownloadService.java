@@ -51,7 +51,7 @@ public class DownloadService {
             return new DownloadFileDto(result, null);
         } else {
             ResultDto result = new ResultDto((long) 200, "Success");
-            FileDto fileDto = new FileDto(file.getFileName(), file.getData());
+            FileDto fileDto = new FileDto(file.getFileName(), file.getData(), file.getType());
             return new DownloadFileDto(result, fileDto);
         }
     }
@@ -60,7 +60,7 @@ public class DownloadService {
     private void populateFolderDto (FolderDto folderDto, Folder folder) {
         List<FileDto> fileDtos = new ArrayList<>();
         for (File file: folder.getFiles()) {
-            fileDtos.add(new FileDto(file.getFileName(), file.getData()));
+            fileDtos.add(new FileDto(file.getFileName(), file.getData(), file.getType()));
         }
         folderDto.setFolderName(folder.getFolderName());
         folderDto.setFiles(fileDtos);
