@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import connect from 'react-redux/es/connect/connect'
 import { downloadFile, downloadFolder } from '../../services/api'
 import { MdFileDownload } from 'react-icons/md'
+import Zip from 'zip-zip-top'
 // import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 
 function base64ToArrayBuffer(base64) {
@@ -59,7 +60,13 @@ class Download extends Component {
         //make ddownload
         if (!this.props.selectedFile) {
             downloadFolder(this.props.selectedFolder)
-                .then()//need to finish
+                .then(response => {
+                    console.log(response.folder)
+                    let zip = new Zip()
+                    for(let file of response.folder.files){
+                        console.log(file.fileName)
+                    }
+                })//need to finish
         } else {
             downloadFile(this.props.selectedFile)
                 .then(response => { console.log(response); return response; })

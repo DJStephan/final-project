@@ -46,7 +46,7 @@ export const uploadFiles = data =>
 
 export const downloadFile = fileId => axiosGet(`download/files/${fileId}`, {})
 export const downloadFolder = folderId =>
-  axiosGet(`download/folder/${folderId}`, {})
+  axiosGet(`download/folders/${folderId}`, {})
 
 export const deleteFile = fileId =>
   axiosDelete(`edit/delete/file/${fileId}`, {})
