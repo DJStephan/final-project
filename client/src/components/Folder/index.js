@@ -20,12 +20,9 @@ import {
 import { selectFolder } from '../../ducks/filetree.duck'
 
 class Folder extends Component {
-  state = {
-    open: false
-  }
 
   render () {
-    const { children, id, name, selectFolder, selectedFolder, layer } = this.props
+    const { children, id, name, selectFolder, selectedFolder, layer, open } = this.props
     const selected = id === selectedFolder
 
     return (
@@ -33,16 +30,16 @@ class Folder extends Component {
         <ListItem
           button
           selected={selected}
-          onClick={() => {selectFolder(id); this.setState({open: !this.state.open})}}
-          style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (selected? 'rgb(104, 133, 228)' : this.state.open? 'rgb(200, 200, 250)' : 'white')}}
+          onClick={() => {selectFolder(id)}}
+          style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (selected? 'rgb(104, 133, 228)' : open? 'rgb(200, 200, 250)' : 'white')}}
         >
           <ListItemIcon>
-            {id === 2? this.state.open ? <MdDeleteForever /> : <MdDelete /> : this.state.open ? <MdFolderOpen /> : <MdFolder />}
+            {id === 2? open ? <MdDeleteForever /> : <MdDelete /> : open ? <MdFolderOpen /> : <MdFolder />}
           </ListItemIcon>
           <ListItemText primary={name} />
-          {this.state.open ? <MdExpandLess /> : <MdExpandMore />}
+          {open ? <MdExpandLess /> : <MdExpandMore />}
         </ListItem>
-        <Collapse in={this.state.open} timeout="auto" unmountOnExit>
+        <Collapse in={open} timeout="auto" unmountOnExit>
           <List>
             {children}
           </List>
