@@ -129,6 +129,7 @@ export const filetreeReducer = (state = initialState, action) => {
         ...state,
         folderSelected: true,
         selectedFolder: selectedFolder,
+        selectedFile: null,
         selectedFolderName: state.folderNames[selectedFolder]
       }
     case SELECT_FOLDER:
@@ -228,7 +229,7 @@ export const createFolder = (id, name) => dispatch => {
 }
 
 export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
-  const { folderSelected, folderNames, fileNames } = getState()
+  const { folderSelected, folderNames, fileNames, fileParents } = getState()
   if (folderSelected) {
     requestRefreshMapper(
       api.moveFolder,
@@ -238,6 +239,7 @@ export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
       destinationId
     )
   } else {
+    dispatch(nonToggleSelectFolder(fileParents[id]))
     requestRefreshMapper(
       api.moveFile,
       dispatch,

@@ -9,7 +9,7 @@ import { ListItem, Button } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog'
 import Slide from '@material-ui/core/Slide'
 
-import { trashOrDeleteFileOrFolder } from '../../ducks/filetree.duck'
+import { trashOrDeleteFileOrFolder, loadError } from '../../ducks/filetree.duck'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />
@@ -33,27 +33,39 @@ class Delete extends Component {
   }
 
   handleOpen = () => {
+    const {
+      selectedFileName,
+      selectedFolderName,
+      selectedFolder,
+      inTrash,
+      folderSelected
+    } = this.props
     if (!this.state.open) {
-      this.setState({
-        open: true
-      })
-      console.log(this.props)
-      if (this.props.selectedFileName) {
-        this.setState({
-          message: `Are you sure you want to delete "${this.props.selectedFileName}"?`,
-          title: 'Delete File'
-        })
-      } else if (this.props.selectedFolder !== 1 && this.props.selectedFolder !== 2) {
-        this.setState({
-          message: `Are you sure you want to delete "${this.props.selectedFolderName}"?`,
-          title: 'Delete Folder'
-        })
-      } else {
-        this.setState({
-          message: 'Please select a file or folder',
-          title: 'Nothing Selected'
-        })
+      let open = true
+      let message = 'Please select a file or folder'
+      let title = 'Nothing Selected'
+      if (!folderSelected) {
+        title = inTrash ? 'Delete File' : 'Move File to Trash'
+        message = `Are you sure you want to ${
+          inTrash ? 'delete' : 'trash'
+        } "${selectedFileName}"?`
+      } else if (this.props.selectedFolder === 1) {
+        open = false
+        this.props.loadError('Cannot delete the root folder!')
+      } else if (this.props.selectedFolder === 2) {
+        open = false
+        this.props.loadError('Cannot delete the trash folder!')
+      } else if (folderSelected) {
+        title = inTrash ? 'Delete Folder' : 'Move Folder to Trash'
+        message = `Are you sure you want to ${
+          inTrash ? 'delete' : 'trash'
+        } "${selectedFolderName}"?`
       }
+      this.setState({
+        open,
+        message,
+        title
+      })
     }
   }
 
@@ -121,12 +133,15 @@ const mapStateToProps = state => ({
   selectedFile: state.selectedFile,
   selectedFolder: state.selectedFolder,
   selectedFileName: state.selectedFileName,
-  selectedFolderName: state.selectedFolderName
+  selectedFolderName: state.selectedFolderName,
+  folderSelected: state.folderSelected,
+  inTrash: state.inTrash
 })
 
-const mapDispatchToProps = dispatch => ({
-  trashOrDeleteFileOrFolder: () => dispatch(trashOrDeleteFileOrFolder())
-})
+const mapDispatchToProps = {
+  trashOrDeleteFileOrFolder,
+  loadError
+}
 
 export default connect(
   mapStateToProps,
