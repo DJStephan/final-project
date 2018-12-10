@@ -48,10 +48,9 @@ function download() {
     .catch(err => console.log(err))
 }
 
-
 class Sidebar extends Component {
-  componentDidMount() {
-    console.log(this.props)
+  componentDidUpdate() {
+    console.log(this.props.visible)
   }
   
   render () {
@@ -59,7 +58,7 @@ class Sidebar extends Component {
       <Drawer
         variant="persistent"
         anchor="left"
-        open={true}
+        open={this.props.visible}
       >
         <List>
           <Download>
@@ -100,7 +99,8 @@ class Sidebar extends Component {
 
 Sidebar.propTypes = {
   files: PropTypes.array.isRequired,
-  folders: PropTypes.array.isRequired
+  folders: PropTypes.array.isRequired,
+  visible: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => ({

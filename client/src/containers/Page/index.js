@@ -16,6 +16,10 @@ const theme = createMuiTheme({
 })
 
 class Page extends Component {
+  state = {
+    sidebarVisible: true
+  }
+
   handleClick = () => {
     this.props.enqueueSnackbar('I love snacks.');
   }
@@ -25,8 +29,9 @@ class Page extends Component {
     this.props.enqueueSnackbar(message, { variant });
   }
 
-  toggleSidebar = () => {
-    console.log("it worked (sorta)")
+  toggleSidebar = () => { // USE SETSTATE
+    this.setState({sidebarVisible: !this.state.sidebarVisible})
+    console.log("sidebarVisible = " + this.state.sidebarVisible)
   }
 
   render () {
@@ -34,9 +39,9 @@ class Page extends Component {
       <Fragment>
         <CssBaseline />
         <MuiThemeProvider theme={theme}>
-          <Header />
-          <Sidebar />
+          <Sidebar visible={this.state.sidebarVisible} />
           <div style={{marginLeft: '210px'}}>
+            <Header toggleButton={this.toggleSidebar} />
             <React.Fragment>
               <Button onClick={this.toggleSidebar}>Toggle Sidebar</Button>
             </React.Fragment>
