@@ -11,7 +11,8 @@ import {
 
 import {
   fetchFileTreeFromDatabase,
-  uploadFiles
+  uploadFiles,
+  loadSuccess
 } from '../../ducks/filetree.duck'
 
 function Transition(props) {
@@ -106,8 +107,6 @@ class Upload extends Component {
     
             //send file(s) to DB
             this.props.uploadFiles(data)
-            //  .then(response => console.log(response))
-            //  .catch(err => console.log(err));
           }
         })
         .catch(err => console.log(err));
@@ -164,9 +163,8 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = ({
   fetchFileTreeFromDatabase,
-  uploadFiles
-//  uploadFolder,
-//  createFolder
+  uploadFiles,
+  loadSuccess
 })
 export default connect(
   mapStateToProps,
