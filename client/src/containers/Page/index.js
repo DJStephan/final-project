@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core'
 import { createMuiTheme } from '@material-ui/core/styles'
 
