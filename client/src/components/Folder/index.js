@@ -34,7 +34,7 @@ class Folder extends Component {
           button
           selected={selected}
           onClick={() => {selectFolder(id); this.setState({open: !this.state.open})}}
-          style={{paddingLeft: (layer * 30 + 10) + 'px'}}
+          style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (selected? 'rgb(104, 133, 228)' : this.state.open? 'rgb(200, 200, 250)' : 'white')}}
         >
           <ListItemIcon>
             {id === 2? this.state.open ? <MdDeleteForever /> : <MdDelete /> : this.state.open ? <MdFolderOpen /> : <MdFolder />}

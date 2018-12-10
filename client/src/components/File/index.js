@@ -16,7 +16,7 @@ const File = ({ id, last, name, selectFile, selectedFile, layer }) =>
     divider={last}
     selected={id === selectedFile}
     onClick={() => selectFile(id)}
-    style={{paddingLeft: (layer * 30 + 40) + 'px'}}
+    style={{paddingLeft: (layer * 30 + 40) + 'px', backgroundColor: (id === selectedFile? 'rgb(104, 133, 228)' : 'white')}}
   >
     <ListItemIcon>
       <MdInsertDriveFile />
