@@ -7,6 +7,7 @@ import { createMuiTheme } from '@material-ui/core/styles'
 
 import { Browser } from '..'
 import { Sidebar } from '../../components'
+import Header from '../../components/Header'
 
 const theme = createMuiTheme({
   typography: {
@@ -33,6 +34,7 @@ class Page extends Component {
       <Fragment>
         <CssBaseline />
         <MuiThemeProvider theme={theme}>
+          <Header />
           <Sidebar />
           <div style={{marginLeft: '210px'}}>
             <React.Fragment>
