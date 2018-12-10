@@ -12,7 +12,9 @@ import {
   MdFolder,
   MdFolderOpen,
   MdExpandLess,
-  MdExpandMore
+  MdExpandMore,
+  MdDelete,
+  MdDeleteForever
 } from 'react-icons/md'
 
 import { selectFolder } from '../../ducks/filetree.duck'
@@ -23,7 +25,7 @@ class Folder extends Component {
   }
 
   render () {
-    const { children, id, name, selectFolder, selectedFolder } = this.props
+    const { children, id, name, selectFolder, selectedFolder, layer } = this.props
     const selected = id === selectedFolder
 
     return (
@@ -32,9 +34,10 @@ class Folder extends Component {
           button
           selected={selected}
           onClick={() => {selectFolder(id); this.state.open = !this.state.open}}
+          style={{paddingLeft: (layer * 30 + 10) + 'px'}}
         >
           <ListItemIcon>
-            {this.state.open ? <MdFolderOpen /> : <MdFolder />}
+            {id === 2? this.state.open ? <MdDeleteForever /> : <MdDelete /> : this.state.open ? <MdFolderOpen /> : <MdFolder />}
           </ListItemIcon>
           <ListItemText primary={name} />
           {this.state.open ? <MdExpandLess /> : <MdExpandMore />}
@@ -56,6 +59,7 @@ Folder.propTypes = {
   // optional vars
   id: PropTypes.number,
   selectedFolder: PropTypes.number,
+  layer: PropTypes.number
 }
 
 const mapStateToProps = state => ({
