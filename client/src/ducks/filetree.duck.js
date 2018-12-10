@@ -1,9 +1,10 @@
 import * as api from '../services/api'
 
-const GET_FILETREE_FROM_DATABASE = 'GET_FILETREE_FROM_DATABASE'
+const LOAD_FILETREE = 'LOAD_FILETREE'
 const SELECT_FILE = 'SELECT_FILE'
 const SELECT_FOLDER = 'SELECT_FOLDER'
 const LOAD_ERROR = 'LOAD_ERROR'
+const LOAD_SUCCESS = 'LOAD_SUCCESS'
 
 const initialState = {
   files: [],
@@ -12,6 +13,7 @@ const initialState = {
   folderParents: {},
   folderChildren: {},
   error: null,
+  success: null,
   folderNames: {},
   fileNames: {},
   selectedFile: null,
@@ -64,7 +66,7 @@ const populateClosedFolders = (
 export const filetreeReducer = (state = initialState, action) => {
   const openFolders = { ...state.openFolders }
   switch (action.type) {
-    case GET_FILETREE_FROM_DATABASE:
+    case LOAD_FILETREE:
       const folderParents = {}
       const folderChildren = {}
       const fileNames = {}
@@ -100,7 +102,8 @@ export const filetreeReducer = (state = initialState, action) => {
         selectedFile: action.payload,
         folderSelected: false,
         selectedFileName: state.fileNames[action.payload],
-        error: null
+        error: null,
+        success: null
       }
     case SELECT_FOLDER:
       let selectedFolder = action.payload
@@ -123,12 +126,20 @@ export const filetreeReducer = (state = initialState, action) => {
         folderSelected: true,
         selectedFolderName: state.folderNames[selectedFolder],
         openFolders,
-        error: null
+        error: null,
+        success: null
       } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
     case LOAD_ERROR:
       return {
         ...state,
-        error: action.error
+        error: action.error,
+        success: null
+      }
+    case LOAD_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        success: action.success
       }
     default:
       return state
@@ -136,17 +147,28 @@ export const filetreeReducer = (state = initialState, action) => {
 }
 
 // getFiletreeFromDatabase is being deprecated
-export const getFiletreeFromDatabase = root => ({
-  type: GET_FILETREE_FROM_DATABASE,
+const loadFiletree = root => ({
+  type: LOAD_FILETREE,
   payload: {
     files: root.files,
     folders: root.folders
   }
 })
 
-const requestRefreshMapper = (action, dispatch, ...args) => {
+export const fetchFileTreeFromDatabase = (
+  message = null,
+  folder = 1
+) => dispatch => {
+  api
+    .view(folder)
+    .then(response => dispatch(loadFiletree(response.root)))
+    .then(() => dispatch(loadSuccess(message)))
+    .catch(e => dispatch(loadError(e.message)))
+}
+
+const requestRefreshMapper = (action, dispatch, message, ...args) => {
   action(...args)
-    .then(() => dispatch(fetchFileTreeFromDatabase()))
+    .then(() => dispatch(fetchFileTreeFromDatabase(message)))
     .catch(e => dispatch(loadError(e.message)))
 }
 
@@ -155,65 +177,76 @@ const loadError = error => ({
   error
 })
 
-export const fetchFileTreeFromDatabase = (folder = 1) => dispatch => {
-  api
-    .view(folder)
-    .then(response => dispatch(getFiletreeFromDatabase(response.root)))
-    .catch(e => dispatch(loadError(e.message)))
-}
+export const loadSuccess = success => ({
+  type: LOAD_SUCCESS,
+  success
+})
 
 export const uploadFiles = data => dispatch => {
-  requestRefreshMapper(api.uploadFiles, dispatch, data)
-}
-
-export const uploadFolder = (folders, dataLists) => dispatch => {
-  const folderPromises = folders.map(({ folderName, parentId }) =>
-    api.createFolder(parentId, folderName)
+  requestRefreshMapper(
+    api.uploadFiles,
+    dispatch,
+    'Files uploaded successfully',
+    data
   )
-  Promise.all(folderPromises)
-    .then(responses => {
-      for (let i = 0; i < responses.length; i++) {
-        const data = dataLists[i]
-        const folderId = responses[i].id
-        data.append('folderId', folderId)
-        dispatch(uploadFiles(data))
-      }
-    })
-    .catch(e => dispatch(loadError(e.message)))
 }
 
 export const createFolder = (id, name) => dispatch => {
-  requestRefreshMapper(api.createFolder, dispatch, id, name)
+  requestRefreshMapper(
+    api.createFolder,
+    dispatch,
+    `Folder [${name}] created successfully`,
+    id,
+    name
+  )
 }
 
 export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
-  const { folderSelected } = getState()
+  const { folderSelected, folderNames, fileNames } = getState()
   if (folderSelected) {
-    requestRefreshMapper(api.moveFolder, dispatch, id, destinationId)
+    requestRefreshMapper(
+      api.moveFolder,
+      dispatch,
+      `${folderNames[id]} moved to ${folderNames[destinationId]} successfully`,
+      id,
+      destinationId
+    )
   } else {
-    requestRefreshMapper(api.moveFile, dispatch, id, destinationId)
+    requestRefreshMapper(
+      api.moveFile,
+      dispatch,
+      `${fileNames[id]} moved to ${folderNames[destinationId]} successfully`,
+      id,
+      destinationId
+    )
   }
 }
 
 const deleteOrTrashFile = (
   modifyFunction,
   dispatch,
+  message,
   selectedFile,
   selectedFolder
 ) => {
   modifyFunction(selectedFile)
     .then(() => {
       dispatch(selectFolder(selectedFolder))
-      dispatch(fetchFileTreeFromDatabase())
+      dispatch(fetchFileTreeFromDatabase(message))
     })
     .catch(e => dispatch(loadError(e.message)))
 }
 
-const deleteOrTrashFolder = (modifyFunction, dispatch, selectedFolder) => {
+const deleteOrTrashFolder = (
+  modifyFunction,
+  dispatch,
+  message,
+  selectedFolder
+) => {
   modifyFunction(selectedFolder)
     .then(() => {
       dispatch(selectFolder(1))
-      dispatch(fetchFileTreeFromDatabase())
+      dispatch(fetchFileTreeFromDatabase(message))
     })
     .catch(e => {
       console.log(e.message, LOAD_ERROR)
@@ -236,17 +269,41 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
     folderSelected,
     selectedFile,
     selectedFolder,
-    folderParents
+    folderParents,
+    folderNames,
+    fileNames
   } = getState()
   const inTrash = isInTrash(selectedFolder, folderParents)
   if (folderSelected && !inTrash) {
-    deleteOrTrashFolder(api.trashFolder, dispatch, selectedFolder)
+    deleteOrTrashFolder(
+      api.trashFolder,
+      dispatch,
+      `${folderNames[selectedFolder]} successfully moved to trash`,
+      selectedFolder
+    )
   } else if (folderSelected && inTrash) {
-    deleteOrTrashFolder(api.deleteFolder, dispatch, selectedFolder)
+    deleteOrTrashFolder(
+      api.deleteFolder,
+      dispatch,
+      `${folderNames[selectedFolder]} deleted permanently`,
+      selectedFolder
+    )
   } else if (!folderSelected && !inTrash) {
-    deleteOrTrashFile(api.trashFile, dispatch, selectedFile, selectedFolder)
+    deleteOrTrashFile(
+      api.trashFile,
+      dispatch,
+      `${fileNames[selectedFile]} successfully moved to trash`,
+      selectedFile,
+      selectedFolder
+    )
   } else if (!folderSelected && inTrash) {
-    deleteOrTrashFile(api.deleteFile, dispatch, selectedFile, selectedFolder)
+    deleteOrTrashFile(
+      api.deleteFile,
+      dispatch,
+      `${fileNames[selectedFile]} deleted permanently`,
+      selectedFile,
+      selectedFolder
+    )
   }
 }
 

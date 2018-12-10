@@ -3,7 +3,6 @@ import axios from 'axios'
 const localPath = 'http://localhost:8080/'
 
 const returnWrappedOrUnwrapped = ({ data }) => {
-  console.log(data)
   if (data.hasOwnProperty('result')) {
     const { statusCode, message } = data.result
     if (statusCode !== 200) {
