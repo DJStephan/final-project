@@ -4,6 +4,7 @@ import ReactDropzone from "react-dropzone";
 import { Dialog, DialogContent, DialogContentText, DialogTitle, ListItem, Button } from '@material-ui/core'
 import {fromEvent} from 'file-selector'
 import Slide from '@material-ui/core/Slide';
+import { loadSuccess, loadError } from '../../ducks/filetree.duck'
 
 import {
   //uploadFiles,
@@ -50,6 +51,15 @@ class Upload extends Component {
 
 
   onDrop = (accepted, rejected) => {
+    let size = 0
+    for(let file of accepted){
+      size += file.size
+    }
+    size = size/1024/1024
+    if(size > 50){
+      this.props.loadError('File cannot exceed 50 MB')
+     return console.log('file exceds max file size')
+    }
     let split = accepted[0].path.split('/')
     let folderName
     let parentFolderId = 1;
@@ -108,7 +118,10 @@ class Upload extends Component {
             this.props.uploadFiles(data)
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log('error in create folders upload!')
+          console.log(err)
+        })
     }
     
     if(split.length > 2){
@@ -163,7 +176,14 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = ({
   fetchFileTreeFromDatabase,
   uploadFiles,
+<<<<<<< HEAD
+  loadSuccess,
+  loadError
+//  uploadFolder,
+//  createFolder
+=======
   loadSuccess
+>>>>>>> d12315952ead4eec7e7d17d8f18c54b310f84e1f
 })
 export default connect(
   mapStateToProps,
