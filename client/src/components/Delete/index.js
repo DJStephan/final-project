@@ -48,6 +48,11 @@ class Delete extends Component {
           message: `Are you sure you want to delete "${this.props.selectedFolderName}"?`,
           title: 'Delete Folder'
         })
+      } else {
+        this.setState({
+          message: 'Please select a file or folder',
+          title: 'Nothing Selected'
+        })
       }
     }
   }
