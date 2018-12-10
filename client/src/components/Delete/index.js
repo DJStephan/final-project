@@ -86,15 +86,13 @@ class Delete extends Component {
     const handleButtons = () => {
       if (this.state.title === 'Nothing Selected') {
         return (
-          <DialogActions>
-            <Button onClick={this.handleClose} color='primary'>
-              Ok
-            </Button>
-          </DialogActions>
+          <Button onClick={this.handleClose} color='primary'>
+            Ok
+          </Button>
         )
       } else {
         return (
-          <DialogActions>
+          <DialogActions style={{justifyContent: 'center'}}>
             <Button onClick={this.trashOrDelete} color='primary'>
               Yes
             </Button>
@@ -118,9 +116,13 @@ class Delete extends Component {
           aria-describedby='alert-dialog-slide-description'
           scroll='paper'
         >
-          <DialogTitle>{this.state.title}</DialogTitle>
+          <DialogTitle style={{textAlign: 'center'}}>
+            {this.state.title}
+          </DialogTitle>
           <DialogContent>
-            <DialogContentText>{this.state.message}</DialogContentText>
+            <DialogContentText>
+              {this.state.message}
+            </DialogContentText>
           </DialogContent>
           {handleButtons()}
         </Dialog>
