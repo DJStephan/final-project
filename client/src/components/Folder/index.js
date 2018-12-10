@@ -33,7 +33,7 @@ class Folder extends Component {
         <ListItem
           button
           selected={selected}
-          onClick={() => {selectFolder(id); this.state.open = !this.state.open}}
+          onClick={() => {selectFolder(id); this.setState({open: !this.state.open})}}
           style={{paddingLeft: (layer * 30 + 10) + 'px'}}
         >
           <ListItemIcon>
@@ -63,7 +63,7 @@ Folder.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  selectedFolder: state.selectedFolder,
+  selectedFolder: state.selectedFolder
 })
 
 const mapDispatchToProps = dispatch => ({
