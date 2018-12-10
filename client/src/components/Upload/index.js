@@ -24,7 +24,6 @@ class Upload extends Component {
       open: false
     }
   }
-  
 
   state = {
     open: false,

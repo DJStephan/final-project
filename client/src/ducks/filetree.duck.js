@@ -12,7 +12,9 @@ const initialState = {
   folders: [],
   openFolders: { 1: true, 2: false },
   folderParents: {},
+  fileParents: {},
   folderChildren: {},
+  inTrash: false,
   error: null,
   success: null,
   folderNames: {},
@@ -29,6 +31,7 @@ const populateClosedFolders = (
   openFolders,
   folderTree,
   folderParents,
+  fileParents,
   folderChildren,
   fileNames,
   folderNames,
@@ -38,8 +41,9 @@ const populateClosedFolders = (
   for (let f = 0; f < n; f++) {
     const { id, folders, files, folderName } = folderTree[f]
     for (let i = 0; i < files.length; i++) {
-      const { id, fileName } = files[i]
-      fileNames[id] = fileName
+      const { id: fileId, fileName } = files[i]
+      fileNames[fileId] = fileName
+      fileParents[fileId] = id
     }
     folderNames[id] = folderName
     folderParents[id] = parentFolderId
@@ -55,6 +59,7 @@ const populateClosedFolders = (
         openFolders,
         folders,
         folderParents,
+        fileParents,
         folderChildren,
         fileNames,
         folderNames,
@@ -70,6 +75,7 @@ export const filetreeReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_FILETREE:
       const folderParents = {}
+      const fileParents = {}
       const folderChildren = {}
       const fileNames = {}
       const folderNames = {}
@@ -77,6 +83,7 @@ export const filetreeReducer = (state = initialState, action) => {
       for (let i = 0; i < files.length; i++) {
         const { id, fileName } = files[i]
         fileNames[id] = fileName
+        fileParents[id] = 1
       }
 
       // TRASH ALWAYS RISES TO THE TOP!  DAVE AGREES
@@ -85,6 +92,7 @@ export const filetreeReducer = (state = initialState, action) => {
         openFolders,
         action.payload.folders,
         folderParents,
+        fileParents,
         folderChildren,
         fileNames,
         folderNames,
@@ -95,6 +103,7 @@ export const filetreeReducer = (state = initialState, action) => {
         files: action.payload.files,
         folders: action.payload.folders,
         folderParents,
+        fileParents,
         openFolders,
         folderChildren,
         fileNames,
@@ -102,10 +111,14 @@ export const filetreeReducer = (state = initialState, action) => {
         error: null
       }
     case SELECT_FILE:
+      const fileParent = state.fileParents[action.payload]
+      console.log({ fileParent })
       return {
         ...state,
         selectedFile: action.payload,
         folderSelected: false,
+        selectedFolder: fileParent,
+        inTrash: isInTrash(fileParent, state.folderParents),
         selectedFileName: state.fileNames[action.payload],
         error: null,
         success: null
@@ -138,6 +151,7 @@ export const filetreeReducer = (state = initialState, action) => {
         selectedFolder: selectedFolder,
         folderSelected: true,
         selectedFolderName: state.folderNames[selectedFolder],
+        inTrash: isInTrash(selectedFolder, state.folderParents),
         openFolders,
         error: null,
         success: null

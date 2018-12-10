@@ -11,7 +11,10 @@ import {
   MdFolder,
   MdFolderOpen,
   MdExpandLess,
-  MdExpandMore
+  MdExpandMore,
+  MdDelete,
+  MdDeleteForever,
+  MdHome
 } from 'react-icons/md'
 
 class FolderSkeleton extends Component {
@@ -36,7 +39,7 @@ class FolderSkeleton extends Component {
           onClick={this.selectedSkeletonFolder}
         >
           <ListItemIcon>
-            {this.state.open ? <MdFolderOpen /> : <MdFolder />}
+            {id=== 1? <MdHome /> : id === 2? this.state.open ? <MdDeleteForever /> : <MdDelete /> : this.state.open ? <MdFolderOpen /> : <MdFolder />}
           </ListItemIcon>
           <ListItemText primary={name} />
           {this.state.open ? <MdExpandLess /> : <MdExpandMore />}

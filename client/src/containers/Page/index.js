@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core'
 import { createMuiTheme } from '@material-ui/core/styles'
 
@@ -20,22 +19,15 @@ class Page extends Component {
     sidebarVisible: true
   }
 
-  componentDidUpdate() {
-    if(this.props.success !== null) {
-      this.props.enqueueSnackbar(this.props.success, { variant: 'success' });
+  componentDidUpdate(prevProp) {
+    if(prevProp !== this.props) {
+      if(this.props.success !== null) {
+        this.props.enqueueSnackbar(this.props.success, { variant: 'success' });
+      }
+      if(this.props.error !== null) {
+        this.props.enqueueSnackbar(this.props.error, { variant: 'error' });
+      }
     }
-    if(this.props.error !== null) {
-      this.props.enqueueSnackbar(this.props.error, { variant: 'error' });
-    }
-  }
-
-  handleClick = () => {
-    this.props.enqueueSnackbar('I love snacks.');
-  }
-
-  handleClickVariant = (variant, message) => () => {
-    // variant could be success, error, warning or info
-    this.props.enqueueSnackbar(message, { variant });
   }
 
   toggleSidebar = () => {
@@ -45,8 +37,6 @@ class Page extends Component {
   }
 
   render () {
-    // const 
-
     return (
       <Fragment>
         <CssBaseline />
@@ -57,14 +47,6 @@ class Page extends Component {
             <Browser indented={!this.state.sidebarVisible} />
           </div>
         </MuiThemeProvider>
-        
-        <React.Fragment>
-          <Button onClick={this.handleClick}>Show snackbar</Button>
-          <Button onClick={this.handleClickVariant('success','Success')}>Show Success snackbar</Button>
-          <Button onClick={this.handleClickVariant('warning','WARNING')}>Show Warning snackbar</Button>
-          <Button onClick={this.handleClickVariant('error','ERROR')}>Show Error snackbar</Button>
-          <Button onClick={this.handleClickVariant('info','Info')}>Show Info snackbar</Button>
-        </React.Fragment>
       </Fragment>
     )
   }
