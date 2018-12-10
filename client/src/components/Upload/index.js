@@ -4,7 +4,7 @@ import ReactDropzone from "react-dropzone";
 import { Dialog, DialogContent, DialogContentText, DialogTitle, ListItem, Button } from '@material-ui/core'
 import {fromEvent} from 'file-selector'
 import Slide from '@material-ui/core/Slide';
-import { loadSuccess, loadError } from '../../ducks/filetree.duck'
+// import { loadSuccess, loadError } from '../../ducks/filetree.duck'
 
 import {
   //uploadFiles,
@@ -13,7 +13,8 @@ import {
 import {
   fetchFileTreeFromDatabase,
   uploadFiles,
-  loadSuccess
+  loadSuccess,
+  loadError
 } from '../../ducks/filetree.duck'
 
 function Transition(props) {
@@ -176,14 +177,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = ({
   fetchFileTreeFromDatabase,
   uploadFiles,
-<<<<<<< HEAD
   loadSuccess,
   loadError
 //  uploadFolder,
 //  createFolder
-=======
-  loadSuccess
->>>>>>> d12315952ead4eec7e7d17d8f18c54b310f84e1f
 })
 export default connect(
   mapStateToProps,
