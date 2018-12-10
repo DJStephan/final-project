@@ -19,6 +19,17 @@ public class File {
 	@Column
 	private byte[] data;
 	
+	@Column
+	private String type;
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	@ManyToOne
 	private Folder parent;
 	

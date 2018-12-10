@@ -54,6 +54,7 @@ public class UploadService {
 					newFile.setData(f.getBytes());
 					newFile.setFileName(f.getOriginalFilename());
 					newFile.setParent(parentFolder);
+					newFile.setType(f.getContentType());
 					parentFolder.getFiles().add(this.fileRepository.saveAndFlush(newFile));
 					this.folderRepository.saveAndFlush(parentFolder);
 				} else {
