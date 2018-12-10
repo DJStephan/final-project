@@ -38,37 +38,15 @@ class Delete extends Component {
         open: true
       })
       console.log(this.props)
-      if (this.props.selectedFile) {
-        this.props.folders.filter(folder => {
-          folder.files.filter(file => {
-            if (file.id === this.props.selectedFile) {
-              this.setState({
-                message: `Are you sure you want to delete "${file.fileName}"?`,
-                title: 'Delete File'
-              })
-            }
-          })
+      if (this.props.selectedFileName) {
+        this.setState({
+          message: `Are you sure you want to delete "${this.props.selectedFileName}"?`,
+          title: 'Delete File'
         })
-        if (this.props.selectedFolder === 1) {
-          this.props.files.filter(file => {
-            if (file.id === this.props.selectedFile) {
-              this.setState({
-                message: `Are you sure you want to delete "${file.fileName}"?`,
-                title: 'Delete File'
-              })
-            }
-          })
-        }
-      } else {
-        this.props.folders.filter(folder => {
-          if (folder.id === this.props.selectedFolder) {
-            this.setState({
-              message: `Are you sure you want to delete "${
-                folder.folderName
-              }"?`,
-              title: 'Delete Folder'
-            })
-          }
+      } else if (this.props.selectedFolderName !== "root" && this.props.selectedFolderName !== "trash") {
+        this.setState({
+          message: `Are you sure you want to delete "${this.props.selectedFolderName}"?`,
+          title: 'Delete Folder'
         })
       }
     }
@@ -136,7 +114,9 @@ const mapStateToProps = state => ({
   files: state.files,
   folders: state.folders,
   selectedFile: state.selectedFile,
-  selectedFolder: state.selectedFolder
+  selectedFolder: state.selectedFolder,
+  selectedFileName: state.selectedFileName,
+  selectedFolderName: state.selectedFolderName
 })
 
 const mapDispatchToProps = dispatch => ({
