@@ -18,7 +18,15 @@ import {
   loadSuccess,
   loadError
 } from '../../ducks/filetree.duck'
+import { dialogContentstyle } from '../styles'
 
+
+const style = {
+  fullWidth: true,
+  Height: '50vh',
+  width: '50vh'
+  
+}
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
@@ -173,7 +181,7 @@ class Upload extends Component {
               getDataTransferItems={evt => fromEvent(evt)}
               onDrop={this.onDrop}
             >
-              <DialogContentText>
+              <DialogContentText style= {dialogContentstyle}>
                 Drag files or click to browse
               </DialogContentText>
             </ReactDropzone>
