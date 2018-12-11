@@ -6,7 +6,7 @@ import Move from './Move'
 import NewFolder from './NewFolder'
 import Sidebar from './Sidebar'
 import Title from './Title'
-// import Upload from './Upload'
+import FileTree from './FileTree'
 
 export {
   Button,
@@ -17,5 +17,5 @@ export {
   NewFolder,
   Sidebar,
   Title,
-  // Upload
+  FileTree
 }
