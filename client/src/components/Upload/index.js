@@ -20,13 +20,6 @@ import {
 } from '../../ducks/filetree.duck'
 import { dialogContentstyle } from '../styles'
 
-
-const style = {
-  fullWidth: true,
-  Height: '50vh',
-  width: '50vh'
-  
-}
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }

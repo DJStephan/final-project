@@ -14,6 +14,7 @@ import {
   fetchFileTreeFromDatabase,
   createFolder
 } from '../../ducks/filetree.duck'
+import { dialogContentstyle } from '../styles'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -79,17 +80,19 @@ class NewFolder extends Component {
           <DialogTitle style={{ textAlign: 'center' }}>
             Create New Folder
           </DialogTitle>
-          <DialogContent>
-            <TextField ref={this.textInput}
-              autoFocus
-              margin="dense"
-              id="name"
-              label="New Folder"
-              type="name"
-              fullWidth
-              onChange={this.setName}
-            />
-          </DialogContent>
+          <div style= {dialogContentstyle}>
+            <DialogContent>
+              <TextField ref={this.textInput}
+                autoFocus
+                margin="dense"
+                id="name"
+                label="New Folder"
+                type="name"
+                fullWidth
+                onChange={this.setName}
+              />
+            </DialogContent>
+          </div>
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button onClick={this.createNewFolder} color="primary">
               Create

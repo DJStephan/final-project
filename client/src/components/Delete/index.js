@@ -11,6 +11,7 @@ import Dialog from '@material-ui/core/Dialog'
 import Slide from '@material-ui/core/Slide'
 
 import { trashOrDeleteFileOrFolder, loadError } from '../../ducks/filetree.duck'
+import { dialogContentstyle } from '../styles'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />
@@ -113,9 +114,11 @@ class Delete extends Component {
           <DialogTitle style={{ textAlign: 'center' }}>
             {this.state.title}
           </DialogTitle>
-          <DialogContent style={{ textAlign: 'center' }}>
-            <DialogContentText>{this.state.message}</DialogContentText>
-          </DialogContent>
+          <div style={dialogContentstyle}>
+            <DialogContent style= {{textAlign: 'center'}}>
+              <DialogContentText>{this.state.message}</DialogContentText>
+            </DialogContent>
+          </div>
           {this.state.title === 'Nothing Selected' ? (
             <this.OkButton />
           ) : (
