@@ -1,6 +1,15 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types'
 import connect from 'react-redux/es/connect/connect'
-import { Dialog, DialogContent, DialogTitle, DialogActions, ListItem, Slide, TextField, Button } from '@material-ui/core'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  ListItem,
+  Slide,
+  TextField,
+  Button } from '@material-ui/core'
 import {
   fetchFileTreeFromDatabase,
   createFolder
@@ -40,12 +49,13 @@ class NewFolder extends Component {
   }
 
   createNewFolder = () => {
+    //If there is a folder selected, put new folder in there
     if(this.props.selectedFolder !== null) {
       this.props.createFolder(this.props.selectedFolder, this.state.name)
     } else {
+      //Else create folder in root
       this.props.createFolder(1, this.state.name)
     }
-    //this.props.fetchFileTreeFromDatabase()
     this.handleClose()
   }
   
@@ -91,6 +101,13 @@ class NewFolder extends Component {
     );
   }
 }
+
+NewFolder.propTypes = {
+  selectedFolder: PropTypes.number,
+  createFolder: PropTypes.func.isRequired,
+  fetchFileTreeFromDatabase: PropTypes.func.isRequired
+}
+
 const mapStateToProps = state => ({
   selectedFolder: state.selectedFolder
 })

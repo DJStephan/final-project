@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-
+import PropTypes from 'prop-types'
 import {
   Collapse,
   List,
@@ -52,6 +52,14 @@ class FolderSkeleton extends Component {
       </Fragment>
     )
   }
+}
+
+FolderSkeleton.propTypes = {
+  children: PropTypes.array,
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string,
+  selectedFolder: PropTypes.number.isRequired,
+  selectSkeletonFolder: PropTypes.func.isRequired
 }
 
 export default FolderSkeleton
