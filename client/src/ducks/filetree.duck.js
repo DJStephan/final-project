@@ -112,7 +112,6 @@ export const filetreeReducer = (state = initialState, action) => {
       }
     case SELECT_FILE:
       const fileParent = state.fileParents[action.payload]
-      console.log({ fileParent })
       return {
         ...state,
         selectedFile: action.payload,
@@ -135,14 +134,6 @@ export const filetreeReducer = (state = initialState, action) => {
     case SELECT_FOLDER:
       selectedFolder = action.payload
       const folderOpen = !openFolders[selectedFolder]
-      if (!folderOpen) {
-        const children = state.folderChildren[selectedFolder]
-        if (children) {
-          for (let c = 0; c < children.length; c++) {
-            openFolders[children[c]] = false
-          }
-        }
-      }
       openFolders[selectedFolder] = folderOpen
       const parentFolder = state.folderParents[selectedFolder]
       selectedFolder = folderOpen ? selectedFolder : parentFolder

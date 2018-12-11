@@ -8,13 +8,8 @@ import { filetreeReducer } from './ducks/filetree.duck'
 import { SnackBar } from './containers'
 import './index.css'
 
-const middlewares = [thunk]
-const enhancers = [applyMiddleware(...middlewares)]
-const composeEnhancers = composeWithDevTools({})
-const store = createStore(filetreeReducer, composeEnhancers(...enhancers))
-
-// for testing, need to delete store later
-window.store = store
+const enhancer = composeWithDevTools(applyMiddleware(thunk))
+const store = createStore(filetreeReducer, enhancer)
 
 render(
   <Provider store={store}>

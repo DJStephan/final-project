@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { File, Folder } from '../'
 
 const Files = ({ files, inTrash, layer }) => (
@@ -16,6 +17,12 @@ const Files = ({ files, inTrash, layer }) => (
   </div>
 )
 
+Files.propTypes = {
+  files: PropTypes.array.isRequired,
+  inTrash: PropTypes.bool.isRequired,
+  layer: PropTypes.number.isRequired
+}
+
 const FileTree = ({ folders, layer, inTrash, openFolders, topLevelFiles }) => (
   <div>
     {folders.map(({ id, folderName, files, folders }) => (
@@ -27,14 +34,12 @@ const FileTree = ({ folders, layer, inTrash, openFolders, topLevelFiles }) => (
         id={id}
         name={folderName}
       >
-        {openFolders[id] && (
-          <FileTree
-            folders={folders}
-            layer={layer + 1}
-            trashed={id === 2 || inTrash}
-            openFolders={openFolders}
-          />
-        )}
+        <FileTree
+          folders={folders}
+          layer={layer + 1}
+          inTrash={id === 2 || inTrash}
+          openFolders={openFolders}
+        />
         <Files files={files} inTrash={inTrash} layer={layer + 1} />
       </Folder>
     ))}
@@ -43,5 +48,13 @@ const FileTree = ({ folders, layer, inTrash, openFolders, topLevelFiles }) => (
     )}
   </div>
 )
+
+FileTree.propTypes = {
+  folders: PropTypes.array.isRequired,
+  openFolders: PropTypes.object.isRequired,
+  topLevelFiles: PropTypes.array,
+  inTrash: PropTypes.bool.isRequired,
+  layer: PropTypes.number.isRequired
+}
 
 export default FileTree

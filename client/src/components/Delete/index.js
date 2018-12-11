@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import connect from 'react-redux/es/connect/connect'
+import PropTypes from 'prop-types'
 
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -36,7 +37,6 @@ class Delete extends Component {
     const {
       selectedFileName,
       selectedFolderName,
-      selectedFolder,
       inTrash,
       folderSelected
     } = this.props
@@ -80,28 +80,24 @@ class Delete extends Component {
     this.handleClose()
   }
 
-  render () {
-    const handleButtons = () => {
-      if (this.state.title === 'Nothing Selected') {
-        return (
-          <Button onClick={this.handleClose} color='primary'>
-            Ok
-          </Button>
-        )
-      } else {
-        return (
-          <DialogActions style={{ justifyContent: 'center' }}>
-            <Button onClick={this.trashOrDelete} color='primary'>
-              Yes
-            </Button>
-            <Button onClick={this.handleClose} color='primary'>
-              No
-            </Button>
-          </DialogActions>
-        )
-      }
-    }
+  OkButton = () => (
+    <Button onClick={this.handleClose} color='primary'>
+      Ok
+    </Button>
+  )
 
+  ConfirmationButtons = () => (
+    <DialogActions style={{ justifyContent: 'center' }}>
+      <Button onClick={this.trashOrDelete} color='primary'>
+        Yes
+      </Button>
+      <Button onClick={this.handleClose} color='primary'>
+        No
+      </Button>
+    </DialogActions>
+  )
+
+  render () {
     return (
       <ListItem button onClick={this.handleOpen}>
         {this.props.children}
@@ -120,16 +116,27 @@ class Delete extends Component {
           <DialogContent>
             <DialogContentText>{this.state.message}</DialogContentText>
           </DialogContent>
-          {handleButtons()}
+          {this.state.title === 'Nothing Selected' ? (
+            <this.OkButton />
+          ) : (
+            <this.ConfirmationButtons />
+          )}
         </Dialog>
       </ListItem>
     )
   }
 }
 
+Delete.propTypes = {
+  selectedFile: PropTypes.number,
+  selectedFolder: PropTypes.number.isRequired,
+  selectedFileName: PropTypes.string,
+  selectedFolderName: PropTypes.string,
+  folderSelected: PropTypes.bool.isRequired,
+  inTrash: PropTypes.bool.isRequired
+}
+
 const mapStateToProps = state => ({
-  files: state.files,
-  folders: state.folders,
   selectedFile: state.selectedFile,
   selectedFolder: state.selectedFolder,
   selectedFileName: state.selectedFileName,
