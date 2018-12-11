@@ -106,8 +106,8 @@ class Delete extends Component {
           <DialogTitle style={{ textAlign: 'center' }}>
             {this.state.title}
           </DialogTitle>
-          <div style={dialogContentstyle}>
-            <DialogContent style={{ textAlign: 'center' }}>
+          <div className = 'dialogContent'>
+            <DialogContent style= {{textAlign: 'center'}}>
               <DialogContentText>{this.state.message}</DialogContentText>
             </DialogContent>
           </div>

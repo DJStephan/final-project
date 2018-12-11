@@ -13,6 +13,23 @@
   cursor: pointer;
 }
 
+.dialogContent{
+  height: 50vh;
+  width: 33vw;
+}
+
+@media screen and (max-width: 1000px){
+
+  .dialogContent {
+    height: 33vh;
+    width: 50vw;
+  }
+
+  .dropzone {
+    height: 33vh;
+    width: 50vw;
+  }
+}
 
 .page {
   margin-left: 210px;
