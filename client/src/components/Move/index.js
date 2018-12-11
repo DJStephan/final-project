@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import connect from 'react-redux/es/connect/connect'
 import {
   Dialog,
@@ -52,12 +53,14 @@ class Move extends Component {
       // No folder was selected so return error
       this.props.loadError("Select Folder to Move To")
     } else {
+      //If file is selected move that
       if (this.props.selectedFile !== null) {
         this.props.moveFileOrFolder(
           this.props.selectedFile,
           this.state.selected
         )
       } else {
+        //else move the folder selected
         this.props.moveFileOrFolder(
           this.props.selectedFolder,
           this.state.selected
@@ -72,6 +75,7 @@ class Move extends Component {
   }
 
   render () {
+    //Recursively display subfolders
     const showFolders = folders =>
       folders.map(({ id, folderName, files, folders }) => (
         <FolderSkeleton
@@ -131,6 +135,16 @@ class Move extends Component {
       </ListItem>
     )
   }
+}
+
+Move.propTypes = {
+  moveFileOrFolder: PropTypes.func.isRequired,
+  fetchFileTreeFromDatabase: PropTypes.func.isRequired,
+  loadError: PropTypes.func.isRequired,
+  folders: PropTypes.array,
+  selectedFolder: PropTypes.number,
+  selectedFile: PropTypes.number,
+  children: PropTypes.array
 }
 
 const mapStateToProps = state => ({
