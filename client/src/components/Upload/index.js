@@ -51,7 +51,6 @@ class Upload extends Component {
     })
   }
 
-
   onDrop = (accepted, rejected) => {
 
     //Creating files in the database
@@ -165,7 +164,9 @@ class Upload extends Component {
           aria-describedby="alert-dialog-slide-description"
           scroll="paper"
         >
-          <DialogTitle>Upload File</DialogTitle>
+          <DialogTitle style={{ textAlign: 'center' }}>
+            Upload File
+          </DialogTitle>
           <DialogContent>
             <ReactDropzone 
               className='dropzone'
@@ -177,7 +178,9 @@ class Upload extends Component {
               </DialogContentText>
             </ReactDropzone>
           </DialogContent>
-          <Button onClick={this.handleClose}>Close</Button>
+          <Button onClick={this.handleClose} color="primary">
+            Close
+          </Button>
         </Dialog>
       </ListItem>
     );

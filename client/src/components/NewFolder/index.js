@@ -91,11 +91,11 @@ class NewFolder extends Component {
             />
           </DialogContent>
           <DialogActions style={{ justifyContent: 'center' }}>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
             <Button onClick={this.createNewFolder} color="primary">
               Create
+            </Button>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>
