@@ -19,10 +19,16 @@
 }
 
 @media screen and (max-width: 1000px){
-    .dialogContent {
-      height: 33vh;
-      width: 60vw;
-    }
+
+  .dialogContent {
+    height: 33vh;
+    width: 50vw;
+  }
+
+  .dropzone {
+    height: 33vh;
+    width: 50vw;
+  }
 }
 
 .page {
