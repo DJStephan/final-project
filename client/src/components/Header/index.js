@@ -27,16 +27,6 @@ function ButtonAppBar (props) {
     <div className={classes.root}>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton
-            onClick={props.toggleButton}
-            className={classes.menuButton}
-            color='inherit'
-            aria-label='Menu'
-          >
-            <ListItemIcon>
-              <MdMenu />
-            </ListItemIcon>
-          </IconButton>
           <Typography variant='h6' color='inherit' className={classes.grow}>
             Tobo Drive
           </Typography>

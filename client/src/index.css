@@ -12,3 +12,18 @@
 .dropzone:hover {
   cursor: pointer;
 }
+
+
+.page {
+  margin-left: 210px;
+}
+
+@media only screen and (max-width: 600px) {
+  .page {
+    margin-left: 48px;
+  }
+  .sidebar {
+    max-width: 47px;
+  }
+}
+

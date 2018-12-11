@@ -87,12 +87,12 @@ class Delete extends Component {
   )
 
   ConfirmationButtons = () => (
-    <DialogActions style={{ justifyContent: 'center' }}>
+    <DialogActions>
       <Button onClick={this.trashOrDelete} color='primary'>
-        Yes
+        Confirm
       </Button>
       <Button onClick={this.handleClose} color='primary'>
-        No
+        Cancel
       </Button>
     </DialogActions>
   )
@@ -113,7 +113,7 @@ class Delete extends Component {
           <DialogTitle style={{ textAlign: 'center' }}>
             {this.state.title}
           </DialogTitle>
-          <DialogContent>
+          <DialogContent style={{ textAlign: 'center' }}>
             <DialogContentText>{this.state.message}</DialogContentText>
           </DialogContent>
           {this.state.title === 'Nothing Selected' ? (
