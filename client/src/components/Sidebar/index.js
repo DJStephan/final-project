@@ -11,10 +11,6 @@ import Move from '../Move'
 import Download from '../Download'
 
 class Sidebar extends Component {
-  componentDidUpdate() {
-    console.log(this.props.visible)
-  }
-  
   render () {
     return(
       <Drawer
