@@ -107,7 +107,7 @@ class Move extends Component {
           scroll='paper'
         >
           <DialogTitle>Select Folder</DialogTitle>
-          <div style= {dialogContentstyle}>
+          <div className = 'dialogContent'>
             <DialogContent>
               <FolderSkeleton
                 key={1}

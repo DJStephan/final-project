@@ -13,6 +13,17 @@
   cursor: pointer;
 }
 
+.dialogContent{
+  height: 50vh;
+  width: 33vw;
+}
+
+@media screen and (max-width: 1000px){
+    .dialogContent {
+      height: 33vh;
+      width: 60vw;
+    }
+}
 
 .page {
   margin-left: 210px;
