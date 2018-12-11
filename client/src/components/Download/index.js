@@ -28,11 +28,10 @@ function saveByteArray(reportName, byte, type) {
     link.click();
 }
 
-const bulid = (data, path, zip) =>{
+const bulid = (data, path, zip) => {
     for(let file of data.files){
         zip.file(path + file.fileName, file.data, {base64: true})
     }
-
     for(let folder of data.folders){
         bulid(folder, path + folder.folderName + '/', zip)
     }
@@ -46,7 +45,6 @@ class Download extends Component {
             dialogText: 'something went wrong if you see this'
         }
     }
-
 
     handleOpen = (message) => {
         this.setState({
@@ -64,17 +62,16 @@ class Download extends Component {
     }
 
     handleClick = () => {
-        
         if (!this.props.selectedFile) {
             downloadFolder(this.props.selectedFolder)
                 .then(response => {
-                    if(response.result.statusCode === 200){
+                    if (response.result.statusCode === 200){
                         let zip = new JSZip()
-                    bulid(response.folder, '', zip)
-                    zip.generateAsync({type:"blob"}).then(function(content) {
-                        saveAs(content, response.folder.folderName);
-                    });
-                    }else {
+                        bulid(response.folder, '', zip)
+                        zip.generateAsync({type:"blob"}).then(function(content) {
+                            saveAs(content, response.folder.folderName)
+                        })
+                    } else {
                         return this.props.loadError(response.result.message)
                     }
                 })
@@ -84,7 +81,10 @@ class Download extends Component {
                 .then(response => {
                     if (response.result.statusCode === 200) {
                         //Create file and ask for download
-                        saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type))
+                        saveByteArray(
+                            response.file.fileName,
+                            base64ToArrayBuffer(response.file.data, response.file.type)
+                        )
                         this.handleOpen(response.result.message)
                     } else {
                         this.props.loadError(response.result.message)
@@ -103,7 +103,6 @@ class Download extends Component {
                 <ListItemText primary="Download" />
             </ListItem>
         )
-
     }
 }
 
@@ -117,8 +116,6 @@ const mapStateToProps = state => ({
     selectedFolder: state.selectedFolder
 })
 
-const mapDispatchToProps = ({
-    loadError
-  })
+const mapDispatchToProps = ({ loadError })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Download)

@@ -10,8 +10,12 @@ import {
   Button,
   Slide
 } from '@material-ui/core'
+import {
+  moveFileOrFolder,
+  fetchFileTreeFromDatabase,
+  loadError
+} from '../../ducks/filetree.duck'
 import FolderSkeleton from './FolderSkeleton'
-import { moveFileOrFolder, fetchFileTreeFromDatabase, loadError } from '../../ducks/filetree.duck'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />
@@ -77,7 +81,7 @@ class Move extends Component {
   render () {
     //Recursively display subfolders
     const showFolders = folders =>
-      folders.map(({ id, folderName, files, folders }) => (
+      folders.map(({ id, folderName, folders }) => (
         <FolderSkeleton
           key={id}
           id={id}
@@ -110,7 +114,7 @@ class Move extends Component {
               selectedFolder={this.state.selected}
               selectSkeletonFolder={this.selectFolder}
             >
-              {this.props.folders.filter(({id}) => id !== 2 ).map(({ id, folderName, files, folders }) => (
+              {this.props.folders.filter(({id}) => id !== 2 ).map(({ id, folderName, folders }) => (
                 <FolderSkeleton
                   key={id}
                   id={id}

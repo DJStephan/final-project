@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types'
 import { Drawer, List, ListItemIcon, ListItemText } from '@material-ui/core'
+import withWidth from '@material-ui/core/withWidth'
 import {
   MdCreateNewFolder,
   MdDelete,
@@ -15,7 +16,6 @@ import NewFolder from '../NewFolder'
 import Delete from '../Delete'
 import Move from '../Move'
 import Download from '../Download'
-import withWidth from '@material-ui/core/withWidth'
 
 class Sidebar extends Component {
   render () {
