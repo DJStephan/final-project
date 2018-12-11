@@ -76,7 +76,9 @@ class NewFolder extends Component {
           aria-describedby="alert-dialog-slide-description"
           scroll="paper"
         >
-          <DialogTitle>Create New Folder</DialogTitle>
+          <DialogTitle style={{ textAlign: 'center' }}>
+            Create New Folder
+          </DialogTitle>
           <DialogContent>
             <TextField ref={this.textInput}
               autoFocus
@@ -88,7 +90,7 @@ class NewFolder extends Component {
               onChange={this.setName}
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{ justifyContent: 'center' }}>
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
