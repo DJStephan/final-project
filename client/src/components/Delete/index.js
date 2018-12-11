@@ -22,18 +22,13 @@ class Delete extends Component {
     super()
     this.state = {
       open: false,
-      message: 'Please select a file or folder',
-      title: 'Nothing Selected'
+      message: '[no message]',
+      title: '[no title]'
     }
     this.textInput = React.createRef()
   }
 
-  state = {
-    open: false,
-    message: 'Please select a file or folder',
-    title: 'Nothing Selected'
-  }
-
+  /* Opens "delete" dialoge box, and customizes message therein */
   handleOpen = () => {
     const {
       selectedFileName,
@@ -41,27 +36,39 @@ class Delete extends Component {
       inTrash,
       folderSelected
     } = this.props
+
+    /* Make sure the dialog box isn't already open: */
     if (!this.state.open) {
+      /* Initialize state variables: */
       let open = true
-      let message = 'Please select a file or folder'
-      let title = 'Nothing Selected'
+      let message = '[no message]'
+      let title = '[no title]'
+      /* If selected item isn't a folder, it's a file. Edit state variables accordingly: */
       if (!folderSelected) {
         title = inTrash ? 'Delete File' : 'Move File to Trash'
-        message = `Are you sure you want to ${
-          inTrash ? 'delete' : 'trash'
-        } "${selectedFileName}"?`
-      } else if (this.props.selectedFolder === 1) {
+        message = `Are you sure you want to
+          ${inTrash ? 'permanently delete' : 'trash'} "${selectedFileName}"?`
+      }
+      /* Check to make sure the root folder isn't selected.
+       * If it is, load an error message and don't open the dialog box: */
+      else if (this.props.selectedFolder === 1) {
         open = false
         this.props.loadError('Cannot delete the root folder!')
-      } else if (this.props.selectedFolder === 2) {
+      }
+      /* Check to make sure the trash folder isn't selected.
+       * If it is, load an error message and don't open the dialog box: */
+      else if (this.props.selectedFolder === 2) {
         open = false
         this.props.loadError('Cannot delete the trash folder!')
-      } else if (folderSelected) {
-        title = inTrash ? 'Delete Folder' : 'Move Folder to Trash'
-        message = `Are you sure you want to ${
-          inTrash ? 'delete' : 'trash'
-        } "${selectedFolderName}"?`
       }
+      /* If neither the root nor trash folder is selected, then it must be a normal
+       * folder. Edit the state variables accordingly: */
+      else if (folderSelected) {
+        title = inTrash ? 'Delete Folder' : 'Move Folder to Trash'
+        message = `Are you sure you want to
+          ${inTrash ? 'permanently delete' : 'trash'} "${selectedFolderName}"?`
+      }
+      /* Set the state values to the variables determined above: */
       this.setState({
         open,
         message,
@@ -70,33 +77,18 @@ class Delete extends Component {
     }
   }
 
+  /* Closes "delete" dialoge box */
   handleClose = () => {
     this.setState({
       open: false
     })
   }
 
+  /* Trashes or deletes selected file or folder */
   trashOrDelete = () => {
     this.props.trashOrDeleteFileOrFolder()
     this.handleClose()
   }
-
-  OkButton = () => (
-    <Button onClick={this.handleClose} color='primary'>
-      Ok
-    </Button>
-  )
-
-  ConfirmationButtons = () => (
-    <DialogActions>
-      <Button onClick={this.trashOrDelete} color='primary'>
-        Confirm
-      </Button>
-      <Button onClick={this.handleClose} color='primary'>
-        Cancel
-      </Button>
-    </DialogActions>
-  )
 
   render () {
     return (
@@ -115,21 +107,25 @@ class Delete extends Component {
             {this.state.title}
           </DialogTitle>
           <div style={dialogContentstyle}>
-            <DialogContent style= {{textAlign: 'center'}}>
+            <DialogContent style={{ textAlign: 'center' }}>
               <DialogContentText>{this.state.message}</DialogContentText>
             </DialogContent>
           </div>
-          {this.state.title === 'Nothing Selected' ? (
-            <this.OkButton />
-          ) : (
-            <this.ConfirmationButtons />
-          )}
+          <DialogActions>
+            <Button onClick={this.trashOrDelete} color='primary'>
+              Confirm
+            </Button>
+            <Button onClick={this.handleClose} color='primary'>
+              Cancel
+            </Button>
+          </DialogActions>
         </Dialog>
       </ListItem>
     )
   }
 }
 
+/* Id of selected file/folder must be included, or the trash/delete method won't work */
 Delete.propTypes = {
   selectedFile: PropTypes.number,
   selectedFolder: PropTypes.number.isRequired,

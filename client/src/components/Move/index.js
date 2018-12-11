@@ -27,14 +27,9 @@ class Move extends Component {
     super()
     this.state = {
       open: false,
-      selected: 0
+      selected: 0,
+      folders: {}
     }
-  }
-
-  state = {
-    open: false,
-    selected: 0,
-    folders: {}
   }
 
   handleOpen = () => {
