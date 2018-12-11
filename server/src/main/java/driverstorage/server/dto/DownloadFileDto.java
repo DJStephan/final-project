@@ -1,12 +1,16 @@
 package driverstorage.server.dto;
 
-import java.util.List;
-
 public class DownloadFileDto {
 
 	private ResultDto result;
-	private List<FileDto> files;
-	private List<FolderDto> folders;
+	private FileDto file;
+
+	public DownloadFileDto () {}
+
+	public DownloadFileDto(ResultDto result, FileDto file) {
+		this.result = result;
+		this.file = file;
+	}
 
 	public ResultDto getResult() {
 		return result;
@@ -16,20 +20,11 @@ public class DownloadFileDto {
 		this.result = result;
 	}
 
-	public List<FileDto> getFiles() {
-		return files;
+	public FileDto getFile() {
+		return file;
 	}
 
-	public void setFiles(List<FileDto> files) {
-		this.files = files;
+	public void setFile(FileDto file) {
+		this.file = file;
 	}
-
-	public List<FolderDto> getFolders() {
-		return folders;
-	}
-
-	public void setFolders(List<FolderDto> folders) {
-		this.folders = folders;
-	}
-
 }

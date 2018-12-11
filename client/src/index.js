@@ -1,17 +1,19 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import { devToolsEnhancer } from 'redux-devtools-extension'
-
+import { composeWithDevTools } from 'redux-devtools-extension'
+import thunk from 'redux-thunk'
 import { filetreeReducer } from './ducks/filetree.duck'
-import { Page } from './containers'
+import { SnackBar } from './containers'
+import './index.css'
 
-const store = createStore(filetreeReducer, devToolsEnhancer())
+const enhancer = composeWithDevTools(applyMiddleware(thunk))
+const store = createStore(filetreeReducer, enhancer)
 
 render(
   <Provider store={store}>
-    <Page />
+    <SnackBar />
   </Provider>,
   document.getElementById('root')
 )

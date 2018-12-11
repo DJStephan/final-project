@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Component, Fragment } from 'react'
 import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types'
 import {
@@ -12,34 +12,41 @@ import {
   MdFolder,
   MdFolderOpen,
   MdExpandLess,
-  MdExpandMore
+  MdExpandMore,
+  MdDelete,
+  MdDeleteForever
 } from 'react-icons/md'
 
 import { selectFolder } from '../../ducks/filetree.duck'
 
-const Folder = ({ children, id, name, selectFolder, selectedFolder }) => {
-  const open = id === selectedFolder
+class Folder extends Component {
 
-  return (
-    <Fragment>
-      <ListItem
-        button
-        selected={open}
-        onClick={() => selectFolder(id)}
-      >
-        <ListItemIcon>
-          {open ? <MdFolderOpen /> : <MdFolder />}
-        </ListItemIcon>
-        <ListItemText primary={name} />
-        {open ? <MdExpandLess /> : <MdExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List>
-          {children}
-        </List>
-      </Collapse>
-    </Fragment>
-  )
+  render () {
+    const { children, id, name, selectFolder, selectedFolder, layer, open, inTrash} = this.props
+    const selected = id === selectedFolder
+
+    return (
+      <Fragment>
+        <ListItem
+          button
+          selected={selected}
+          onClick={() => {selectFolder(id)}}
+          style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (inTrash? selected? 'rgb(163, 192, 15)' : open? 'rgb(201, 238, 17)' : 'rgb(217, 243, 89)' : selected? 'rgb(104, 133, 228)' : open? 'rgb(200, 200, 250)' : 'white')}}
+        >
+          <ListItemIcon>
+            {id===2? open ? <MdDeleteForever /> : <MdDelete /> : open ? <MdFolderOpen /> : <MdFolder />}
+          </ListItemIcon>
+          <ListItemText primary={name} />
+          {open ? <MdExpandLess /> : <MdExpandMore />}
+        </ListItem>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List style={{backgroundColor: (inTrash? 'rgb(217, 243, 89)' : 'white')}} >
+            {children}
+          </List>
+        </Collapse>
+      </Fragment>
+    )
+  }
 }
 
 Folder.propTypes = {
@@ -48,7 +55,8 @@ Folder.propTypes = {
   name: PropTypes.string.isRequired,
   // optional vars
   id: PropTypes.number,
-  selectedFolder: PropTypes.number
+  selectedFolder: PropTypes.number,
+  layer: PropTypes.number
 }
 
 const mapStateToProps = state => ({
