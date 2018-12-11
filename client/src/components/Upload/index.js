@@ -174,7 +174,7 @@ class Upload extends Component {
               getDataTransferItems={evt => fromEvent(evt)}
               onDrop={this.onDrop}
             >
-              <DialogContentText style= {dialogContentstyle}>
+              <DialogContentText style={{position: 'relative', top: '50%', textAlign: 'center'}}>
                 Drag files or click to browse
               </DialogContentText>
             </ReactDropzone>
