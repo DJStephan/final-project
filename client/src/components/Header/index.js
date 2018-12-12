@@ -27,7 +27,6 @@ class ButtonAppBar extends Component {
     bird: false
   }
   handleToboToggle = () => {
-    console.log('bird')
     this.setState({bird: !this.state.bird})
   }
   render() {

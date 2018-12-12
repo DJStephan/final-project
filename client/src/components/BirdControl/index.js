@@ -119,9 +119,11 @@ class Bird extends Component {
 
   componentDidUpdate(prevProp) {
     if(prevProp.error !== this.props.error && this.state.action !== 'sad') {
-      this.setState({action: 'sad', expression: 'sad'})
+      if(this.props.error !== null)
+        this.setState({action: 'sad', expression: 'sad'})
     } else if (prevProp.success !== this.props.success && this.state.action !=='happy') {
-      this.setState({action: 'happy', expression: 'happy'})
+      if(this.props.success !== null)
+        this.setState({action: 'happy', expression: 'happy'})
     }
   }
 
