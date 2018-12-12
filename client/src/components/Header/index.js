@@ -1,12 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import { ListItemIcon } from '@material-ui/core'
-import { MdMenu } from 'react-icons/md'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
+import { AppBar, Button, Toolbar, Typography } from '@material-ui/core'
+
+import { Bird } from '../index'
 
 const styles = {
   root: {
@@ -20,30 +17,52 @@ const styles = {
     marginRight: 20
   }
 }
-
-function ButtonAppBar (props) {
-  const { classes } = props
-  return (
-    <div className={classes.root}>
-      <AppBar position='static'>
-        <Toolbar>
-          <IconButton
-            onClick={props.toggleButton}
-            className={classes.menuButton}
-            color='inherit'
-            aria-label='Menu'
-          >
-            <ListItemIcon>
-              <MdMenu />
-            </ListItemIcon>
-          </IconButton>
-          <Typography variant='h6' color='inherit' className={classes.grow}>
-            Tobo Drive
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    </div>
-  )
+class ButtonAppBar extends Component {
+  state = {
+    bird: false
+  }
+  handleToboToggle = () => {
+    window.document.getElementsByTagName('BODY')[0].style.transition = 'all 1s'
+    if (!this.state.bird) {
+      window.document.body.style.background =
+        'black url(northern-ice.jpg) bottom fixed'
+    } else {
+      window.document.body.style.background = 'white'
+    }
+    this.setState({ bird: !this.state.bird })
+  }
+  render () {
+    const { classes } = this.props
+    return (
+      <div className={classes.root}>
+        <AppBar position='static'>
+          <Toolbar>
+            <Typography variant='h6' color='inherit' className={classes.grow}>
+              Tobo Drive
+            </Typography>
+            <Button color='inherit' onClick={this.handleToboToggle}>
+              T
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden'
+          }}
+        >
+          <Bird
+            enter={this.state.bird}
+            size={100}
+            x='40vw'
+            y='50vh'
+            zIndex={2}
+          />
+        </div>
+      </div>
+    )
+  }
 }
 
 ButtonAppBar.propTypes = {

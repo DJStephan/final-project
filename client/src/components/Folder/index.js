@@ -31,7 +31,19 @@ class Folder extends Component {
           button
           selected={selected}
           onClick={() => {selectFolder(id)}}
-          style={{paddingLeft: (layer * 30 + 10) + 'px', backgroundColor: (inTrash? selected? 'rgb(163, 192, 15)' : open? 'rgb(201, 238, 17)' : 'rgb(217, 243, 89)' : selected? 'rgb(104, 133, 228)' : open? 'rgb(200, 200, 250)' : 'white')}}
+          style={{
+            paddingLeft: (layer * 30 + 10) + 'px',
+            backgroundColor:
+              (inTrash
+                ? selected
+                  ? 'rgb(163, 192, 15)' : open
+                    ? 'rgb(201, 238, 17)' : 'rgb(217, 243, 89)'
+                : selected
+                  ? 'rgb(104, 133, 228)' : open
+                    ? 'rgb(200, 200, 250)' : 'white'
+              )
+            }
+          }
         >
           <ListItemIcon>
             {id===2? open ? <MdDeleteForever /> : <MdDelete /> : open ? <MdFolderOpen /> : <MdFolder />}

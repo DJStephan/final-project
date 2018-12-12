@@ -13,7 +13,6 @@ const initialState = {
   openFolders: { 1: true, 2: false },
   folderParents: {},
   fileParents: {},
-  folderChildren: {},
   inTrash: false,
   error: null,
   success: null,
@@ -26,44 +25,43 @@ const initialState = {
   folderSelected: true
 }
 
-// adds folders that are not already in the openFolders hash map and sets them to be unopened
-const populateClosedFolders = (
+// Since selected file and folder are ids AND because the action buttons on the interface are separate
+// from the files and folders, lots of information about relationships between files and folders
+// needs to be stored, and it is stored in openFolders, folderParents, fileParents, folderNames,
+// and fileNames.  All of these are populated on each reload of the view.
+const addNeededRelationships = (
   openFolders,
-  folderTree,
+  folderTreeFolders,
   folderParents,
   fileParents,
-  folderChildren,
   fileNames,
   folderNames,
   parentFolderId
 ) => {
-  let n = folderTree.length
+  let n = folderTreeFolders.length
   for (let f = 0; f < n; f++) {
-    const { id, folders, files, folderName } = folderTree[f]
+    const { id: folderId, folders, files, folderName } = folderTreeFolders[f]
     for (let i = 0; i < files.length; i++) {
       const { id: fileId, fileName } = files[i]
       fileNames[fileId] = fileName
-      fileParents[fileId] = id
+      fileParents[fileId] = folderId
     }
-    folderNames[id] = folderName
-    folderParents[id] = parentFolderId
-    if (!folderChildren[parentFolderId]) {
-      folderChildren[parentFolderId] = []
-    }
-    folderChildren[parentFolderId].push(id)
-    if (!openFolders[id]) {
-      openFolders[id] = false
+    folderNames[folderId] = folderName
+    folderParents[folderId] = parentFolderId
+
+    // initialize folders to not be open if they have not been added to state before
+    if (!openFolders.hasOwnProperty(folderId)) {
+      openFolders[folderId] = false
     }
     if (folders.length) {
-      populateClosedFolders(
+      addNeededRelationships(
         openFolders,
         folders,
         folderParents,
         fileParents,
-        folderChildren,
         fileNames,
         folderNames,
-        id
+        folderId
       )
     }
   }
@@ -74,9 +72,9 @@ export const filetreeReducer = (state = initialState, action) => {
   let selectedFolder
   switch (action.type) {
     case LOAD_FILETREE:
+      // all relationship maps are reset upon each load of the file tree
       const folderParents = {}
       const fileParents = {}
-      const folderChildren = {}
       const fileNames = {}
       const folderNames = {}
       const files = action.payload.files
@@ -86,14 +84,12 @@ export const filetreeReducer = (state = initialState, action) => {
         fileParents[id] = 1
       }
 
-      // TRASH ALWAYS RISES TO THE TOP!  DAVE AGREES
-      action.payload.folders.sort(f => (f.id === 2 ? -1 : 1))
-      populateClosedFolders(
+      action.payload.folders.sort(f => (f.id === 2 ? -1 : 1)) // TRASH ALWAYS RISES TO THE TOP!
+      addNeededRelationships(
         openFolders,
         action.payload.folders,
         folderParents,
         fileParents,
-        folderChildren,
         fileNames,
         folderNames,
         1
@@ -105,7 +101,6 @@ export const filetreeReducer = (state = initialState, action) => {
         folderParents,
         fileParents,
         openFolders,
-        folderChildren,
         fileNames,
         folderNames,
         error: null
@@ -122,16 +117,19 @@ export const filetreeReducer = (state = initialState, action) => {
         error: null,
         success: null
       }
-    case NON_TOGGLE_SELECT_FOLDER:
+    case NON_TOGGLE_SELECT_FOLDER: // a folder is selected without toggling the open state.  This is for after moving / deleting
       selectedFolder = action.payload
       return {
         ...state,
         folderSelected: true,
         selectedFolder: selectedFolder,
         selectedFile: null,
+        inTrash: isInTrash(selectedFolder, state.folderParents),
         selectedFolderName: state.folderNames[selectedFolder]
       }
     case SELECT_FOLDER:
+      // Selects a folder.  If the folder clicked was open, it is closed and its parent is selected.
+      // If the folder was closed, it is open and selected.
       selectedFolder = action.payload
       const folderOpen = !openFolders[selectedFolder]
       openFolders[selectedFolder] = folderOpen
@@ -139,7 +137,7 @@ export const filetreeReducer = (state = initialState, action) => {
       selectedFolder = folderOpen ? selectedFolder : parentFolder
       return {
         ...state,
-        selectedFile: initialState.selectedFile,
+        selectedFile: null,
         selectedFolder: selectedFolder,
         folderSelected: true,
         selectedFolderName: state.folderNames[selectedFolder],
@@ -147,7 +145,7 @@ export const filetreeReducer = (state = initialState, action) => {
         openFolders,
         error: null,
         success: null
-      } // GOTTA FIX FOR FOLDERS WITHIN FOLDERS
+      }
     case LOAD_ERROR:
       return {
         ...state,
@@ -165,7 +163,6 @@ export const filetreeReducer = (state = initialState, action) => {
   }
 }
 
-// getFiletreeFromDatabase is being deprecated
 const loadFiletree = root => ({
   type: LOAD_FILETREE,
   payload: {
@@ -189,6 +186,9 @@ export const fetchFileTreeFromDatabase = (
     .catch(e => dispatch(loadError(e.message)))
 }
 
+// performs a basic api request that mutates the file tree,
+// and then fetches the entire file tree from the api
+// Also, dispatches a success or failure message when done.
 const requestRefreshMapper = (action, dispatch, message, ...args) => {
   action(...args)
     .then(() => dispatch(fetchFileTreeFromDatabase(message)))
@@ -219,9 +219,12 @@ export const createFolder = (id, name) => dispatch => {
   )
 }
 
+// only one move function needs to be exposed to components, because the state knows if
+// a file or folder is selected
 export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
   const { folderSelected, folderNames, fileNames, fileParents } = getState()
   if (folderSelected) {
+    dispatch(selectFolder(id))
     requestRefreshMapper(
       api.moveFolder,
       dispatch,
@@ -241,39 +244,8 @@ export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
   }
 }
 
-const deleteOrTrashFile = (
-  modifyFunction,
-  dispatch,
-  message,
-  selectedFile,
-  selectedFolder
-) => {
-  modifyFunction(selectedFile)
-    .then(() => {
-      dispatch(nonToggleSelectFolder(selectedFolder))
-      dispatch(fetchFileTreeFromDatabase(message))
-    })
-    .catch(e => dispatch(loadError(e.message)))
-}
-
-const deleteOrTrashFolder = (
-  modifyFunction,
-  dispatch,
-  parentFolder,
-  message,
-  selectedFolder
-) => {
-  modifyFunction(selectedFolder)
-    .then(() => {
-      dispatch(nonToggleSelectFolder(parentFolder))
-      dispatch(fetchFileTreeFromDatabase(message))
-    })
-    .catch(e => {
-      console.log(e.message, LOAD_ERROR)
-      dispatch(loadError(e.message))
-    })
-}
-
+// a recursive (moves recursively up in the file tree) function that determines if a given file
+// or folder is in the trash
 const isInTrash = (folder, folderParents) => {
   if (folder === 1) {
     return false
@@ -284,6 +256,9 @@ const isInTrash = (folder, folderParents) => {
   }
 }
 
+// This function does what its name suggests.  Since the state knows if a file or folder is selected,
+// and if it is in the trash or not, it is only necessary to expose one function for the four
+// underlying api calls to external components
 export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
   const {
     folderSelected,
@@ -296,23 +271,25 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
   const inTrash = isInTrash(selectedFolder, folderParents)
   const parentFolder = folderParents[selectedFolder]
   if (folderSelected && !inTrash) {
-    deleteOrTrashFolder(
+    dispatch(selectFolder(selectedFolder))
+    callAndDispatchDeleteOrTrashFolderOrFile(
       api.trashFolder,
       dispatch,
-      parentFolder,
       `${folderNames[selectedFolder]} successfully moved to trash`,
-      selectedFolder
+      selectedFolder,
+      parentFolder
     )
   } else if (folderSelected && inTrash) {
-    deleteOrTrashFolder(
+    dispatch(selectFolder(selectedFolder))
+    callAndDispatchDeleteOrTrashFolderOrFile(
       api.deleteFolder,
       dispatch,
-      parentFolder,
       `${folderNames[selectedFolder]} deleted permanently`,
-      selectedFolder
+      selectedFolder,
+      parentFolder
     )
   } else if (!folderSelected && !inTrash) {
-    deleteOrTrashFile(
+    callAndDispatchDeleteOrTrashFolderOrFile(
       api.trashFile,
       dispatch,
       `${fileNames[selectedFile]} successfully moved to trash`,
@@ -320,7 +297,7 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
       selectedFolder
     )
   } else if (!folderSelected && inTrash) {
-    deleteOrTrashFile(
+    callAndDispatchDeleteOrTrashFolderOrFile(
       api.deleteFile,
       dispatch,
       `${fileNames[selectedFile]} deleted permanently`,
@@ -328,6 +305,23 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
       selectedFolder
     )
   }
+}
+
+// a helper function that calls the api delete or trash method,
+// and then refreshes the view and dispatches a message
+const callAndDispatchDeleteOrTrashFolderOrFile = (
+  modifyFunction,
+  dispatch,
+  message,
+  selected,
+  parentFolder
+) => {
+  modifyFunction(selected)
+    .then(() => {
+      dispatch(nonToggleSelectFolder(parentFolder))
+      dispatch(fetchFileTreeFromDatabase(message))
+    })
+    .catch(e => dispatch(loadError(e.message)))
 }
 
 export const selectFolder = folderId => ({

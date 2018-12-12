@@ -27,8 +27,8 @@ public class UploadController {
 	 * Uploads specified files and/or folders in upload request into database in
 	 * specified location
 	 *
-	 * @param upload request
-	 * @return upload results
+	 * 
+	 * @return resultDTO 
 	 * @throws LocationNotFound if location does not exist or is deleted
 	 */
 

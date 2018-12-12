@@ -40,7 +40,7 @@ const FileTree = ({ folders, layer, inTrash, openFolders, topLevelFiles }) => (
           inTrash={id === 2 || inTrash}
           openFolders={openFolders}
         />
-        <Files files={files} inTrash={inTrash} layer={layer + 1} />
+        <Files files={files} inTrash={id === 2 || inTrash} layer={layer + 1} />
       </Folder>
     ))}
     {topLevelFiles && (

@@ -76,24 +76,26 @@ class NewFolder extends Component {
           aria-describedby="alert-dialog-slide-description"
           scroll="paper"
         >
-          <DialogTitle>Create New Folder</DialogTitle>
-          <DialogContent>
-            <TextField ref={this.textInput}
-              autoFocus
-              margin="dense"
-              id="name"
-              label="New Folder"
-              type="name"
-              fullWidth
-              onChange={this.setName}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
+          <DialogTitle style={{ textAlign: 'center' }}>
+            Create New Folder
+          </DialogTitle>
+            <DialogContent className = 'dialogContent'>
+              <TextField ref={this.textInput}
+                autoFocus
+                margin="dense"
+                id="name"
+                label="New Folder"
+                type="name"
+                fullWidth
+                onChange={this.setName}
+              />
+            </DialogContent>
+          <DialogActions style={{ justifyContent: 'center' }}>
             <Button onClick={this.createNewFolder} color="primary">
               Create
+            </Button>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>

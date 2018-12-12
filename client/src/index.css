@@ -1,6 +1,10 @@
+body {
+  background: white;
+}
+
 .dropzone {
-  width: 100%;
-  height: 50px;
+  width: 33vw;
+  height: 50vh;
   border: 1px dotted black;
   border-radius: 5px;
   background-color: rgb(245, 245, 245);
@@ -12,3 +16,35 @@
 .dropzone:hover {
   cursor: pointer;
 }
+
+.dialogContent{
+  height: 50vh;
+  width: 33vw;
+}
+
+@media screen and (max-width: 1000px){
+
+  .dialogContent {
+    height: 33vh;
+    width: 50vw;
+  }
+
+  .dropzone {
+    height: 33vh;
+    width: 50vw;
+  }
+}
+
+.page {
+  margin-left: 210px;
+}
+
+@media only screen and (max-width: 600px) {
+  .page {
+    margin-left: 48px;
+  }
+  .sidebar {
+    max-width: 47px;
+  }
+}
+

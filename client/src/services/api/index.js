@@ -2,6 +2,11 @@ import axios from 'axios'
 
 const localPath = 'http://localhost:8080/'
 
+// this function is necessary because dto responses from the server come in two formats:
+// 1) A top level result DTO which has a status code and message
+// 2) Another DTO with some kind of data, as well as a child result DTO with a status code and message
+// If there was an expected server error, it will be rethrown by this function.
+// If it was unexpected, it will be thrown by the callers below
 const returnWrappedOrUnwrapped = ({ data }) => {
   if (data.hasOwnProperty('result')) {
     const { statusCode, message } = data.result

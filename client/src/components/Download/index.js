@@ -9,83 +9,63 @@ import saveAs from 'file-saver'
 import {loadError} from '../../ducks/filetree.duck'
 
 function base64ToArrayBuffer(base64) {
-    var binary_string = window.atob(base64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {
+    let binary_string = window.atob(base64);
+    let len = binary_string.length;
+    let bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
         bytes[i] = binary_string.charCodeAt(i);
     }
     return bytes.buffer;
 }
 
-//Create file(blob) and download (brower defined)
+//Create file(blob) and download (browser defined)
 function saveByteArray(reportName, byte, type) {
-    var blob = new Blob([byte], { type: type });
-    var link = document.createElement('a');
+    let blob = new Blob([byte], { type: type });
+    let link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    var fileName = reportName;
+    let fileName = reportName;
     link.download = fileName;
     link.click();
 }
 
-const bulid = (data, path, zip) =>{
+//Build JSZip object to include nested folders for folder download
+const bulid = (data, path, zip) => {
+    //add files to zip that are in current folder passed as data
     for(let file of data.files){
         zip.file(path + file.fileName, file.data, {base64: true})
     }
-
+    //loop through any folders also contained in data to add their files to zip
+    //including path to nested folder to maintain folder formated on download
     for(let folder of data.folders){
         bulid(folder, path + folder.folderName + '/', zip)
     }
 }
 
 class Download extends Component {
-    constructor() {
-        super()
-        this.state = {
-            open: false,
-            dialogText: 'something went wrong if you see this'
-        }
-    }
-
-
-    handleOpen = (message) => {
-        this.setState({
-            ...this.state,
-            open: true,
-            dialogText: message
-        })
-    }
-
-    handleClose = () => {
-        this.setState({
-            ...this.state,
-            open: false
-        })
-    }
 
     handleClick = () => {
-        
         if (!this.props.selectedFile) {
             downloadFolder(this.props.selectedFolder)
                 .then(response => {
-                    if(response.result.statusCode === 200){
+                    if (response.result.statusCode === 200){
                         let zip = new JSZip()
-                    bulid(response.folder, '', zip)
-                    zip.generateAsync({type:"blob"}).then(function(content) {
-                        saveAs(content, response.folder.folderName);
-                    });
-                    }else {
+                        bulid(response.folder, '', zip)
+                        zip.generateAsync({type:"blob"}).then(function(content) {
+                            saveAs(content, response.folder.folderName)
+                        })
+                    } else {
                         return this.props.loadError(response.result.message)
                     }
                 })
         } else {
             downloadFile(this.props.selectedFile)
-                .then(response => { console.log(response); return response; })
                 .then(response => {
                     if (response.result.statusCode === 200) {
                         //Create file and ask for download
-                        saveByteArray(response.file.fileName, base64ToArrayBuffer(response.file.data, response.file.type))
-                        this.handleOpen(response.result.message)
+                        saveByteArray(
+                            response.file.fileName,
+                            base64ToArrayBuffer(response.file.data, response.file.type)
+                        )
                     } else {
                         this.props.loadError(response.result.message)
                     }
@@ -103,7 +83,6 @@ class Download extends Component {
                 <ListItemText primary="Download" />
             </ListItem>
         )
-
     }
 }
 
@@ -117,8 +96,6 @@ const mapStateToProps = state => ({
     selectedFolder: state.selectedFolder
 })
 
-const mapDispatchToProps = ({
-    loadError
-  })
+const mapDispatchToProps = ({ loadError })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Download)

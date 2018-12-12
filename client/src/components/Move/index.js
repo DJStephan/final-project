@@ -10,8 +10,12 @@ import {
   Button,
   Slide
 } from '@material-ui/core'
+import {
+  moveFileOrFolder,
+  fetchFileTreeFromDatabase,
+  loadError
+} from '../../ducks/filetree.duck'
 import FolderSkeleton from './FolderSkeleton'
-import { moveFileOrFolder, fetchFileTreeFromDatabase, loadError } from '../../ducks/filetree.duck'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />
@@ -22,22 +26,32 @@ class Move extends Component {
     super()
     this.state = {
       open: false,
-      selected: 0
+      selected: 0,
+      folders: {}
     }
-  }
-
-  state = {
-    open: false,
-    selected: 0,
-    folders: {}
   }
 
   handleOpen = () => {
     if (!this.state.open) {
-      this.setState({
-        ...this.state,
-        open: true
-      })
+      if (this.props.selectedFile === null) {
+        if (this.props.selectedFolder === 1) {
+          // cannot move root so return error
+          this.props.loadError("Cannot move root")
+        } else if (this.props.selectedFolder === 2) {
+          // cannot move trash so return error
+          this.props.loadError("Cannot move trash")
+        } else {
+          this.setState({
+            ...this.state,
+            open: true
+          })
+        }
+      } else {
+        this.setState({
+          ...this.state,
+          open: true
+        })
+      }
     }
   }
 
@@ -77,7 +91,7 @@ class Move extends Component {
   render () {
     //Recursively display subfolders
     const showFolders = folders =>
-      folders.map(({ id, folderName, files, folders }) => (
+      folders.map(({ id, folderName, folders }) => (
         <FolderSkeleton
           key={id}
           id={id}
@@ -102,7 +116,7 @@ class Move extends Component {
           scroll='paper'
         >
           <DialogTitle>Select Folder</DialogTitle>
-          <DialogContent>
+          <DialogContent className = 'dialogContent'>
             <FolderSkeleton
               key={1}
               id={1}
@@ -110,7 +124,7 @@ class Move extends Component {
               selectedFolder={this.state.selected}
               selectSkeletonFolder={this.selectFolder}
             >
-              {this.props.folders.filter(({id}) => id !== 2 ).map(({ id, folderName, files, folders }) => (
+              {this.props.folders.filter(({id}) => id !== 2 ).map(({ id, folderName, folders }) => (
                 <FolderSkeleton
                   key={id}
                   id={id}
@@ -124,11 +138,11 @@ class Move extends Component {
             </FolderSkeleton>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
             <Button onClick={this.moveFileFolder} color="primary">
               Confirm
+            </Button>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>

@@ -1,8 +1,15 @@
 import React, { Component } from "react";
-import { Button, Dialog, DialogContent, DialogTitle, ListItem, Slide } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  ListItem,
+  Slide
+} from '@material-ui/core'
 
 function Transition(props) {
-  return <Slide direction="up" {...props} />;
+  return <Slide direction="up" {...props} />
 }
 
 class Error extends Component {
@@ -26,10 +33,8 @@ class Error extends Component {
           <Button onClick={this.props.handleClose}>Close</Button>
         </Dialog>
       </ListItem>
-    );
+    )
   }
 }
-
-
 
 export default Error
