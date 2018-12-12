@@ -16,7 +16,6 @@ import {
   loadError
 } from '../../ducks/filetree.duck'
 import FolderSkeleton from './FolderSkeleton'
-import { dialogContentstyle } from '../styles'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />

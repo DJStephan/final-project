@@ -10,8 +10,10 @@ import { ListItem, Button } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog'
 import Slide from '@material-ui/core/Slide'
 
-import { trashOrDeleteFileOrFolder, loadError } from '../../ducks/filetree.duck'
-import { dialogContentstyle } from '../styles'
+import {
+  trashOrDeleteFileOrFolder,
+  loadError
+} from '../../ducks/filetree.duck'
 
 function Transition (props) {
   return <Slide direction='up' {...props} />

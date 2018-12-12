@@ -14,7 +14,6 @@ import {
   fetchFileTreeFromDatabase,
   createFolder
 } from '../../ducks/filetree.duck'
-import { dialogContentstyle } from '../styles'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
