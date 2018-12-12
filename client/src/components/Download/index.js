@@ -9,10 +9,10 @@ import saveAs from 'file-saver'
 import {loadError} from '../../ducks/filetree.duck'
 
 function base64ToArrayBuffer(base64) {
-    var binary_string = window.atob(base64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {
+    let binary_string = window.atob(base64);
+    let len = binary_string.length;
+    let bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
         bytes[i] = binary_string.charCodeAt(i);
     }
     return bytes.buffer;
@@ -20,10 +20,10 @@ function base64ToArrayBuffer(base64) {
 
 //Create file(blob) and download (brower defined)
 function saveByteArray(reportName, byte, type) {
-    var blob = new Blob([byte], { type: type });
-    var link = document.createElement('a');
+    let blob = new Blob([byte], { type: type });
+    let link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    var fileName = reportName;
+    let fileName = reportName;
     link.download = fileName;
     link.click();
 }
@@ -38,28 +38,6 @@ const bulid = (data, path, zip) => {
 }
 
 class Download extends Component {
-    constructor() {
-        super()
-        this.state = {
-            open: false,
-            dialogText: 'something went wrong if you see this'
-        }
-    }
-
-    handleOpen = (message) => {
-        this.setState({
-            ...this.state,
-            open: true,
-            dialogText: message
-        })
-    }
-
-    handleClose = () => {
-        this.setState({
-            ...this.state,
-            open: false
-        })
-    }
 
     handleClick = () => {
         if (!this.props.selectedFile) {
@@ -85,7 +63,6 @@ class Download extends Component {
                             response.file.fileName,
                             base64ToArrayBuffer(response.file.data, response.file.type)
                         )
-                        this.handleOpen(response.result.message)
                     } else {
                         this.props.loadError(response.result.message)
                     }
