@@ -1,3 +1,7 @@
+body {
+  background: white;
+}
+
 .dropzone {
   width: 33vw;
   height: 50vh;

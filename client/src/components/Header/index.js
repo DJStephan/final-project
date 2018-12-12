@@ -1,12 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import {
-  AppBar,
-  Button,
-  Toolbar,
-  Typography
-} from '@material-ui/core'
+import { AppBar, Button, Toolbar, Typography } from '@material-ui/core'
 
 import { Bird } from '../index'
 
@@ -27,9 +22,17 @@ class ButtonAppBar extends Component {
     bird: false
   }
   handleToboToggle = () => {
-    this.setState({bird: !this.state.bird})
+    window.document.getElementsByTagName('BODY')[0].style.transition =
+      'all 0.5s'
+    if (!this.state.bird) {
+      window.document.body.style.background =
+        'black url(northern-ice.jpg) bottom fixed'
+    } else {
+      window.document.body.style.background = 'white'
+    }
+    this.setState({ bird: !this.state.bird })
   }
-  render() {
+  render () {
     const { classes } = this.props
     return (
       <div className={classes.root}>
@@ -38,14 +41,25 @@ class ButtonAppBar extends Component {
             <Typography variant='h6' color='inherit' className={classes.grow}>
               Tobo Drive
             </Typography>
-            <Button color="inherit" onClick={this.handleToboToggle}>T</Button>
+            <Button color='inherit' onClick={this.handleToboToggle}>
+              T
+            </Button>
           </Toolbar>
         </AppBar>
-        <div style={{
-          width: '100%',
-          height: '100%',
-          overflow: 'hidden'}}>
-          <Bird enter={this.state.bird} size={100} x='40vw' y='50vh' zIndex={2}/>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden'
+          }}
+        >
+          <Bird
+            enter={this.state.bird}
+            size={100}
+            x='40vw'
+            y='50vh'
+            zIndex={2}
+          />
         </div>
       </div>
     )
