@@ -22,8 +22,7 @@ class ButtonAppBar extends Component {
     bird: false
   }
   handleToboToggle = () => {
-    window.document.getElementsByTagName('BODY')[0].style.transition =
-      'all 0.5s'
+    window.document.getElementsByTagName('BODY')[0].style.transition = 'all 1s'
     if (!this.state.bird) {
       window.document.body.style.background =
         'black url(northern-ice.jpg) bottom fixed'
