@@ -41,7 +41,12 @@ class ButtonAppBar extends Component {
             <Button color="inherit" onClick={this.handleToboToggle}>T</Button>
           </Toolbar>
         </AppBar>
-        <Bird enter={this.state.bird} size={100} x='50vw' y='50vh' zIndex={2}/>
+        <div style={{
+          width: '100%',
+          height: '100%',
+          overflow: 'hidden'}}>
+          <Bird enter={this.state.bird} size={100} x='40vw' y='50vh' zIndex={2}/>
+        </div>
       </div>
     )
   }

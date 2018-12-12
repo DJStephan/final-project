@@ -23,11 +23,31 @@ const MainContainer = styled(MainPose)`
   width: 100%;
 
   &:hover{
-    cursor: pointer
-  }
-  &:active {
     cursor: grab
   }
+`
+
+const HideOverFlow = styled.div`
+  position: absolute;
+  height: 150%;
+  width: 160%;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  overflow: hidden;
+`
+const InsideHideOverFlow = styled.div`
+  position: relative;
+  height: 65%;
+  width: 60%;
+
+  top: 20%;
+  left: 20%;
 `
 
 const ActionPose = posed.div({
@@ -142,11 +162,15 @@ class Bird extends Component {
             top: this.props.y,
             left: this.props.x,
             transform: 'scaleX(1)'}} >
-          <BirdImage
-            action={this.state.action}
-            expression={this.state.expression}
-            enter={this.props.enter}
-            zIndex={this.props.zIndex}/>
+          <HideOverFlow>
+            <InsideHideOverFlow>
+              <BirdImage
+                action={this.state.action}
+                expression={this.state.expression}
+                enter={this.props.enter}
+                zIndex={this.props.zIndex}/>
+            </InsideHideOverFlow>
+          </HideOverFlow>
         </MainContainer>
         <ActionDiv pose={this.state.action} onPoseComplete={this.handleActionReset}>
         </ActionDiv>
