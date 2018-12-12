@@ -57,6 +57,7 @@ class Upload extends Component {
     const createFiles = (accepted,rejected,data) => {
       if (rejected.length) {
         //Log rejected files
+        this.props.loadError('Some files were rejected')
         console.log("rejected")
         console.log(rejected)
       } else {
@@ -83,6 +84,7 @@ class Upload extends Component {
             //log Rejected files
             console.log("rejected")
             console.log(rejected)
+            this.props.loadError('Some files were rejected')
           } else {
             //Divide accepted files into ones in current folder and ones in sub folders
             let files = accepted.filter(f => f.path.split('/').length <= 3 + index)
@@ -119,35 +121,37 @@ class Upload extends Component {
     let size = 0
     for(let file of accepted){
       size += file.size
+      if((size/1024/1024) > 50){
+        break
+      }
     }
     size = size/1024/1024
     //If size is to large return error
     if(size > 50){
       this.props.loadError('File cannot exceed 50 MB')
-    }
-
-    //Split the upload request to see if the files are in a folder or not
-    let split = accepted[0].path.split('/')
-    let folderName
-    let parentFolderId = 1;
-    if(this.props.selectedFolder !== null) {
-      parentFolderId = this.props.selectedFolder
-    }
-    if(split.length > 2){
-      //upload folders
-      folderName = split[1]
-      //create folder in DB get back folder ID
-      console.log(folderName)
-      createFolders(accepted, rejected, parentFolderId, folderName, 0)
     }else{
-      //upload files
-      let data = new FormData();
-      data.append('folderId', parentFolderId)
-      createFiles(accepted,rejected,data)
+      //Split the upload request to see if the files are in a folder or not
+      let split = accepted[0].path.split('/')
+      let folderName
+      let parentFolderId = 1;
+      if(this.props.selectedFolder !== null) {
+        parentFolderId = this.props.selectedFolder
+      }
+      if(split.length > 2){
+        //upload folders
+        folderName = split[1]
+        //create folder in DB get back folder ID
+        createFolders(accepted, rejected, parentFolderId, folderName, 0)
+      }else{
+        //upload files
+        let data = new FormData();
+        data.append('folderId', parentFolderId)
+        createFiles(accepted,rejected,data)
+      }
+      //Close and print success message
+      this.handleClose();
+      this.props.loadSuccess('File uploaded successfully')
     }
-    //Close and print success message
-    this.handleClose();
-    this.props.loadSuccess('File uploaded successfully')
   }
 
   render() {
