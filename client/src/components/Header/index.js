@@ -1,9 +1,14 @@
-import React from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import {
+  AppBar,
+  Button,
+  Toolbar,
+  Typography
+} from '@material-ui/core'
+
+import { Bird } from '../index'
 
 const styles = {
   root: {
@@ -17,20 +22,30 @@ const styles = {
     marginRight: 20
   }
 }
-
-function ButtonAppBar (props) {
-  const { classes } = props
-  return (
-    <div className={classes.root}>
-      <AppBar position='static'>
-        <Toolbar>
-          <Typography variant='h6' color='inherit' className={classes.grow}>
-            Tobo Drive
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    </div>
-  )
+class ButtonAppBar extends Component {
+  state = {
+    bird: false
+  }
+  handleToboToggle = () => {
+    console.log('bird')
+    this.setState({bird: !this.state.bird})
+  }
+  render() {
+    const { classes } = this.props
+    return (
+      <div className={classes.root}>
+        <AppBar position='static'>
+          <Toolbar>
+            <Typography variant='h6' color='inherit' className={classes.grow}>
+              Tobo Drive
+            </Typography>
+            <Button color="inherit" onClick={this.handleToboToggle}>T</Button>
+          </Toolbar>
+        </AppBar>
+        <Bird enter={this.state.bird} size={100} x='50vw' y='50vh' zIndex={2}/>
+      </div>
+    )
+  }
 }
 
 ButtonAppBar.propTypes = {

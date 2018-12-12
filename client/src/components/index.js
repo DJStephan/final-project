@@ -5,6 +5,7 @@ import Move from './Move'
 import NewFolder from './NewFolder'
 import Sidebar from './Sidebar'
 import FileTree from './FileTree'
+import Bird from './BirdControl'
 
 export {
   File,
@@ -13,5 +14,6 @@ export {
   Move,
   NewFolder,
   Sidebar,
-  FileTree
+  FileTree,
+  Bird
 }
