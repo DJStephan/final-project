@@ -27,8 +27,6 @@ public class UploadService {
 	}
 
 	public ResultDto upload(MultipartFile[] files, String folderId) {
-//		System.out.println("Uploading");
-//		System.out.println(files.length);
 		if (folderId.equals("2")) {
 			Long status = (long) 400;
 			return new ResultDto(status, "Cannot upload to trash folder!");
@@ -38,16 +36,12 @@ public class UploadService {
 			Long status = (long) 400;
 			return new ResultDto(status, "No folder with ID#" + folderId + " exists");
 		}
-		System.out.println("in upload service");
-		System.out.println(files.length);
 		if (files.length == 0) {
 			Long status = (long) 400;
 			return new ResultDto(status, "No files sent ya dingas!");
 		}
 		for (MultipartFile f : files) {
-			System.out.println("In the user service for loop");
 			try {
-				System.out.println("In the try");
 				if (!f.isEmpty()) {
 					System.out.println("in the if statement");
 					File newFile = new File();
@@ -65,8 +59,6 @@ public class UploadService {
 					this.folderRepository.saveAndFlush(parentFolder);
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.out.println("ERROR");
 				e.printStackTrace();
 				Long status = (long) 500;
 				return new ResultDto(status, "Problem with file upload");

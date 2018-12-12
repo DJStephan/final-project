@@ -18,7 +18,6 @@ import {
   loadSuccess,
   loadError
 } from '../../ducks/filetree.duck'
-import { dialogContentstyle } from '../styles'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -112,7 +111,7 @@ class Upload extends Component {
           }
         })
         .catch(err => {
-          console.log('error in create folders upload!')
+          this.props.loadError(err.message)
           console.log(err)
         })
     }
@@ -125,7 +124,6 @@ class Upload extends Component {
     //If size is to large return error
     if(size > 50){
       this.props.loadError('File cannot exceed 50 MB')
-      return console.log('file exceds max file size')
     }
 
     //Split the upload request to see if the files are in a folder or not
