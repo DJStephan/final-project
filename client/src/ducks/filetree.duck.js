@@ -31,25 +31,27 @@ const initialState = {
 // and fileNames.  All of these are populated on each reload of the view.
 const addNeededRelationships = (
   openFolders,
-  folderTree,
+  folderTreeFolders,
   folderParents,
   fileParents,
   fileNames,
   folderNames,
   parentFolderId
 ) => {
-  let n = folderTree.length
+  let n = folderTreeFolders.length
   for (let f = 0; f < n; f++) {
-    const { id, folders, files, folderName } = folderTree[f]
+    const { id: folderId, folders, files, folderName } = folderTreeFolders[f]
     for (let i = 0; i < files.length; i++) {
       const { id: fileId, fileName } = files[i]
       fileNames[fileId] = fileName
-      fileParents[fileId] = id
+      fileParents[fileId] = folderId
     }
-    folderNames[id] = folderName
-    folderParents[id] = parentFolderId
-    if (!openFolders[id]) {
-      openFolders[id] = false
+    folderNames[folderId] = folderName
+    folderParents[folderId] = parentFolderId
+
+    // initialize folders to not be open if they have not been added to state before
+    if (!openFolders.hasOwnProperty(folderId)) {
+      openFolders[folderId] = false
     }
     if (folders.length) {
       addNeededRelationships(
@@ -59,7 +61,7 @@ const addNeededRelationships = (
         fileParents,
         fileNames,
         folderNames,
-        id
+        folderId
       )
     }
   }
@@ -135,7 +137,7 @@ export const filetreeReducer = (state = initialState, action) => {
       selectedFolder = folderOpen ? selectedFolder : parentFolder
       return {
         ...state,
-        selectedFile: initialState.selectedFile,
+        selectedFile: null,
         selectedFolder: selectedFolder,
         folderSelected: true,
         selectedFolderName: state.folderNames[selectedFolder],
@@ -222,6 +224,7 @@ export const createFolder = (id, name) => dispatch => {
 export const moveFileOrFolder = (id, destinationId) => (dispatch, getState) => {
   const { folderSelected, folderNames, fileNames, fileParents } = getState()
   if (folderSelected) {
+    dispatch(selectFolder(id))
     requestRefreshMapper(
       api.moveFolder,
       dispatch,
@@ -253,23 +256,6 @@ const isInTrash = (folder, folderParents) => {
   }
 }
 
-// a helper function that calls the api delete or trash method,
-// and then refreshes the view and dispatches a message
-const callAndDispatchDeleteOrTrashFolderOrFile = (
-  modifyFunction,
-  dispatch,
-  message,
-  selected,
-  parentFolder
-) => {
-  modifyFunction(selected)
-    .then(() => {
-      dispatch(nonToggleSelectFolder(parentFolder))
-      dispatch(fetchFileTreeFromDatabase(message))
-    })
-    .catch(e => dispatch(loadError(e.message)))
-}
-
 // This function does what its name suggests.  Since the state knows if a file or folder is selected,
 // and if it is in the trash or not, it is only necessary to expose one function for the four
 // underlying api calls to external components
@@ -285,6 +271,7 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
   const inTrash = isInTrash(selectedFolder, folderParents)
   const parentFolder = folderParents[selectedFolder]
   if (folderSelected && !inTrash) {
+    dispatch(selectFolder(selectedFolder))
     callAndDispatchDeleteOrTrashFolderOrFile(
       api.trashFolder,
       dispatch,
@@ -293,6 +280,7 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
       parentFolder
     )
   } else if (folderSelected && inTrash) {
+    dispatch(selectFolder(selectedFolder))
     callAndDispatchDeleteOrTrashFolderOrFile(
       api.deleteFolder,
       dispatch,
@@ -317,6 +305,23 @@ export const trashOrDeleteFileOrFolder = () => (dispatch, getState) => {
       selectedFolder
     )
   }
+}
+
+// a helper function that calls the api delete or trash method,
+// and then refreshes the view and dispatches a message
+const callAndDispatchDeleteOrTrashFolderOrFile = (
+  modifyFunction,
+  dispatch,
+  message,
+  selected,
+  parentFolder
+) => {
+  modifyFunction(selected)
+    .then(() => {
+      dispatch(nonToggleSelectFolder(parentFolder))
+      dispatch(fetchFileTreeFromDatabase(message))
+    })
+    .catch(e => dispatch(loadError(e.message)))
 }
 
 export const selectFolder = folderId => ({
