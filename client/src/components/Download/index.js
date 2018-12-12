@@ -18,7 +18,7 @@ function base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-//Create file(blob) and download (brower defined)
+//Create file(blob) and download (browser defined)
 function saveByteArray(reportName, byte, type) {
     let blob = new Blob([byte], { type: type });
     let link = document.createElement('a');
@@ -28,10 +28,14 @@ function saveByteArray(reportName, byte, type) {
     link.click();
 }
 
+//Build JSZip object to include nested folders for folder download
 const bulid = (data, path, zip) => {
+    //add files to zip that are in current folder passed as data
     for(let file of data.files){
         zip.file(path + file.fileName, file.data, {base64: true})
     }
+    //loop through any folders also contained in data to add their files to zip
+    //including path to nested folder to maintain folder formated on download
     for(let folder of data.folders){
         bulid(folder, path + folder.folderName + '/', zip)
     }
@@ -55,7 +59,6 @@ class Download extends Component {
                 })
         } else {
             downloadFile(this.props.selectedFile)
-                .then(response => { console.log(response); return response; })
                 .then(response => {
                     if (response.result.statusCode === 200) {
                         //Create file and ask for download
