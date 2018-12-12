@@ -33,10 +33,25 @@ class Move extends Component {
 
   handleOpen = () => {
     if (!this.state.open) {
-      this.setState({
-        ...this.state,
-        open: true
-      })
+      if (this.props.selectedFile === null) {
+        if (this.props.selectedFolder === 1) {
+          // cannot move root so return error
+          this.props.loadError("Cannot move root")
+        } else if (this.props.selectedFolder === 2) {
+          // cannot move trash so return error
+          this.props.loadError("Cannot move trash")
+        } else {
+          this.setState({
+            ...this.state,
+            open: true
+          })
+        }
+      } else {
+        this.setState({
+          ...this.state,
+          open: true
+        })
+      }
     }
   }
 
