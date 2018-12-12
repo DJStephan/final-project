@@ -116,29 +116,27 @@ class Move extends Component {
           scroll='paper'
         >
           <DialogTitle>Select Folder</DialogTitle>
-          <div className = 'dialogContent'>
-            <DialogContent>
-              <FolderSkeleton
-                key={1}
-                id={1}
-                name='root'
-                selectedFolder={this.state.selected}
-                selectSkeletonFolder={this.selectFolder}
-              >
-                {this.props.folders.filter(({id}) => id !== 2 ).map(({ id, folderName, folders }) => (
-                  <FolderSkeleton
-                    key={id}
-                    id={id}
-                    name={folderName}
-                    selectedFolder={this.state.selected}
-                    selectSkeletonFolder={this.selectFolder}
-                  >
-                    {showFolders(folders)}
-                  </FolderSkeleton>
-                ))}
-              </FolderSkeleton>
-            </DialogContent>
-          </div>
+          <DialogContent>
+            <FolderSkeleton
+              key={1}
+              id={1}
+              name='root'
+              selectedFolder={this.state.selected}
+              selectSkeletonFolder={this.selectFolder}
+            >
+              {this.props.folders.filter(({id}) => id !== 2 ).map(({ id, folderName, folders }) => (
+                <FolderSkeleton
+                  key={id}
+                  id={id}
+                  name={folderName}
+                  selectedFolder={this.state.selected}
+                  selectSkeletonFolder={this.selectFolder}
+                >
+                  {showFolders(folders)}
+                </FolderSkeleton>
+              ))}
+            </FolderSkeleton>
+          </DialogContent>
           <DialogActions>
             <Button onClick={this.moveFileFolder} color="primary">
               Confirm
