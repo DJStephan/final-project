@@ -22,9 +22,6 @@ const MainContainer = styled(MainPose)`
   height: 100%;
   width: 100%;
 
-  &:hover{
-    cursor: grab
-  }
 `
 
 const HideOverFlow = styled.div`
@@ -48,6 +45,10 @@ const InsideHideOverFlow = styled.div`
 
   top: 20%;
   left: 20%;
+
+  &:hover{
+    cursor: grab
+  }
 `
 
 const ActionPose = posed.div({
@@ -81,6 +82,7 @@ class Bird extends Component {
     expression: 'normal',
 
     action: 'normal',
+    timeout: null,
 
     drag: false,
     petting: false,
@@ -88,6 +90,7 @@ class Bird extends Component {
     click: 0
   }
 
+  //At end of an action reset pose
   handleActionReset = () => {
     switch(this.state.action) {
       default:
@@ -98,24 +101,28 @@ class Bird extends Component {
     }
   }
 
+  //Determine if user is petting or clicking the penguin
   petOrClick = () => {
+    this.setState({timeout: null})
+    //If penguin is not angry, you can interact with it
     if(this.state.action !== 'angry') {
+      //If your dragging you are petting, and penguin is happy with pets
       if(this.state.drag) {
         this.setState({petting: true, expression: 'happy'})
       } else {
-        if(this.state.action !== 'angry') {
-          if(this.state.click > 5) {
-            this.setState({click: 0, expression: 'angry', action: 'angry'})
-          } else {
-            this.setState({click: this.state.click + 1})
-          }
+        //If you are clicking penguin is not amused and will get angry if clicked too much
+        if(this.state.click > 5) {
+          this.setState({click: 0, expression: 'angry', action: 'angry'})
+        } else {
+          this.setState({click: this.state.click + 1, expression: 'sad'})
         }
       }
     }
-    this.setState({drag: false})
   }
 
+  //If mouse is moiving
   handleMouseMove = () => {
+    //If you are petting, penguin will get happy
     if(this.state.petting && this.state.action !== 'angry') {
       if(this.state.pet > 100) {
         this.setState({pet: 0, action: 'happy', expression: 'happy'})
@@ -125,18 +132,38 @@ class Bird extends Component {
     }
   }
 
+  //Set drag to true, and determine if user is petting or clicking by time
   handleMouseDown = () => {
-    this.setState({drag: true})
-    setTimeout(this.petOrClick, 900 )
+    //If there is a timeout currently running (happens on rapid click)
+    //Clear timeout and set click
+    if(this.state.timeout !== null) {
+      clearTimeout(this.state.timeout)
+      //If penguin is not angry, you can interact with it
+      if(this.state.action !== 'angry') {
+        //If you are clicking penguin is not amused and will get angry if clicked too much
+        if(this.state.click > 5) {
+          this.setState({click: 0, expression: 'angry', action: 'angry'})
+        } else {
+          this.setState({click: this.state.click + 1, expression: 'sad'})
+        }
+      }
+    }
+    //Set up drag and stuff
+    if(!this.state.drag) {
+      this.setState({drag: true})
+      this.setState({timeout: setTimeout(this.petOrClick, 150 )})
+    }
   }
 
+  //On mouse up reset
   handleMouseUp = () => {
     this.setState({drag: false, petting: false})
-    if(this.state.action !== 'angry' && this.state.action !=='happy') {
+    if(this.state.action !== 'angry' && this.state.action !=='happy' && this.state.expression !== 'sad') {
       this.setState({expression: 'normal'})
     }
   }
 
+  //On update, if there is an success or error message, express happiness or sadness
   componentDidUpdate(prevProp) {
     if(prevProp.error !== this.props.error && this.state.action !== 'sad') {
       if(this.props.error !== null)
