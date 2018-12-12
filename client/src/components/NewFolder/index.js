@@ -79,8 +79,7 @@ class NewFolder extends Component {
           <DialogTitle style={{ textAlign: 'center' }}>
             Create New Folder
           </DialogTitle>
-          <div className = 'dialogContent'>
-            <DialogContent>
+            <DialogContent className = 'dialogContent'>
               <TextField ref={this.textInput}
                 autoFocus
                 margin="dense"
@@ -91,7 +90,6 @@ class NewFolder extends Component {
                 onChange={this.setName}
               />
             </DialogContent>
-          </div>
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button onClick={this.createNewFolder} color="primary">
               Create
